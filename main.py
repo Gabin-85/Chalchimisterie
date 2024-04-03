@@ -1,10 +1,10 @@
 # Example file showing a basic pygame "game loop"
 import pygame
-import options
+from files import *
 
 # pygame setup
 pygame.init()
-screen = pygame.display.set_mode(options.getJson["screen_size"])
+screen = pygame.display.set_mode(param_get("screen_size"))
 clock = pygame.time.Clock()
 running = True
 

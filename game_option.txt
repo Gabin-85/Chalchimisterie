@@ -1,2 +1,0 @@
-arbre:5 int
-lui:7 int
