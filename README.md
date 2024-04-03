@@ -1,2 +1,2 @@
 # Me-llamo-dio
-This is a scool game written in python
+This is a school game written in python
