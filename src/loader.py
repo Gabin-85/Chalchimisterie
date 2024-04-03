@@ -1,11 +1,14 @@
 # This file serve the purpose of reading a file and reporting options and variables
 import json
 import os
+from logger import *
+json_folder_path = "storage/"
 shortcuts = {}
+
 
 def addressof(file_name:str):
     """
-    Get the adress of a file. (it's for using shortcuts)
+    Get the adress of a file. (it's used for shortcuts)
 
     Args:
         file_name (str): name of the file.
@@ -17,13 +20,21 @@ def addressof(file_name:str):
     if file_name is None:
         file_name = shortcuts["default"]
     elif file_name.count(".json") == 0:
-        file_name = shortcuts[file_name]
-    return file_name
+        if file_name in shortcuts:
+            file_name = shortcuts[file_name]
+        else:
+            WARN("Unknown file name.")
+            return None
+    if os.path.exists(json_folder_path + file_name):
+        return file_name
+    else:
+        WARN("Unknown file "+file_name+". Make sure the file exists.")
+        return None 
 
 ##################
 # FILE FUNCTIONS #
 ##################
-def file_read(file_name:None, type=None):
+def file_read(file_name=None, type=None):
     """
     Read a file and return its content.
 
@@ -34,19 +45,25 @@ def file_read(file_name:None, type=None):
         The content of the file (str).
     """
     file_name = addressof(file_name)
+    if file_name is None:
+        ERROR("No files can be read!")
+        return None
     if type is None:
         file_name, temp = file_name.split(".", 1)
         type = "."+temp
-    if os.path.exists(file_name+type):
-        with open(file_name+type) as file:
+    if os.path.exists(json_folder_path+file_name+type):
+        with open(json_folder_path+file_name+type) as file:
             if type == ".json":
                 return json.load(file)
             elif type == ".txt":
                 return file.read()
-            else:
-                return None
+            WARN("Unknown file type.")
+            return None
+    else:
+        ERROR("No files were found")
+        return None
         
-def file_create(file_name:str, type=None, content:str="None"):
+def file_create(file_name:str, type=None, content:str=None):
     """
     Create a new file.
 
@@ -59,20 +76,21 @@ def file_create(file_name:str, type=None, content:str="None"):
     if type is None:
         file_name, temp = file_name.split(".", 1)
         type = "."+temp
-    if os.path.exists(file_name+type):
+    if os.path.exists(json_folder_path+file_name+type):
         file_delete(file_name, type)
-    with open(file_name+type, "a") as file:
+    with open(json_folder_path+file_name+type, "a") as file:
         if type == ".json":
             if content != "None":
                 file.write("{\n"+content+"\n}")
             else:
                 file.write("{}")
-            shortcuts[file_name] = file_name+type
+            shortcuts[file_name] = json_folder_path+file_name+type
             return True
         elif type == ".txt":
             if content != "None":
                 file.write(content)
             return True
+        WARN("Unknown file type.")
         return False
         
 def file_delete(file_name, type):
@@ -88,11 +106,13 @@ def file_delete(file_name, type):
     if type is None:
         file_name, temp = file_name.split(".", 1)
         type = "."+temp
-    os.remove(file_name+type)
+    os.remove(json_folder_path+file_name+type)
     if file_name in shortcuts:
         del shortcuts[file_name]
-
-
+        return True
+    WARN("Unknown file. Unable to delete.")
+    return False
+    
 ###################
 # PARAM FUNCTIONS #
 ###################
@@ -107,16 +127,23 @@ def param_get(param_name:str, file_name:str=None):
     Returns:
         The value of the parameter (str).
     """
-    if file_name is None:
+    if file_name == None:
         for file in shortcuts:
             if param_name in file_read(shortcuts[file]):
                 file_name = shortcuts[file]
                 break
     file_name = addressof(file_name)
+    if file_name is None:
+        WARN("No files can be read!")
+        return None
+    
+    if type(param_name) != str:
+        WARN("param_get take param_name as a str. No other types allowed.")
+        return(False)
     if param_name in file_read(file_name):
         return file_read(file_name)[param_name]
-    else:
-        return None
+    WARN("Unknown parameter.")
+    return None
     
 def param_getlist(param_name:str, file_name:str=None):
     """
@@ -134,12 +161,21 @@ def param_getlist(param_name:str, file_name:str=None):
             if param_name in file_read(shortcuts[file]):
                 file_name = shortcuts[file]
                 break
+    
     file_name = addressof(file_name)
+    if file_name is None:
+        WARN("No files can be read!")
+        return None
+    
     list = []
+    if type(param_name) != list:
+        WARN("param_getlist take param_name as a list. No other types allowed.")
+        return(None)
     for k in range(len(param_name)):
         if param_name[k] in file_read(file_name):
             list.append(file_read(file_name)[param_name[k]])
         else:
+            TRACE("Unknown element in the list.")
             list.append(None)
     return list
     
@@ -155,9 +191,14 @@ def param_set(param_name:str, param_value, file_name:str=None):
     Returns:
         None
     """
-    if type(param_name) == list:
-        return(False)
     file_name = addressof(file_name)
+    if file_name is None:
+        WARN("No files can be read!")
+        return(False)
+
+    if type(param_name) != str:
+        WARN("param_set take param_name as a str. No other types allowed.")
+        return(False)
     modified = file_read(file_name)
     modified[param_name] = param_value
     json.dump(modified, open(file_name, "w"))
@@ -175,9 +216,14 @@ def param_setlist(param_name:list, param_value:list, file_name:str=None):
     Returns:
         None
     """
-    if type(param_name) == list:
+    if type(param_name) != list:
+        WARN("param_setlist take param_name as a list. No other types allowed.")
         return(False)
     file_name = addressof(file_name)
+
+    if file_name is None:
+        WARN("No files can be read!")
+        return(False)
     modified = file_read(file_name)
     for k in range(len(param_name)):
         modified[param_name[k]] = param_value[k]
@@ -196,7 +242,15 @@ def param_del(param_name:str, file_name:str=None):
         None
     """
     file_name = addressof(file_name)
+    if file_name is None:
+        WARN("No files can be read!")
+        return(False)
+    
+    if type(param_name) != str:
+        WARN("param_del take param_name as a str. No other types allowed.")
+        return(False)
     if not param_name in file_read(file_name).keys():
+        WARN("There is no parameter with this name. Nothing to delete.")
         return(False)
     modified = file_read(file_name)
     del modified[param_name]
@@ -215,11 +269,21 @@ def param_dellist(param_name:list, file_name:str=None):
         None
     """
     file_name = addressof(file_name)
+    if file_name is None:
+        WARN("No files can be read!")
+        return(False)
+    
+    if type(param_name) != list:
+        WARN("param_dellist take param_name as a list. No other types allowed.")
+        return(False)
     for k in range(len(param_name)):
         if param_name[k] in file_read(file_name).keys():
             modified = file_read(file_name)
             del modified[param_name[k]]
             json.dump(modified, open(file_name, "w"))
+        else:
+            TRACE("There is no parameter with this name. Skip.")
+            return(False)
     return(True)  
 
 def param_reset(file_name:str=None, reset:dict={}):
@@ -233,8 +297,12 @@ def param_reset(file_name:str=None, reset:dict={}):
         None
     """
     file_name = addressof(file_name)
+    if file_name is None:
+        WARN("No files can be read!")
+        return(False)
+    
     json.dump(reset, open(file_name, "w"))
     return(True)
 
-# Set live shortcuts to shortcuts template
+#Set shortcuts
 shortcuts = file_read("shortcuts.json")

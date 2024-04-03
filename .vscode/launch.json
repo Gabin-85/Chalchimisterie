@@ -1,0 +1,14 @@
+{
+    "configurations": [
+    {
+        "name": "Launch Game",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder}/src/main.py",
+        "windows": {
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+        }
+    },
+]
+}

@@ -1,0 +1,12 @@
+{
+    "screen_size": [1280, 720],
+    "fps": 60,
+    "log_active": {
+        "fatal": true,
+        "error": true,
+        "warn": true,
+        "info": true,
+        "debug": true,
+        "trace": true
+    }
+}
