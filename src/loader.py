@@ -111,8 +111,23 @@ def file_delete(file_name, type):
         del shortcuts[file_name]
         return True
     WARN("Unknown file. Unable to delete.")
-    return False
+    return(False)
     
+
+def file_rename(filename:str, new_name:str, shortcut:str=None):
+   """
+   Get a file and rename it and also his shortcut
+
+   Args:
+
+   Return:
+
+   """
+   filename = addressof(filename)
+   if filename == None:
+      WARN("File can't be rename because unable to open")
+      return(False)
+
 ###################
 # PARAM FUNCTIONS #
 ###################
