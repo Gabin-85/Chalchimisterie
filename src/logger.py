@@ -1,4 +1,8 @@
-# Importation
+# This is a log system that is used in the game.
+# DO NOT used all functions in this file before logs_init().
+#
+# It has 6 levels (FATAL, ERROR, WARN, INFO, DEBUG and TRACE) of log/print handling.
+# You can active or unactive various functions by initializing the logs.
 import colorama
 log_active = {}
 logs = ""
@@ -37,3 +41,4 @@ def TRACE(msg):
 def logs_init(active:dict):
     global log_active
     log_active = active
+    INFO("Logs initialized")

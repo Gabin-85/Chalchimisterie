@@ -20,8 +20,7 @@ import json
 import os
 from logger import *
 
-json_folder_path = "storage/"
-default = "default"
+storage_folder_path = "storage/"
 shortcuts = {}
 
 
@@ -99,18 +98,19 @@ def addressof(file_name:str):
     """
     global shortcuts
     if file_name is None:
-        file_name = shortcuts[default]
+        file_name = shortcuts["default"]
     elif file_name.count(".json") == 0:
         if file_name in shortcuts.keys():
             file_name = shortcuts[file_name]
         else:
             WARN("Unknown file name.")
             return None
-    if os.path.exists(json_folder_path + file_name):
+    if os.path.exists(storage_folder_path + file_name):
         return file_name
     else:
         WARN("Unknown file "+file_name+". Make sure the file exists.")
         return None
+
 
 
 ##################
@@ -133,8 +133,8 @@ def file_read(file_name=None, type=None):
     if type is None:
         file_name, temp = file_name.split(".", 1)
         type = "."+temp
-    if os.path.exists(json_folder_path+file_name+type):
-        with open(json_folder_path+file_name+type) as file:
+    if os.path.exists(storage_folder_path+file_name+type):
+        with open(storage_folder_path+file_name+type) as file:
             if type == ".json":
                 return json.load(file)
             elif type == ".txt":
@@ -158,9 +158,9 @@ def file_create(file_name:str, type=None, content:str=None, short:str=None):
     if type is None:
         file_name, temp = file_name.split(".", 1)
         type = "."+temp
-    if os.path.exists(json_folder_path+file_name+type):
+    if os.path.exists(storage_folder_path+file_name+type):
         file_delete(file_name, type)
-    with open(json_folder_path+file_name+type, "a") as file:
+    with open(storage_folder_path+file_name+type, "a") as file:
         if type == ".json":
             if content != None:
                 file.write("{\n"+content+"\n}")
@@ -192,12 +192,12 @@ def file_delete(file_name:str, type:str=None):
             return False
         file_name, temp = file_name.split(".", 1)
         type = "."+temp
-    if not os.path.exists(json_folder_path+file_name+type):
+    if not os.path.exists(storage_folder_path+file_name+type):
         WARN("Unknown file.")
         return False
-    os.remove(json_folder_path+file_name+type)
+    os.remove(storage_folder_path+file_name+type)
     shortset(None, file_name+type)
-    if os.path.exists(json_folder_path+file_name+type):
+    if os.path.exists(storage_folder_path+file_name+type):
         ERROR("Unable to delete.")
         return False
     return True
@@ -224,10 +224,10 @@ def file_rename(old_name:str, new_name:str, short:str=None):
     if old_name == None:
        WARN("File can't be rename because unable to open")
        return False
-    if os.path.exists(json_folder_path+new_name+type) == True:
+    if os.path.exists(storage_folder_path+new_name+type) == True:
         DEBUG("Rename has replaced the same named file.")
         file_delete(new_name, type)
-    os.rename(json_folder_path+old_name+type, json_folder_path+new_name+type)
+    os.rename(storage_folder_path+old_name+type, storage_folder_path+new_name+type)
     shortset(new_name+type, old_name+type, short)
     return True
 
@@ -329,7 +329,7 @@ def param_set(param_name:str, param_value, file_name:str=None):
         return False
     modified = file_read(file_name)
     modified[param_name] = param_value
-    json.dump(modified, open(json_folder_path+file_name, "w"))
+    json.dump(modified, open(storage_folder_path+file_name, "w"))
     return True
     
 def param_setlist(param_name:list, param_value:list, file_name:str=None):
@@ -357,7 +357,7 @@ def param_setlist(param_name:list, param_value:list, file_name:str=None):
             return False
         modified = file_read(file_name[k])
         modified[param_name[k]] = param_value[k]
-        json.dump(modified, open(json_folder_path+file_name[k], "w"))
+        json.dump(modified, open(storage_folder_path+file_name[k], "w"))
     return True
 
 def param_del(param_name:str, file_name:str=None):
@@ -384,7 +384,7 @@ def param_del(param_name:str, file_name:str=None):
         return False
     modified = file_read(file_name)
     del modified[param_name]
-    json.dump(modified, open(json_folder_path+file_name, "w"))
+    json.dump(modified, open(storage_folder_path+file_name, "w"))
     return True
 
 def param_dellist(param_name:list, file_name:str=None):
@@ -411,7 +411,7 @@ def param_dellist(param_name:list, file_name:str=None):
         if param_name[k] in file_read(file_name[k]).keys():
             modified = file_read(file_name[k])
             del modified[param_name[k]]
-            json.dump(modified, open(json_folder_path+file_name[k], "w"))
+            json.dump(modified, open(storage_folder_path+file_name[k], "w"))
         else:
             TRACE("There is no parameter with this name. Skip.")
             return False
@@ -432,8 +432,8 @@ def param_reset(file_name:str=None, reset:dict={}):
         WARN("No files can be read!")
         return False
     
-    json.dump(reset, open(json_folder_path+file_name, "w"))
+    json.dump(reset, open(storage_folder_path+file_name, "w"))
     return True
 
-#Set shortcuts
+# Initialization of live shortcuts
 shortcuts = file_read("shortcuts.json")
