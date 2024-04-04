@@ -12,7 +12,19 @@ screen = pygame.display.set_mode(param_get("screen_size"))
 clock = pygame.time.Clock()
 running = True
 
-param_get("test")
+# This is the loader test (the shortcuts part and half the functions)
+if file_create("test.json", None, None, "test2") == True: DEBUG("File created")
+#DEBUG(shortcuts)
+if file_rename("test2", "test3", "test") == True: DEBUG("File renamed")
+# DEBUG(shortcuts)
+if param_setlist(["one", "two"], ["tree", "four"], ["test", "test"]) == True: DEBUG("Setlist test passed")
+one, two = param_getlist(["one", "two"])
+if one == "tree" and two == "four": DEBUG("Getlist test passed")
+if param_dellist(["one", "two"], ["test", "test"]) == True: DEBUG("Dellist test passed")
+if param_reset("test", {"pass test": "test"}) == True: DEBUG("Reset test passed")
+if file_delete("test") == True: DEBUG("File deleted")
+# DEBUG(shortcuts)
+# End of loader test
 
 while running:
     # Poll for events
@@ -32,5 +44,7 @@ while running:
     fps = param_get("fps")
     clock.tick(fps)  # FPS limit (here to 60 fps)
 
+# Save and quit
+param_reset("shortcuts", shortcuts)
 
 pygame.quit()

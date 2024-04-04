@@ -1,4 +1,1 @@
-{
-  "default": "game_option.json",
-  "shortcuts": "shortcuts.json"
-}
+{"default": "game_option.json", "shortcuts": "shortcuts.json"}

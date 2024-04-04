@@ -1,14 +1,95 @@
-# This file serve the purpose of reading a file and reporting options and variables
+# This is a tool box that gives functions to manipulate files.
+#
+# FUNCTION:
+#  - shortset: manipulate shortcuts creation, renaming, destuction, etc.
+#  - addressof: get the adress of a file by passing its shortcut, name(with extension) or the default file.
+#
+#  - file_read: read a file (json, txt) and return its content.
+#  - file_write: write a file (json, txt) and return True if the operation has been done.
+#  - file_create: create a new file (json, txt) and return True if the operation has been done.
+#  - file_delete: delete a file (json, txt) and return True if the operation has been done.
+#
+#  - param_get: get a parameter from a json file and return its value.
+#  - param_getlist: get multiple parameters from a json file and yield their values.
+#  - param_set: set a parameter in a json file and return True if the operation has been done.
+#  - param_setlist: set multiple parameters in a json file and return True if the operation has been done.
+#  - param_del: delete a parameter in a json file and return True if the operation has been done.
+#  - param_dellist: delete multiple parameters in a json file and return True if the operation has been done.
+#  - param_reset: reset/patternate a json file and return True if the operation has been done.
 import json
 import os
 from logger import *
+
 json_folder_path = "storage/"
+default = "default"
 shortcuts = {}
 
 
+def shortset(new_file_name:str=None, old_file_name:str=None, new_file_short:str=None, old_file_short:str=None):
+    """
+    Set a shortcut.
+
+    Args:
+        new_file_name (str): name of the new file.
+        old_file_name (str): name of the old file.
+        new_file_short (str): shortcut of the new file.
+        old_file_short (str): shortcut of the old file.
+
+
+    Returns:
+        True if the shortcut has been set. False otherwise.
+    """
+    # Set new file name if not set.
+    if new_file_name != None and new_file_short == None:
+        new_file_short, type = new_file_name.split(".", 1)
+        type = "."+type
+    elif new_file_name != None:
+        type = new_file_name.split(".", 1)[-1]
+        type = "."+type
+
+    # Set old file name if not set.
+    if old_file_name != None and old_file_short == None:
+        old_file_short, old_type = old_file_name.split(".", 1)
+        old_type = "."+old_type
+    elif old_file_name != None:
+        old_type = old_file_name.split(".", 1)[-1]
+        old_type = "."+old_type
+
+    # Rename a shortcut.
+    if old_file_name != None and new_file_name != None:
+        if old_file_name in shortcuts.values():
+            for key in shortcuts.keys():
+                if shortcuts[key] == old_file_name:
+                    break
+            del shortcuts[key]
+        if not new_file_short in shortcuts.keys():
+            shortcuts[new_file_short] = new_file_name
+        else:
+            WARN("Shortcut already exists. Can't apply new shortcut.")
+            return False
+    # Set a new shortcut.
+    elif new_file_name != None and old_file_name == None:
+        if not new_file_short in shortcuts.keys():
+            shortcuts[new_file_short] = new_file_name
+        else:
+            WARN("Shortcut already exists. Can't apply new shortcut.")
+            return False
+    # Delete a shortcut.
+    elif new_file_name == None and old_file_name != None:
+        if old_file_name in shortcuts.values():
+            for key in shortcuts.keys():
+                if shortcuts[key] == old_file_name:
+                    break
+            del shortcuts[key]
+    # No input.
+    else :
+        WARN("Wrong input command.")
+        return False
+    return True
+
 def addressof(file_name:str):
     """
-    Get the adress of a file. (it's used for shortcuts)
+    Get the adress of a file by passing its shortcut, name(with extension) or the default file is not set.
 
     Args:
         file_name (str): name of the file.
@@ -18,9 +99,9 @@ def addressof(file_name:str):
     """
     global shortcuts
     if file_name is None:
-        file_name = shortcuts["default"]
+        file_name = shortcuts[default]
     elif file_name.count(".json") == 0:
-        if file_name in shortcuts:
+        if file_name in shortcuts.keys():
             file_name = shortcuts[file_name]
         else:
             WARN("Unknown file name.")
@@ -29,7 +110,8 @@ def addressof(file_name:str):
         return file_name
     else:
         WARN("Unknown file "+file_name+". Make sure the file exists.")
-        return None 
+        return None
+
 
 ##################
 # FILE FUNCTIONS #
@@ -60,10 +142,10 @@ def file_read(file_name=None, type=None):
             WARN("Unknown file type.")
             return None
     else:
-        ERROR("No files were found")
+        WARN("No files were found")
         return None
         
-def file_create(file_name:str, type=None, content:str=None):
+def file_create(file_name:str, type=None, content:str=None, short:str=None):
     """
     Create a new file.
 
@@ -80,20 +162,20 @@ def file_create(file_name:str, type=None, content:str=None):
         file_delete(file_name, type)
     with open(json_folder_path+file_name+type, "a") as file:
         if type == ".json":
-            if content != "None":
+            if content != None:
                 file.write("{\n"+content+"\n}")
             else:
-                file.write("{}")
-            shortcuts[file_name] = json_folder_path+file_name+type
+                file.write("{\n\n}")
+            shortset(file_name+type, None, short)
             return True
         elif type == ".txt":
-            if content != "None":
+            if content != None:
                 file.write(content)
             return True
         WARN("Unknown file type.")
         return False
         
-def file_delete(file_name, type):
+def file_delete(file_name:str, type:str=None):
     """
     Delete a file.
 
@@ -104,29 +186,51 @@ def file_delete(file_name, type):
         None
     """
     if type is None:
+        file_name = addressof(file_name)
+        if file_name is None:
+            WARN("No file has been deleted.")
+            return False
         file_name, temp = file_name.split(".", 1)
         type = "."+temp
+    if not os.path.exists(json_folder_path+file_name+type):
+        WARN("Unknown file.")
+        return False
     os.remove(json_folder_path+file_name+type)
-    if file_name in shortcuts:
-        del shortcuts[file_name]
-        return True
-    WARN("Unknown file. Unable to delete.")
-    return(False)
+    shortset(None, file_name+type)
+    if os.path.exists(json_folder_path+file_name+type):
+        ERROR("Unable to delete.")
+        return False
+    return True
     
+def file_rename(old_name:str, new_name:str, short:str=None):
+    """
+    Get a file and rename it and also his shortcut
 
-def file_rename(filename:str, new_name:str, shortcut:str=None):
-   """
-   Get a file and rename it and also his shortcut
+    Args:
+        old_name (str): old name of the file or shortcut.
+        new_name (str): new name of the file.
+        short (str): new name of the shortcut.
 
-   Args:
+    Return:
 
-   Return:
+    """
+    old_name = addressof(old_name)
+    old_name, type = old_name.split(".", 1)
+    new_name = new_name.split(".", 1)[0]
+    type = "."+type
+    if short == None:
+        short = new_name
+    
+    if old_name == None:
+       WARN("File can't be rename because unable to open")
+       return False
+    if os.path.exists(json_folder_path+new_name+type) == True:
+        DEBUG("Rename has replaced the same named file.")
+        file_delete(new_name, type)
+    os.rename(json_folder_path+old_name+type, json_folder_path+new_name+type)
+    shortset(new_name+type, old_name+type, short)
+    return True
 
-   """
-   filename = addressof(filename)
-   if filename == None:
-      WARN("File can't be rename because unable to open")
-      return(False)
 
 ###################
 # PARAM FUNCTIONS #
@@ -142,11 +246,14 @@ def param_get(param_name:str, file_name:str=None):
     Returns:
         The value of the parameter (str).
     """
+    # Verify if the file exists in all the shortcuts files.
     if file_name == None:
         for file in shortcuts:
             if param_name in file_read(shortcuts[file]):
                 file_name = shortcuts[file]
                 break
+
+    # Set the file address
     file_name = addressof(file_name)
     if file_name is None:
         WARN("No files can be read!")
@@ -154,13 +261,13 @@ def param_get(param_name:str, file_name:str=None):
     
     if type(param_name) != str:
         WARN("param_get take param_name as a str. No other types allowed.")
-        return(False)
+        return False
     if param_name in file_read(file_name):
         return file_read(file_name)[param_name]
     WARN("Unknown parameter.")
     return None
     
-def param_getlist(param_name:str, file_name:str=None):
+def param_getlist(param_name:list, file_name:list=None):
     """
     Get a parameter from a file.
 
@@ -171,28 +278,34 @@ def param_getlist(param_name:str, file_name:str=None):
     Returns:
         The value of the parameter (list).
     """
-    if file_name is None:
-        for file in shortcuts:
-            if param_name in file_read(shortcuts[file]):
-                file_name = shortcuts[file]
-                break
-    
-    file_name = addressof(file_name)
-    if file_name is None:
-        WARN("No files can be read!")
-        return None
-    
-    list = []
     if type(param_name) != list:
         WARN("param_getlist take param_name as a list. No other types allowed.")
-        return(None)
+        return None
+    if file_name == None:
+        file_name = [""]*len(param_name)
+
     for k in range(len(param_name)):
-        if param_name[k] in file_read(file_name):
-            list.append(file_read(file_name)[param_name[k]])
+        # Verify if the files exists in all the shortcuts files.
+        if file_name[k] == "":
+            for file in shortcuts.keys():
+                if param_name[k] in file_read(shortcuts[file]):
+                    file_name[k] = (shortcuts[file])
+                    break
+
+        # Set the file address
+        file_name[k] = addressof(file_name[k])
+        if file_name[k] is None:
+            WARN("A file can't be read!")
+        
+    if type(param_name) != list:
+        WARN("param_getlist take param_name as a list. No other types allowed.")
+        yield None
+    for k in range(len(param_name)):
+        if param_name[k] in file_read(file_name[k]):
+            yield(file_read(file_name[k])[param_name[k]])
         else:
             TRACE("Unknown element in the list.")
-            list.append(None)
-    return list
+            yield None
     
 def param_set(param_name:str, param_value, file_name:str=None):
     """
@@ -209,15 +322,15 @@ def param_set(param_name:str, param_value, file_name:str=None):
     file_name = addressof(file_name)
     if file_name is None:
         WARN("No files can be read!")
-        return(False)
+        return False
 
     if type(param_name) != str:
         WARN("param_set take param_name as a str. No other types allowed.")
-        return(False)
+        return False
     modified = file_read(file_name)
     modified[param_name] = param_value
-    json.dump(modified, open(file_name, "w"))
-    return(True)
+    json.dump(modified, open(json_folder_path+file_name, "w"))
+    return True
     
 def param_setlist(param_name:list, param_value:list, file_name:str=None):
     """
@@ -231,19 +344,21 @@ def param_setlist(param_name:list, param_value:list, file_name:str=None):
     Returns:
         None
     """
-    if type(param_name) != list:
-        WARN("param_setlist take param_name as a list. No other types allowed.")
-        return(False)
-    file_name = addressof(file_name)
-
-    if file_name is None:
-        WARN("No files can be read!")
-        return(False)
-    modified = file_read(file_name)
+    if type(param_name) != list or type(param_value) != list:
+        WARN("param_setlist take parameters as a list. No other types allowed.")
+        return False
+    if file_name == None:
+        file_name = [""]*len(param_name)
     for k in range(len(param_name)):
+        file_name[k] = addressof(file_name[k])
+
+        if file_name[k] is None:
+            WARN("No files can be read!")
+            return False
+        modified = file_read(file_name[k])
         modified[param_name[k]] = param_value[k]
-    json.dump(modified, open(file_name, "w"))
-    return(True)
+        json.dump(modified, open(json_folder_path+file_name[k], "w"))
+    return True
 
 def param_del(param_name:str, file_name:str=None):
     """
@@ -259,18 +374,18 @@ def param_del(param_name:str, file_name:str=None):
     file_name = addressof(file_name)
     if file_name is None:
         WARN("No files can be read!")
-        return(False)
+        return False
     
     if type(param_name) != str:
         WARN("param_del take param_name as a str. No other types allowed.")
-        return(False)
+        return False
     if not param_name in file_read(file_name).keys():
         WARN("There is no parameter with this name. Nothing to delete.")
-        return(False)
+        return False
     modified = file_read(file_name)
     del modified[param_name]
-    json.dump(modified, open(file_name, "w"))
-    return(True)
+    json.dump(modified, open(json_folder_path+file_name, "w"))
+    return True
 
 def param_dellist(param_name:list, file_name:str=None):
     """
@@ -283,23 +398,24 @@ def param_dellist(param_name:list, file_name:str=None):
     Returns:
         None
     """
-    file_name = addressof(file_name)
     if file_name is None:
-        WARN("No files can be read!")
-        return(False)
-    
+        WARN("No files can be deleted!")
+        return False
     if type(param_name) != list:
-        WARN("param_dellist take param_name as a list. No other types allowed.")
-        return(False)
+            WARN("param_dellist take param_name as a list. No other types allowed.")
+            return False
+    
     for k in range(len(param_name)):
-        if param_name[k] in file_read(file_name).keys():
-            modified = file_read(file_name)
+        file_name[k] = addressof(file_name[k])
+    
+        if param_name[k] in file_read(file_name[k]).keys():
+            modified = file_read(file_name[k])
             del modified[param_name[k]]
-            json.dump(modified, open(file_name, "w"))
+            json.dump(modified, open(json_folder_path+file_name[k], "w"))
         else:
             TRACE("There is no parameter with this name. Skip.")
-            return(False)
-    return(True)  
+            return False
+    return True  
 
 def param_reset(file_name:str=None, reset:dict={}):
     """
@@ -314,10 +430,10 @@ def param_reset(file_name:str=None, reset:dict={}):
     file_name = addressof(file_name)
     if file_name is None:
         WARN("No files can be read!")
-        return(False)
+        return False
     
-    json.dump(reset, open(file_name, "w"))
-    return(True)
+    json.dump(reset, open(json_folder_path+file_name, "w"))
+    return True
 
 #Set shortcuts
 shortcuts = file_read("shortcuts.json")
