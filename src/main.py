@@ -1,7 +1,7 @@
 # Importation
 import pygame
-from loader import *
-from logger import *
+from utils.storageHandler import *
+from utils.consoleHandler import *
 
 # Pygame setup
 pygame.init()

@@ -16,7 +16,7 @@
 #  - param_reset: reset/patternate a json file and return True if the operation has been done.
 import json
 import os
-from logger import *
+from utils.consoleHandler import *
 
 storage_folder_path = "storage/"
 shortcuts = {}

@@ -1,4 +1,4 @@
-# This is a log system that is used in the game.
+# This is a tool box that gives functions to print.
 # It has 6 levels (FATAL, ERROR, WARN, INFO, DEBUG and TRACE) of log/print handling.
 import colorama
 import json
