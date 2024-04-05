@@ -3,9 +3,6 @@ import pygame
 from loader import *
 from logger import *
 
-# Initialization
-logs_init(param_get("log_active"))
-
 # Pygame setup
 pygame.init()
 screen = pygame.display.set_mode(param_get("screen_size"))
@@ -13,14 +10,16 @@ clock = pygame.time.Clock()
 running = True
 
 # This is the loader test (the shortcuts part and half the functions)
-if file_create("test.json", None, None, "test2") == True: DEBUG("File created")
-if file_rename("test2", "test3", "test") == True: DEBUG("File renamed")
-if param_setlist(["one", "two"], ["tree", "four"], ["test", "test"]) == True: DEBUG("Setlist test passed")
+if file_create("test.json", None, {"test": "test"}, "test2") == True: DEBUG("Created test passed")
+if file_rename("test2", "test3", "test") == True: DEBUG("Renamed test passed")
+if param_setlist(["one", "two"], ["tree", "four"], "test") == True: DEBUG("Setlist test passed")
 one, two = param_getlist(["one", "two"])
 if one == "tree" and two == "four": DEBUG("Getlist test passed")
-if param_dellist(["one", "two"], ["test", "test"]) == True: DEBUG("Dellist test passed")
-if param_reset("test", {"pass test": "test"}) == True: DEBUG("Reset test passed")
-if file_delete("test") == True: DEBUG("File deleted")
+if param_dellist(["one", "two"], "test") == True: DEBUG("Dellist test passed")
+if param_reset("test", {"pass test": "test"}) == True: DEBUG("Reset   test passed")
+if file_delete("test") == True: DEBUG("Deleted test passed")
+if file_create("test", ".txt", "test") == True: DEBUG("Created test passed")
+if file_delete("test") == True: DEBUG("Deleted test passed")
 # End of loader test
 
 while running:

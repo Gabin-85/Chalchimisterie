@@ -5,9 +5,9 @@
 #  - addressof: get the adress of a file by passing its shortcut, name(with extension) or the default file.
 #
 #  - file_read: read a file (json, txt) and return its content.
-#  - file_write: write a file (json, txt) and return True if the operation has been done.
 #  - file_create: create a new file (json, txt) and return True if the operation has been done.
 #  - file_delete: delete a file (json, txt) and return True if the operation has been done.
+#  - file_rename: rename a file (json, txt) and return True if the operation has been done.
 #
 #  - param_get: get a parameter from a json file and return its value.
 #  - param_getlist: get multiple parameters from a json file and yield their values.
@@ -145,12 +145,15 @@ def file_read(file_name=None, type=None):
         WARN("No files were found")
         return None
         
-def file_create(file_name:str, type=None, content:str=None, short:str=None):
+def file_create(file_name:str, type=None, content=None, short:str=None):
     """
     Create a new file.
 
     Args:
         file_name (str): name of the file.
+        type (str): type of the file.
+        content: content of the file.
+        short (str): shortcut of the file.
 
     Returns:
         None
@@ -163,7 +166,7 @@ def file_create(file_name:str, type=None, content:str=None, short:str=None):
     with open(storage_folder_path+file_name+type, "a") as file:
         if type == ".json":
             if content != None:
-                file.write("{\n"+content+"\n}")
+                json.dump(content, file, indent=4)
             else:
                 file.write("{\n\n}")
             shortset(file_name+type, None, short)
@@ -171,6 +174,7 @@ def file_create(file_name:str, type=None, content:str=None, short:str=None):
         elif type == ".txt":
             if content != None:
                 file.write(content)
+            shortset(file_name+type, None, short)
             return True
         WARN("Unknown file type.")
         return False
@@ -283,6 +287,8 @@ def param_getlist(param_name:list, file_name:list=None):
         return None
     if file_name == None:
         file_name = [""]*len(param_name)
+    elif type(file_name) == str:
+        file_name = [file_name]*len(param_name)
 
     for k in range(len(param_name)):
         # Verify if the files exists in all the shortcuts files.
@@ -329,7 +335,7 @@ def param_set(param_name:str, param_value, file_name:str=None):
         return False
     modified = file_read(file_name)
     modified[param_name] = param_value
-    json.dump(modified, open(storage_folder_path+file_name, "w"))
+    json.dump(modified, open(storage_folder_path+file_name, "w"), indent=4)
     return True
     
 def param_setlist(param_name:list, param_value:list, file_name:str=None):
@@ -349,6 +355,8 @@ def param_setlist(param_name:list, param_value:list, file_name:str=None):
         return False
     if file_name == None:
         file_name = [""]*len(param_name)
+    elif type(file_name) == str:
+        file_name = [file_name]*len(param_name)
     for k in range(len(param_name)):
         file_name[k] = addressof(file_name[k])
 
@@ -357,7 +365,7 @@ def param_setlist(param_name:list, param_value:list, file_name:str=None):
             return False
         modified = file_read(file_name[k])
         modified[param_name[k]] = param_value[k]
-        json.dump(modified, open(storage_folder_path+file_name[k], "w"))
+        json.dump(modified, open(storage_folder_path+file_name[k], "w"), indent=4)
     return True
 
 def param_del(param_name:str, file_name:str=None):
@@ -384,7 +392,7 @@ def param_del(param_name:str, file_name:str=None):
         return False
     modified = file_read(file_name)
     del modified[param_name]
-    json.dump(modified, open(storage_folder_path+file_name, "w"))
+    json.dump(modified, open(storage_folder_path+file_name, "w"), indent=4)
     return True
 
 def param_dellist(param_name:list, file_name:str=None):
@@ -398,12 +406,14 @@ def param_dellist(param_name:list, file_name:str=None):
     Returns:
         None
     """
-    if file_name is None:
-        WARN("No files can be deleted!")
-        return False
     if type(param_name) != list:
             WARN("param_dellist take param_name as a list. No other types allowed.")
             return False
+    if file_name is None:
+        WARN("No files can be deleted!")
+        return False
+    elif type(file_name) == str:
+        file_name = [file_name]*len(param_name)
     
     for k in range(len(param_name)):
         file_name[k] = addressof(file_name[k])
@@ -411,7 +421,7 @@ def param_dellist(param_name:list, file_name:str=None):
         if param_name[k] in file_read(file_name[k]).keys():
             modified = file_read(file_name[k])
             del modified[param_name[k]]
-            json.dump(modified, open(storage_folder_path+file_name[k], "w"))
+            json.dump(modified, open(storage_folder_path+file_name[k], "w"), indent=4)
         else:
             TRACE("There is no parameter with this name. Skip.")
             return False
@@ -432,7 +442,7 @@ def param_reset(file_name:str=None, reset:dict={}):
         WARN("No files can be read!")
         return False
     
-    json.dump(reset, open(storage_folder_path+file_name, "w"))
+    json.dump(reset, open(storage_folder_path+file_name, "w"), indent=4)
     return True
 
 # Initialization of live shortcuts
