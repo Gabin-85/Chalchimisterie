@@ -11,10 +11,8 @@
 #
 #  - param_get: get a parameter from a json file and return its value.
 #  - param_getlist: get multiple parameters from a json file and yield their values.
-#  - param_set: set a parameter in a json file and return True if the operation has been done.
-#  - param_setlist: set multiple parameters in a json file and return True if the operation has been done.
-#  - param_del: delete a parameter in a json file and return True if the operation has been done.
-#  - param_dellist: delete multiple parameters in a json file and return True if the operation has been done.
+#  - param_set: set multiple parameters in a json file and return True if the operation has been done.
+#  - param_del: delete multiple parameters in a json file and return True if the operation has been done.
 #  - param_reset: reset/patternate a json file and return True if the operation has been done.
 import json
 import os
@@ -94,7 +92,7 @@ def addressof(file_name:str):
         file_name (str): name of the file.
 
     Returns:
-        The adress of the file (str).
+        The adress of the file (str). None if the file doesn't exist.
     """
     global shortcuts
     if file_name is None:
@@ -271,76 +269,29 @@ def param_get(param_name:str, file_name:str=None):
     WARN("Unknown parameter.")
     return None
     
-def param_getlist(param_name:list, file_name:list=None):
+def param_getlist(param_name:list, file_name=None):
     """
-    Get a parameter from a file.
+    Get multiple parameters from a file.
 
     Args:
         param_name (list): name of the parameter.
-        file_name (list): name of the file.
+        file_name (list/str): name of the file.
 
     Returns:
-        The value of the parameter (list).
-    """
-    if type(param_name) != list:
-        WARN("param_getlist take param_name as a list. No other types allowed.")
-        return None
-    if file_name == None:
-        file_name = [""]*len(param_name)
-    elif type(file_name) == str:
+        The value of the parameters.    
+    """    
+    if type(file_name) == str or file_name == None:
         file_name = [file_name]*len(param_name)
-
-    for k in range(len(param_name)):
-        # Verify if the files exists in all the shortcuts files.
-        if file_name[k] == "":
-            for file in shortcuts.keys():
-                if param_name[k] in file_read(shortcuts[file]):
-                    file_name[k] = (shortcuts[file])
-                    break
-
-        # Set the file address
-        file_name[k] = addressof(file_name[k])
-        if file_name[k] is None:
-            WARN("A file can't be read!")
-        
-    if type(param_name) != list:
-        WARN("param_getlist take param_name as a list. No other types allowed.")
-        yield None
-    for k in range(len(param_name)):
-        if param_name[k] in file_read(file_name[k]):
-            yield(file_read(file_name[k])[param_name[k]])
-        else:
-            TRACE("Unknown element in the list.")
-            yield None
+    elif type(file_name) != list:
+        WARN("param_getlist take file_name as a list or str. No other types allowed.")
+        yield False
     
-def param_set(param_name:str, param_value, file_name:str=None):
-    """
-    Set a parameter in a file.
-
-    Args:
-        param_name (str): name of the parameter.
-        param_value : value of the parameter.
-        file_name (str): name of the file.
-
-    Returns:
-        None
-    """
-    file_name = addressof(file_name)
-    if file_name is None:
-        WARN("No files can be read!")
-        return False
-
-    if type(param_name) != str:
-        WARN("param_set take param_name as a str. No other types allowed.")
-        return False
-    modified = file_read(file_name)
-    modified[param_name] = param_value
-    json.dump(modified, open(storage_folder_path+file_name, "w"), indent=4)
-    return True
+    for k in range(len(param_name)):
+        yield(param_get(param_name[k], file_name[k]))
     
-def param_setlist(param_name:list, param_value:list, file_name:str=None):
+def param_set(param_name, param_value, file_name=None):
     """
-    Set a parameter in a file.
+    Set multiple parameters in a file.
 
     Args:
         param_name (list): name of the parameter.
@@ -348,10 +299,13 @@ def param_setlist(param_name:list, param_value:list, file_name:str=None):
         file_name (list): name of the file.
 
     Returns:
-        None
+        True if all the parameters have been set. False otherwise.
     """
-    if type(param_name) != list or type(param_value) != list:
-        WARN("param_setlist take parameters as a list. No other types allowed.")
+    if type(param_name) == str and type(param_value) == str:
+        param_name = [param_name]
+        param_value = [param_value]
+    elif type(param_name) != list or type(param_value) != list:
+        WARN("param_setlist take parameters as a list or str. No other types allowed.")
         return False
     if file_name == None:
         file_name = [""]*len(param_name)
@@ -368,45 +322,20 @@ def param_setlist(param_name:list, param_value:list, file_name:str=None):
         json.dump(modified, open(storage_folder_path+file_name[k], "w"), indent=4)
     return True
 
-def param_del(param_name:str, file_name:str=None):
+def param_del(param_name, file_name=None):
     """
-    Delete a parameter in a file.
-
-    Args:
-        param_name (str): name of the parameter.
-        file_name (str): name of the file.
-
-    Returns:
-        None
-    """
-    file_name = addressof(file_name)
-    if file_name is None:
-        WARN("No files can be read!")
-        return False
-    
-    if type(param_name) != str:
-        WARN("param_del take param_name as a str. No other types allowed.")
-        return False
-    if not param_name in file_read(file_name).keys():
-        WARN("There is no parameter with this name. Nothing to delete.")
-        return False
-    modified = file_read(file_name)
-    del modified[param_name]
-    json.dump(modified, open(storage_folder_path+file_name, "w"), indent=4)
-    return True
-
-def param_dellist(param_name:list, file_name:str=None):
-    """
-    Delete a parameter in a file.
+    Delete multiple parameters in a file.
 
     Args:
         param_name (list): name of the parameter.
         file_name (str): name of the file.
 
     Returns:
-        None
+        True if all the parameters have been deleted. False otherwise.
     """
-    if type(param_name) != list:
+    if type(param_name) == str:
+        param_name = [param_name]
+    elif type(param_name) != list:
             WARN("param_dellist take param_name as a list. No other types allowed.")
             return False
     if file_name is None:
@@ -435,7 +364,7 @@ def param_reset(file_name:str=None, reset:dict={}):
         file_name (str): name of the file.
 
     Returns:
-        None
+        True if the file has been reset. False otherwise.
     """
     file_name = addressof(file_name)
     if file_name is None:
