@@ -62,14 +62,14 @@ def shortset(new_file_name:str=None, old_file_name:str=None, new_file_short:str=
         if not new_file_short in shortcuts.keys():
             shortcuts[new_file_short] = new_file_name
         else:
-            WARN("Shortcut already exists. Can't apply new shortcut.")
+            warn("Shortcut already exists. Can't apply new shortcut.")
             return False
     # Set a new shortcut.
     elif new_file_name != None and old_file_name == None:
         if not new_file_short in shortcuts.keys():
             shortcuts[new_file_short] = new_file_name
         else:
-            WARN("Shortcut already exists. Can't apply new shortcut.")
+            warn("Shortcut already exists. Can't apply new shortcut.")
             return False
     # Delete a shortcut.
     elif new_file_name == None and old_file_name != None:
@@ -80,7 +80,7 @@ def shortset(new_file_name:str=None, old_file_name:str=None, new_file_short:str=
             del shortcuts[key]
     # No input.
     else :
-        WARN("Wrong input command.")
+        warn("Wrong input command.")
         return False
     return True
 
@@ -101,12 +101,12 @@ def addressof(file_name:str):
         if file_name in shortcuts.keys():
             file_name = shortcuts[file_name]
         else:
-            WARN("Unknown file name.")
+            warn("Unknown file name.")
             return None
     if os.path.exists(storage_folder_path + file_name):
         return file_name
     else:
-        WARN("Unknown file "+file_name+". Make sure the file exists.")
+        warn("Unknown file "+file_name+". Make sure the file exists.")
         return None
 
 
@@ -126,7 +126,7 @@ def file_read(file_name=None, type=None):
     """
     file_name = addressof(file_name)
     if file_name is None:
-        ERROR("No files can be read!")
+        error("No files can be read!")
         return None
     if type is None:
         file_name, temp = file_name.split(".", 1)
@@ -137,10 +137,10 @@ def file_read(file_name=None, type=None):
                 return json.load(file)
             elif type == ".txt":
                 return file.read()
-            WARN("Unknown file type.")
+            warn("Unknown file type.")
             return None
     else:
-        WARN("No files were found")
+        warn("No files were found")
         return None
         
 def file_create(file_name:str, type=None, content=None, short:str=None):
@@ -174,7 +174,7 @@ def file_create(file_name:str, type=None, content=None, short:str=None):
                 file.write(content)
             shortset(file_name+type, None, short)
             return True
-        WARN("Unknown file type.")
+        warn("Unknown file type.")
         return False
         
 def file_delete(file_name:str, type:str=None):
@@ -190,17 +190,17 @@ def file_delete(file_name:str, type:str=None):
     if type is None:
         file_name = addressof(file_name)
         if file_name is None:
-            WARN("No file has been deleted.")
+            warn("No file has been deleted.")
             return False
         file_name, temp = file_name.split(".", 1)
         type = "."+temp
     if not os.path.exists(storage_folder_path+file_name+type):
-        WARN("Unknown file.")
+        warn("Unknown file.")
         return False
     os.remove(storage_folder_path+file_name+type)
     shortset(None, file_name+type)
     if os.path.exists(storage_folder_path+file_name+type):
-        ERROR("Unable to delete.")
+        error("Unable to delete.")
         return False
     return True
     
@@ -224,10 +224,10 @@ def file_rename(old_name:str, new_name:str, short:str=None):
         short = new_name
     
     if old_name == None:
-       WARN("File can't be rename because unable to open")
+       warn("File can't be rename because unable to open")
        return False
     if os.path.exists(storage_folder_path+new_name+type) == True:
-        DEBUG("Rename has replaced the same named file.")
+        debug("Rename has replaced the same named file.")
         file_delete(new_name, type)
     os.rename(storage_folder_path+old_name+type, storage_folder_path+new_name+type)
     shortset(new_name+type, old_name+type, short)
@@ -258,15 +258,15 @@ def param_get(param_name:str, file_name:str=None):
     # Set the file address
     file_name = addressof(file_name)
     if file_name is None:
-        WARN("No files can be read!")
+        warn("No files can be read!")
         return None
     
     if type(param_name) != str:
-        WARN("param_get take param_name as a str. No other types allowed.")
+        warn("param_get take param_name as a str. No other types allowed.")
         return False
     if param_name in file_read(file_name):
         return file_read(file_name)[param_name]
-    WARN("Unknown parameter.")
+    warn("Unknown parameter.")
     return None
     
 def param_getlist(param_name:list, file_name=None):
@@ -283,7 +283,7 @@ def param_getlist(param_name:list, file_name=None):
     if type(file_name) == str or file_name == None:
         file_name = [file_name]*len(param_name)
     elif type(file_name) != list:
-        WARN("param_getlist take file_name as a list or str. No other types allowed.")
+        warn("param_getlist take file_name as a list or str. No other types allowed.")
         yield False
     
     for k in range(len(param_name)):
@@ -305,7 +305,7 @@ def param_set(param_name, param_value, file_name=None):
         param_name = [param_name]
         param_value = [param_value]
     elif type(param_name) != list or type(param_value) != list:
-        WARN("param_setlist take parameters as a list or str. No other types allowed.")
+        warn("param_setlist take parameters as a list or str. No other types allowed.")
         return False
     if file_name == None:
         file_name = [""]*len(param_name)
@@ -315,7 +315,7 @@ def param_set(param_name, param_value, file_name=None):
         file_name[k] = addressof(file_name[k])
 
         if file_name[k] is None:
-            WARN("No files can be read!")
+            warn("No files can be read!")
             return False
         modified = file_read(file_name[k])
         modified[param_name[k]] = param_value[k]
@@ -336,10 +336,10 @@ def param_del(param_name, file_name=None):
     if type(param_name) == str:
         param_name = [param_name]
     elif type(param_name) != list:
-            WARN("param_dellist take param_name as a list. No other types allowed.")
+            warn("param_dellist take param_name as a list. No other types allowed.")
             return False
     if file_name is None:
-        WARN("No files can be deleted!")
+        warn("No files can be deleted!")
         return False
     elif type(file_name) == str:
         file_name = [file_name]*len(param_name)
@@ -352,7 +352,7 @@ def param_del(param_name, file_name=None):
             del modified[param_name[k]]
             json.dump(modified, open(storage_folder_path+file_name[k], "w"), indent=4)
         else:
-            TRACE("There is no parameter with this name. Skip.")
+            trace("There is no parameter with this name. Skip.")
             return False
     return True  
 
@@ -368,7 +368,7 @@ def param_reset(file_name:str=None, reset:dict={}):
     """
     file_name = addressof(file_name)
     if file_name is None:
-        WARN("No files can be read!")
+        warn("No files can be read!")
         return False
     
     json.dump(reset, open(storage_folder_path+file_name, "w"), indent=4)

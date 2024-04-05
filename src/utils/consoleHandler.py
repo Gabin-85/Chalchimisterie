@@ -17,21 +17,21 @@ class log_level:
 
 
 # Logs functions
-def FATAL(msg):
+def fatal(msg):
     if log_active["fatal"] == True:
         print(log_level.FATAL + str(msg))
-def ERROR(msg):
+def error(msg):
     if log_active["error"] == True:
         print(log_level.ERROR + str(msg))
-def WARN(msg):
+def warn(msg):
     if log_active["warn"] == True:
         print(log_level.WARN + str(msg))
-def INFO(msg):
+def info(msg):
     if log_active["info"] == True:
         print(log_level.INFO + str(msg))
-def DEBUG(msg):
+def debug(msg):
     if log_active["debug"] == True:
         print(log_level.DEBUG + str(msg))
-def TRACE(msg):
+def trace(msg):
     if log_active["trace"] == True:
         print(log_level.TRACE + str(msg))

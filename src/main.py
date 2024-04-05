@@ -10,16 +10,16 @@ clock = pygame.time.Clock()
 running = True
 
 # This is the loader test (the shortcuts part and half the functions)
-if file_create("test.json", None, {"test": "test"}, "test2") == True: DEBUG("Created test passed")
-if file_rename("test2", "test3", "test") == True: DEBUG("Renamed test passed")
-if param_set(["one", "two"], ["tree", "four"], "test") == True: DEBUG("Setlist test passed")
+if file_create("test.json", None, {"test": "test"}, "test2") == True: debug("Created test passed")
+if file_rename("test2", "test3", "test") == True: debug("Renamed test passed")
+if param_set(["one", "two"], ["tree", "four"], "test") == True: debug("Setlist test passed")
 one, two = param_getlist(["one", "two"])
-if one == "tree" and two == "four": DEBUG("Getlist test passed")
-if param_del(["one", "two"], "test") == True: DEBUG("Dellist test passed")
-if param_reset("test", {"pass test": "test"}) == True: DEBUG("Reset   test passed")
-if file_delete("test") == True: DEBUG("Deleted test passed")
-if file_create("test", ".txt", "test") == True: DEBUG("Created test passed")
-if file_delete("test") == True: DEBUG("Deleted test passed")
+if one == "tree" and two == "four": debug("Getlist test passed")
+if param_del(["one", "two"], "test") == True: debug("Dellist test passed")
+if param_reset("test", {"pass test": "test"}) == True: debug("Reset   test passed")
+if file_delete("test") == True: debug("Deleted test passed")
+if file_create("test", ".txt", "test") == True: debug("Created test passed")
+if file_delete("test") == True: debug("Deleted test passed")
 # End of loader test
 
 while running:
