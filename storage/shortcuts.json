@@ -1,6 +1,4 @@
 {
     "default": "options.json",
-    "shortcuts": "shortcuts.json",
-    "tiles": "tiles.json",
-    "save": "save.json"
+    "shortcuts": "shortcuts.json"
 }
