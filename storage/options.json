@@ -3,7 +3,9 @@
         1280,
         720
     ],
+    "window_name": "Me-llamo-dio",
     "fps": 60,
+    "zoom": 1,
     "log_active": {
         "fatal": true,
         "error": true,
