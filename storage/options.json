@@ -1,5 +1,8 @@
 {
-    "screen_size": [1280, 720],
+    "screen_size": [
+        1280,
+        720
+    ],
     "fps": 60,
     "log_active": {
         "fatal": true,

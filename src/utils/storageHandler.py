@@ -95,7 +95,7 @@ def addressof(file_name:str):
         The adress of the file (str). None if the file doesn't exist.
     """
     global shortcuts
-    if file_name is None:
+    if file_name is None or file_name == "":
         file_name = shortcuts["default"]
     elif file_name.count(".json") == 0:
         if file_name in shortcuts.keys():
@@ -301,7 +301,7 @@ def param_set(param_name, param_value, file_name=None):
     Returns:
         True if all the parameters have been set. False otherwise.
     """
-    if type(param_name) == str and type(param_value) == str:
+    if type(param_name) == str:
         param_name = [param_name]
         param_value = [param_value]
     elif type(param_name) != list or type(param_value) != list:
@@ -373,6 +373,36 @@ def param_reset(file_name:str=None, reset:dict={}):
     
     json.dump(reset, open(storage_folder_path+file_name, "w"), indent=4)
     return True
+
+
+###################
+# TILES FUNCTIONS #
+###################
+def tiles_save(texture_path:str, file_name:str, name:str, tile_size_pixel:int, selection_x:int, selection_y:int, selection_size_x:int, selection_size_y:int):
+    """
+    Save tiles in a json file
+
+    Args:
+        texture_path (str): file path
+        file_name (str): name of the file
+        name (str): name of the tiles
+        tile_size_pixel (int): size of the tile in pixel
+        x (int): x position of the selection
+        y (int): y position of the selection
+        size_x (int): x size of the selection
+        size_y (int): y size of the selection
+
+    Returns:
+        True if the operation has been done. False otherwise.
+    """
+    tiles = {"texture": texture_path,"size": 32}
+    count = 0
+    for col in range(selection_y, selection_y+selection_size_y):
+        for row in range(selection_x, selection_x+selection_size_x):
+            tiles[count] = [row, col]
+            count += 1
+    param_set(name, tiles, file_name)
+    
 
 # Initialization of live shortcuts
 shortcuts = file_read("shortcuts.json")

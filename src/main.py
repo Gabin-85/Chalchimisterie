@@ -1,7 +1,9 @@
 # Importation
 import pygame
+from random import randint
 from utils.storageHandler import *
 from utils.consoleHandler import *
+from tile import *
 
 # Pygame setup
 pygame.init()
@@ -9,18 +11,15 @@ screen = pygame.display.set_mode(param_get("screen_size"))
 clock = pygame.time.Clock()
 running = True
 
-# This is the loader test (the shortcuts part and half the functions)
-if file_create("test.json", None, {"test": "test"}, "test2") == True: debug("Created test passed")
-if file_rename("test2", "test3", "test") == True: debug("Renamed test passed")
-if param_set(["one", "two"], ["tree", "four"], "test") == True: debug("Setlist test passed")
-one, two = param_getlist(["one", "two"])
-if one == "tree" and two == "four": debug("Getlist test passed")
-if param_del(["one", "two"], "test") == True: debug("Dellist test passed")
-if param_reset("test", {"pass test": "test"}) == True: debug("Reset   test passed")
-if file_delete("test") == True: debug("Deleted test passed")
-if file_create("test", ".txt", "test") == True: debug("Created test passed")
-if file_delete("test") == True: debug("Deleted test passed")
-# End of loader test
+scene = param_get("scene_name")
+if scene == "scene2" or scene == None:
+    tiles = param_get("scene1")
+    image = tile_map_draw(param_get("empty_grass"), tiles[0], tiles[1], tiles[2])
+    scene = "scene1"
+elif scene == "scene1":
+    tiles = param_get("scene2")
+    image = tile_map_draw(param_get("empty_grass"), tiles[0], tiles[1], tiles[2])
+    scene = "scene2"
 
 while running:
     # Poll for events
@@ -28,19 +27,31 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.KEYDOWN:
+            if scene == "scene2" or scene == None:
+                tiles = param_get("scene1")
+                image = tile_map_draw(param_get("empty_grass"), tiles[0], tiles[1], tiles[2])
+                scene = "scene1"
+            elif scene == "scene1":
+                tiles = param_get("scene2")
+                image = tile_map_draw(param_get("empty_grass"), tiles[0], tiles[1], tiles[2])
+                scene = "scene2"
 
     # Fill the screen with a color to wipe away anything from last frame
-    screen.fill("purple")
+    screen.fill("grey")
 
     # RENDER YOUR GAME HERE
+    for i in range(1200):
+        screen.blit(image[0][i], (image[1][i], image[2][i]))
 
     # Flip() the display to put your work on screen
     pygame.display.flip()
 
     fps = param_get("fps")
-    clock.tick(fps)  # FPS limit (here to 60 fps)
+    clock.tick(fps)  # FPS limit
 
 # Save and quit
 param_reset("shortcuts", shortcuts)
+param_set("scene_name", scene, "save")
 
 pygame.quit()
