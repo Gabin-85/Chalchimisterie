@@ -23,10 +23,10 @@ class storageHandler():
     def __init__(self):
         # Setting up the storage handler
         global storage_folder_path, shortcuts
-        storage_folder_path = "storage/"
+        storage_folder_path = "assets/storage/"
         shortcuts = file_read("shortcuts.json")
 
-    def quit():
+    def quit(self):
         param_reset("shortcuts", shortcuts)
 
 

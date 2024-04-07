@@ -26,7 +26,7 @@ if __name__ == "__main__":
 
         # RENDERING
         # The setup part is here to change the payload of the renderer
-        render.setup()
+        render.update()
         render.run()
 
         # Here is the game logic

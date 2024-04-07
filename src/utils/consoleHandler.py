@@ -7,10 +7,10 @@ class consoleHandler:
 
     def __init__(self):
         global log_active
-        log_active = json.load(open("storage/options.json"))["log_active"]
+        log_active = json.load(open("assets/storage/options.json"))["log_active"]
         colorama.init(autoreset=True)
 
-    def quit():
+    def quit(self):
         colorama.deinit()
         
 class log_level:

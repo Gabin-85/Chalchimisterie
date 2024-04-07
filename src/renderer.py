@@ -2,9 +2,12 @@
 import pygame
 import pytmx
 import pyscroll
+
 # Handlers section
 from utils.storageHandler import *
 from utils.consoleHandler import *
+
+from map import MapManager
 
 class Render:
 
@@ -18,20 +21,19 @@ class Render:
         pygame.display.set_caption(param_get("window_name"))
         self.clock = pygame.time.Clock()
 
-    def setup(self):
-         # Load map (tmx file)
-        tmx_data = pytmx.util_pygame.load_pygame("textures/map.tmx")
-        map_data = pyscroll.data.TiledMapData(tmx_data)
-        map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
-        map_layer.zoom = self.zoom
+        self.map_manager = MapManager(self.screen)
 
-        # Draw calc group
-        self.group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=1)
+    def update(self):
+        # Black magic here (if you don't understand, Don't touch !)
+        self.map_manager.get_group()._map_layer.zoom = self.zoom
+        #self.map_manager.get_group().update()
+
 
     def run(self):
 
             # Draw everything
-            self.group.draw(self.screen)
+            self.map_manager.get_group().draw(self.screen)
+            self.map_manager.get_group().center(self.screen.get_rect().center)
             pygame.display.flip()
 
             # FPS limit (update every frame)
