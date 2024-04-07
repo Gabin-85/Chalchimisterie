@@ -2,10 +2,17 @@
 # It has 6 levels (FATAL, ERROR, WARN, INFO, DEBUG and TRACE) of log/print handling.
 import colorama
 import json
-log_active = json.load(open("storage/options.json"))["log_active"]
-logs = ""
 
-colorama.init(autoreset=True)
+class consoleHandler:
+
+    def __init__(self):
+        global log_active
+        log_active = json.load(open("storage/options.json"))["log_active"]
+        colorama.init(autoreset=True)
+
+    def quit():
+        colorama.deinit()
+        
 class log_level:
     # Colors and heading messages
     FATAL = colorama.Fore.WHITE + colorama.Back.RED + "[FATAL]: "

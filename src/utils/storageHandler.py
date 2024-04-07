@@ -18,8 +18,16 @@ import json
 import os
 from utils.consoleHandler import *
 
-storage_folder_path = "storage/"
-shortcuts = {}
+class storageHandler():
+
+    def __init__(self):
+        # Setting up the storage handler
+        global storage_folder_path, shortcuts
+        storage_folder_path = "storage/"
+        shortcuts = file_read("shortcuts.json")
+
+    def quit():
+        param_reset("shortcuts", shortcuts)
 
 
 def shortset(new_file_name:str=None, old_file_name:str=None, new_file_short:str=None, old_file_short:str=None):
@@ -372,6 +380,3 @@ def param_reset(file_name:str=None, reset:dict={}):
     
     json.dump(reset, open(storage_folder_path+file_name, "w"), indent=4)
     return True
-
-# Initialization of live shortcuts
-shortcuts = file_read("shortcuts.json")

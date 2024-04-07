@@ -5,7 +5,7 @@
     ],
     "window_name": "Me-llamo-dio",
     "fps": 60,
-    "zoom": 1,
+    "zoom": 2,
     "log_active": {
         "fatal": true,
         "error": true,
