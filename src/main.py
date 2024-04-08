@@ -1,19 +1,17 @@
-# Importation
+# This main file launch all files, dependencies and loop the bases functions.
 import pygame
-
-# Class importation
 from utils.storageHandler import storageHandler
 from utils.consoleHandler import consoleHandler
-from renderer import Render
 from game import Game
+from game_logic import Game_logic
 
 if __name__ == "__main__":
     # Initialisation
     pygame.init()
     storage = storageHandler()
     console = consoleHandler()
-    render = Render()
     game = Game()
+    game_logic = Game_logic()
 
     # This is the code run
     running = True
@@ -24,17 +22,16 @@ if __name__ == "__main__":
                 if event.type == pygame.QUIT:
                     running = False
 
-        # Here is the game logic
-        game.run()
+        # Game logic part
+        game_logic.run()
 
-        # RENDERING
-        # The setup part is here to change the payload of the renderer
-        render.run()
+        # Game showing stuff
+        game.run()
 
 
     # Quit (The inverse order of initialization)
+    game_logic.quit()
     game.quit()
-    render.quit()
     console.quit()
     storage.quit()
     pygame.quit()
