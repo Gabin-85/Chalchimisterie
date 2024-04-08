@@ -18,8 +18,16 @@ import json
 import os
 from utils.consoleHandler import *
 
-storage_folder_path = "storage/"
-shortcuts = {}
+class storageHandler():
+
+    def __init__(self):
+        # Setting up the storage handler
+        global storage_folder_path, shortcuts
+        storage_folder_path = "assets/storage/"
+        shortcuts = file_read("shortcuts.json")
+
+    def quit(self):
+        param_reset("shortcuts", shortcuts)
 
 
 def shortset(new_file_name:str=None, old_file_name:str=None, new_file_short:str=None, old_file_short:str=None):
@@ -108,7 +116,6 @@ def addressof(file_name:str):
     else:
         warn("Unknown file "+file_name+". Make sure the file exists.")
         return None
-
 
 
 ##################
@@ -373,36 +380,3 @@ def param_reset(file_name:str=None, reset:dict={}):
     
     json.dump(reset, open(storage_folder_path+file_name, "w"), indent=4)
     return True
-
-
-###################
-# TILES FUNCTIONS #
-###################
-def tiles_save(texture_path:str, file_name:str, name:str, tile_size_pixel:int, selection_x:int, selection_y:int, selection_size_x:int, selection_size_y:int):
-    """
-    Save tiles in a json file
-
-    Args:
-        texture_path (str): file path
-        file_name (str): name of the file
-        name (str): name of the tiles
-        tile_size_pixel (int): size of the tile in pixel
-        x (int): x position of the selection
-        y (int): y position of the selection
-        size_x (int): x size of the selection
-        size_y (int): y size of the selection
-
-    Returns:
-        True if the operation has been done. False otherwise.
-    """
-    tiles = {"texture": texture_path,"size": 32}
-    count = 0
-    for col in range(selection_y, selection_y+selection_size_y):
-        for row in range(selection_x, selection_x+selection_size_x):
-            tiles[count] = [row, col]
-            count += 1
-    param_set(name, tiles, file_name)
-    
-
-# Initialization of live shortcuts
-shortcuts = file_read("shortcuts.json")
