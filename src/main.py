@@ -24,13 +24,12 @@ if __name__ == "__main__":
                 if event.type == pygame.QUIT:
                     running = False
 
-        # RENDERING
-        # The setup part is here to change the payload of the renderer
-        render.update()
-        render.run()
-
         # Here is the game logic
         game.run()
+
+        # RENDERING
+        # The setup part is here to change the payload of the renderer
+        render.run()
 
 
     # Quit (The inverse order of initialization)
