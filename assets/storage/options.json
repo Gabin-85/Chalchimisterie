@@ -1,10 +1,10 @@
 {
     "screen_size": [
-        720,
-        720
+        400,
+        400
     ],
     "window_name": "Me-llamo-dio",
-    "fps": 60,
+    "fps": 360,
     "map_zoom": 2,
     "log_active": {
         "fatal": true,

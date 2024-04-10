@@ -26,6 +26,7 @@ class Game:
 
         self.group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=4)
         self.group.add(self.player)
+        self.player.update()
 
     def run(self):
         """

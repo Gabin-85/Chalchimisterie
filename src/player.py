@@ -1,4 +1,5 @@
 import pygame
+from utils.consoleHandler import *
 
 class Player(pygame.sprite.Sprite):
 
@@ -9,6 +10,7 @@ class Player(pygame.sprite.Sprite):
         self.image = self.get_image(6, 14)
         self.image.set_colorkey((0, 0, 0))
         self.rect = self.image.get_rect()
+        self.last_position = [0, 0]
 
         # After this you can add varaibles for the player like inventory and others stuffs :
 
@@ -38,5 +40,7 @@ class Player(pygame.sprite.Sprite):
         For updating your player stats, we have to update the renderer player part.
         All sets bellow are necessary.
         """
-
-        self.rect.topleft = self.position
+        if self.last_position != self.position:
+            trace("player position updated to: " + str(self.position))
+            self.last_position = self.position
+            self.rect.topleft = self.position
