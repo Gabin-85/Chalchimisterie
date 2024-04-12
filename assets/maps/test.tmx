@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="3">
- <tileset firstgid="1" source="TX Tileset Grass.tsx"/>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="left-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="31">
+ <tileset firstgid="1" source="../../../Me-llamo-dio/assets/maps/TX Tileset Grass.tsx"/>
  <layer id="1" name="ground" width="50" height="50">
   <data encoding="csv">
 103,84,97,81,83,37,33,117,1,2,3,4,5,6,7,8,6,7,8,4,50,99,50,53,50,84,84,70,97,23,55,40,71,97,88,52,113,24,17,100,83,35,101,113,103,33,69,37,23,66,
@@ -109,9 +109,20 @@
 129,130,145,145,145,145,145,145,145,145,145,145,145,145,145,145,145,145,145,145,145,145,145,145,145,145,145,145,145,145,145,145,145,129,130,145,145,145,145,145,145,145,145,146,145,145,145,146,129,130
 </data>
  </layer>
- <objectgroup id="3" name="objects">
-  <object id="1" name="player" x="396" y="386">
+ <objectgroup id="4" name="objects">
+  <object id="16" name="player" x="409.333" y="368">
    <point/>
   </object>
+  <object id="17" name="collision" type="collision" x="0" y="0" width="800" height="32"/>
+  <object id="18" name="collision" type="collision" x="768" y="32" width="32" height="768"/>
+  <object id="19" name="collision" type="collision" x="0" y="32" width="32" height="768"/>
+  <object id="20" name="collision" type="collision" x="32" y="768" width="736" height="32"/>
+  <object id="22" name="collision" type="collision" x="32" y="640" width="320" height="32"/>
+  <object id="23" name="collision" type="collision" x="416" y="496" width="352" height="32"/>
+  <object id="24" name="collision" type="collision" x="528" y="560" width="32" height="208"/>
+  <object id="26" name="collision" type="collision" x="528" y="32" width="32" height="320"/>
+  <object id="27" name="collision" type="collision" x="272" y="32" width="32" height="144"/>
+  <object id="28" name="collision" type="collision" x="688" y="64" width="80" height="32"/>
+  <object id="29" name="collision" type="collision" x="32" y="240" width="384" height="32"/>
  </objectgroup>
 </map>
