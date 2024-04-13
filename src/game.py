@@ -16,7 +16,7 @@ class Game:
         self.screen = pygame.display.set_mode(self.screen_size)
         pygame.display.set_caption(self.window_name)
 
-        tmx_data = pytmx.util_pygame.load_pygame("assets/maps/test2.tmx")
+        tmx_data = pytmx.util_pygame.load_pygame("assets/maps/test.tmx")
         map_data = pyscroll.TiledMapData(tmx_data)
         map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
         map_layer.zoom = get_map_zoom(self.zoom, self.screen_size[0], self.screen_size[1])
