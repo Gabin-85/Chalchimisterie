@@ -1,6 +1,8 @@
 import pygame
 from utils.consoleHandler import *
+from time import wait
 
+velocity = pygame.Vector2(0, 0)
 class Player(pygame.sprite.Sprite):
 
     def __init__(self):
@@ -22,21 +24,28 @@ class Player(pygame.sprite.Sprite):
         return image
 
     def player_move(self):
-
+        global velocity;
         pressed = pygame.key.get_pressed()
 
-        speed = 0.5
+        if pressed[pygame.K_LSHIFT] or pressed[pygame.K_RSHIFT]:
+            speed = 0.8
+        else:
+            speed = 0.5
 
         if pressed[pygame.K_UP]:
-            self.position = [self.position[0], self.position[1]-speed]
+            velocity = [velocity[0], velocity[1]-speed]
         elif pressed[pygame.K_DOWN]:
-            self.position = [self.position[0], self.position[1]+speed]
+            velocity = [velocity[0], velocity[1]+speed]
         if pressed[pygame.K_LEFT]:
-            self.position = [self.position[0]-speed, self.position[1]]
+            velocity = [velocity[0]-speed, velocity[1]]
         elif pressed[pygame.K_RIGHT]:
-            self.position = [self.position[0]+speed, self.position[1]]
-
-        self.feet = pygame.Rect(self.position[0], 32+self.position[1], 22, 14)
+            velocity = [velocity[0]+speed, velocity[1]]
+        # roulade
+        if pressed[pygame.K_SPACE]:
+            self.position = [velocity[1]*3, velocity[1]*3]
+            wait(0.3)
+            self.position = [0, 0]
+        self.feet = pygame.Rect(self.position[0], 28+self.position[1], 22, 18)
 
     def update(self):
         """
