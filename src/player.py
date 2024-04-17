@@ -7,7 +7,6 @@ DIAGONALY = math.sqrt(2)/2
 class Player(pygame.sprite.Sprite):
 
     def __init__(self):
-        
         super().__init__()
         self.sprite_sheet = pygame.image.load("assets/sprites/player/player.png")
         self.image = self.get_image(6, 14)
@@ -15,11 +14,11 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.last_position = [None, None]
         self.feet = pygame.Rect(0, 0, 0, 0)
-        self.glide = 0.995
+        self.glide = 0.5
         self.allow_move = True
         self.velocity = pygame.Vector2(0, 0)
         self.acceleration = pygame.Vector2(0, 0)
-
+        
         # After this you can add varaibles for the player like inventory and others stuffs :
 
     def get_image(self, x, y):
