@@ -7,3 +7,4 @@ def get_map_zoom(zoom, screen_width, screen_height):
         else:
             map_zoom = screen_width/800*zoom
         return map_zoom
+

@@ -2,3 +2,8 @@ Faire un système de scène qui permet:
     - la sauvegarde des données en fin de partie
     - la création de chemin entre les maps
     - la lecture des modifications après chargements
+
+Choses bien faites : 
+    - storageHandler.py
+    - main.py
+    - game_logic.py
