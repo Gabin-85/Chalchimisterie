@@ -19,12 +19,12 @@ def test_time_classes():
     if chrono.removed == 0:
         debug("Passed")
     else:
-        debug("Failed")
+        error("Failed")
     chrono.stop()
     if chrono.elapsed_time() == 0:
         debug("Passed")
     else:
-        debug("Failed")
+        error("Failed")
 
     # Test the Timer class
     timer = Timer(2)
@@ -32,14 +32,14 @@ def test_time_classes():
     if timer.elapsed_time() == 0:
         debug("Passed")
     else:
-        debug("Failed")
+        error("Failed")
     timer.start()
     while timer.check() == False:
         debug("Remaining time: " + str(timer.remaining_time()))
     if timer.check() == True and timer.elapsed_time() == 2:
         debug("Passed")
     else:
-        debug("Failed")
+        error("Failed")
 
     debug("End Test")
 
