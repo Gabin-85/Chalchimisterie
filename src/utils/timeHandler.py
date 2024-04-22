@@ -1,95 +1,84 @@
-# Here is the time handler
+# Time handler
 # It's a tool box that gives functions to manage time, chronometer, timer and clock.
 from datetime import datetime
+from typing import Any
 
-class Clock_functions :
+class Date:
 
     def __init__(self):
-        # Setting up the clock
-        self.clock = datetime.now()
+        # Setting up the date
+        self.update()
 
     def update(self):
         """
-        Update the clock.
+        Update the date.
         """
-        self.clock = datetime.now()
+        self.updated_date = datetime.now()
     
     def get_date(self):
         """
         Get the current date (datetime format).
         """
         self.update()
-        return self.clock
+        return self.updated_date
     
-    def get_year(self):
+    def get_unix(self):
         """
-        Get the current years.
+        Get the current unix timestamp.        
         """
         self.update()
-        return self.clock.year
-    
-    def get_month(self):
-        """
-        Get the current month.
-        """
-        self.update()
-        return self.clock.month
-    
-    def get_day(self):
-        """
-        Get the current day.
-        """
-        self.update()
-        return self.clock.day
+        return int(self.updated_date.timestamp()*1000000)
 
-    def get_hour(self):
-        """
-        Get the current hour.
-        """
-        self.update()
-        return self.clock.hour
+class Clock:
 
-    def get_min(self):
-        """
-        Get the current minute.        
-        """
+    def __init__(self, start_time:int = None, start_time_type:str = "ms"):
+        # Setting up the clock
         self.update()
-        return self.clock.minute
-    
+        if start_time == None:
+            self.start_time = 0
+        else:
+            match start_time_type:
+                case "s":
+                    self.start_time = int(self.updated_date.timestamp() * 1000000 - start_time * 1000000)
+                case "ms":
+                    self.start_time = int(self.updated_date.timestamp() * 1000000 - start_time * 1000)
+                case "unix":
+                    self.start_time = int(self.updated_date.timestamp() * 1000000 - start_time)
+
+    def update(self):
+        """
+        Update the clock.
+        """
+        self.updated_date = datetime.now()
+
     def get_sec(self):
         """
-        Get the current second.        
+        Get the clock in seconds.        
         """
         self.update()
-        return self.clock.minute
+        return int(self.updated_date.timestamp() - (self.start_time//1000000))
 
-    def get_time_in_sec(self):
+    def get_msec(self):
         """
-        Get the current time in seconds.        
-        """
-        self.update()
-        return int(self.clock.timestamp())
-
-    def get_time_in_ms(self):
-        """
-        Get the current time in milliseconds.        
+        Get the clock in milliseconds.        
         """
         self.update()
-        return int(self.clock.timestamp() * 1000)
+        return int(self.updated_date.timestamp() * 1000  - (self.start_time//1000))
 
-    def get_time_in_unix(self):
+    def get_misc(self):
         """
-        Get the current time in microseconds (in unix time).       
+        Get the clock in microseconds.       
         """
         self.update()
-        return int(self.clock.timestamp() * 1000000)
+        return int(self.updated_date.timestamp() * 1000000 - self.start_time)
 
-# Create the first clock
-clock = Clock_functions()
+# Create the main date and clock
+date = Date()
+clock = Clock(0)
 
-class Chrono :
+class Chrono:
 
-    def __init__(self, unit = "ms"):
+    def __init__(self, unit:str = "ms"):
         # Setting up the chronometer
         self.reset(unit)
         self.running = True
@@ -101,28 +90,31 @@ class Chrono :
         if self.running:
             match self.unit:
                 case "s":
-                    self.chrono_now = clock.get_time_in_sec()
+                    self.updated_time = clock.get_sec()
                 case "ms":
-                    self.chrono_now = clock.get_time_in_ms()
+                    self.updated_time = clock.get_msec()
                 case "unix":
-                    self.chrono_now = clock.get_time_in_unix()
+                    self.updated_time = clock.get_misc()
                 case _:
                     return False
 
 
-    def get_time(self):
+    def elapsed_time(self):
         """
-        Get the current choronometer time.
+        Get the current chronometer time.
         """
         self.update()
-        return self.chrono_now - self.chrono_start - self.removed
+        return self.updated_time - self.start_time - self.removed
     
     def start(self):
         """
         Resume the chronometer.
         """
         self.running = True
-        self.removed -= self.chrono_now - self.get_time()
+        old_time = self.updated_time
+        self.update()
+        self.removed += self.updated_time - old_time
+        del old_time
 
     def stop(self):
         """
@@ -130,21 +122,21 @@ class Chrono :
         """
         self.running = False
 
-    def reset(self, unit = "ms"):
+    def reset(self, unit:str = "ms"):
         """
         Set or reset the chronometer unit, time and snapshot.
         """
         self.unit = unit
         match unit:
                 case "s":
-                    self.chrono_start = clock.get_time_in_sec()
+                    self.start_time = clock.get_sec()
                 case "ms":
-                    self.chrono_start = clock.get_time_in_ms()
+                    self.start_time = clock.get_msec()
                 case "unix":
-                    self.chrono_start = clock.get_time_in_unix()
+                    self.start_time = clock.get_misc()
                 case _:
                     return False
-        self.chrono_now = self.chrono_start
+        self.updated_time = self.start_time
         self.removed = 0
         self.snapshot = []
 
@@ -158,7 +150,7 @@ class Chrono :
         """
         Save a chronometer snapshot.
         """
-        self.snapshot.append(self.get_time())
+        self.snapshot.append(self.elapsed_time())
     
     def get_snapshot(self, index:int = -1):
         """
@@ -177,34 +169,34 @@ class Chrono :
         else:
             del self.snapshot[index]
 
-class Timer :
+class Timer:
 
-    def __init__(self, time, unit = "ms"):
+    def __init__(self, time:int, unit:str = "ms"):
         # Setting up the timer
         self.reset(time, unit)
         self.running = True
 
-    def update(self, unit:str):
+    def update(self):
         """
         Update the timer if it is running.
         """
         if self.running:
-            match unit:
+            match self.unit:
                 case "s":
-                    self.timer_now = clock.get_time_in_sec()
+                    self.updated_time = clock.get_sec()
                 case "ms":
-                    self.timer_now = clock.get_time_in_ms()
+                    self.updated_time = clock.get_msec()
                 case "unix":
-                    self.timer_now = clock.get_time_in_unix()
+                    self.updated_time = clock.get_misc()
                 case _:
                     return False
 
-    def remaining_time(self, unit:str = "ms"):
+    def remaining_time(self):
         """
         Get the remaining time of the timer.
         """
-        self.update(unit)
-        return self.remaining - (self.timer_now - self.timer_start + self.removed)
+        self.update()
+        return self.remaining - (self.updated_time - (self.start_time + self.removed))
     
     def check(self):
         """
@@ -212,19 +204,22 @@ class Timer :
         """
         return self.remaining_time() <= 0
     
-    def get_time(self):
+    def elapsed_time(self):
         """
         Get the current timer active time (not as usefull as the remaining time).
         """
-        self.update(self.unit)
-        return self.timer_now - self.timer_start - self.removed
+        self.update()
+        return self.updated_time - self.start_time - self.removed
 
     def start(self):
         """
         Resume the timer.
         """
         self.running = True
-        self.removed -= self.timer_now - self.get_time()
+        old_time = self.updated_time
+        self.update()
+        self.removed += self.updated_time - old_time
+        del old_time
 
     def stop(self):
         """
@@ -232,21 +227,21 @@ class Timer :
         """
         self.running = False
 
-    def reset(self, time, unit = "ms"):
+    def reset(self, time:int, unit:str = "ms"):
         """
         Set or reset the timer unit and time.
         """
         self.unit = unit
         match unit:
                 case "s":
-                    self.timer_start = clock.get_time_in_sec()
+                    self.start_time = clock.get_sec()
                 case "ms":
-                    self.timer_start = clock.get_time_in_ms()
+                    self.start_time = clock.get_msec()
                 case "unix":
-                    self.timer_start = clock.get_time_in_unix()
+                    self.start_time = clock.get_misc()
                 case _:
                     return False
-        self.timer_now = self.timer_start
+        self.updated_time = self.start_time
         self.remaining = time
         self.removed = 0
 
