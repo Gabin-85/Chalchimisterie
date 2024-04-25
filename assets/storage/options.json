@@ -5,7 +5,7 @@
     ],
     "window_name": "Chalchimisterie",
     "fps": 60,
-    "map_zoom": 1.5,
+    "map_zoom": 2,
     "log_active": {
         "fatal": true,
         "error": true,

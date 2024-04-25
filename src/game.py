@@ -2,7 +2,7 @@
 import pygame, pytmx, pyscroll
 from utils.storageHandler import *
 from utils.consoleHandler import *
-from utils.mapHandler import *
+from utils.sceneHandler import *
 
 from player import *
 
@@ -16,18 +16,15 @@ class Game:
         self.screen = pygame.display.set_mode(self.screen_size)
         pygame.display.set_caption(self.window_name)
 
-        tmx_data = pytmx.util_pygame.load_pygame("assets/maps/test.tmx")
-        map_data = pyscroll.TiledMapData(tmx_data)
-        map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
+        # Get all scenes and choose a scene
+        self.scenes = sceneHandler()
+        self.scene_name = "test"
+
+        # Set map layer and player
+        map_layer = pyscroll.orthographic.BufferedRenderer(self.scenes.maps[self.scene_name]["map_data"], self.screen.get_size())
         map_layer.zoom = get_map_zoom(self.zoom, self.screen_size[0], self.screen_size[1])
 
-        self.walls=[]
-
-        for obj in tmx_data.objects:
-            if obj.type == "collision":
-                self.walls.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
-
-        Player.position = tmx_data.get_object_by_name("player").x,tmx_data.get_object_by_name("player").y
+        Player.position = self.scenes.maps[self.scene_name]["tmx_data"].get_object_by_name("player").x,self.scenes.maps[self.scene_name]["tmx_data"].get_object_by_name("player").y
         self.player = Player()
 
         self.group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=4)
@@ -42,7 +39,7 @@ class Game:
         self.player.player_move()
 
         for sprite in self.group.sprites():
-            if sprite.feet.collidelist(self.walls) > -1:
+            if sprite.feet.collidelist(self.scenes.maps[self.scene_name]["walls"]) > -1:
                     sprite.move_back()
 
         self.player.update()
