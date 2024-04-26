@@ -26,7 +26,7 @@ class Game:
 
         # Set map layer and player
         map_layer = pyscroll.orthographic.BufferedRenderer(scene.map_data(), self.screen.get_size())
-        map_layer.zoom = scene.get_map_zoom()
+        map_layer.zoom = scene.get_zoom()
 
         Player.position = scene.player().x, scene.player().y
         self.player = Player()

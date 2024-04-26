@@ -1,7 +1,6 @@
 # Time handler
 # It's a tool box that gives functions to manage time, chronometer, timer and clock.
 from datetime import datetime
-from typing import Any
 
 class Date:
 

@@ -16,7 +16,7 @@
 #  - param_reset: reset/patternate a json file and return True if the operation has been done.
 import json
 import os
-from utils.consoleHandler import console
+from utils.consoleHandler import error, warn, debug, trace
 
 # Fast functions (function that use the storage class to be used elsewere)
 def file_read(file_name:str=None, type=None): return storage.file_read(file_name, type)
@@ -27,14 +27,14 @@ def param_get(param_name:str, file_name:str=None): return storage.parameter_get(
 def param_getlist(param_name, file_name=None):
     """Get  a list of parameters"""
     if type(param_name) != list:
-        console.warn("param_getlist take param_name as a list. No other types allowed.")
+        warn("param_getlist take param_name as a list. No other types allowed.")
         yield None
     if type(file_name) == str:
         file_name = [file_name]*len(param_name)
     elif file_name == None:
         file_name = [None]*len(param_name)
     elif type(file_name) != list:
-        console.warn("param_getlist take file_name as a list or str. No other types allowed.")
+        warn("param_getlist take file_name as a list or str. No other types allowed.")
         yield None
     for k in range(len(param_name)):
         yield storage.parameter_get(param_name[k], file_name[k])
@@ -48,9 +48,9 @@ class storageHandler():
     def __init__(self):
         # Setting up the storage handler
         if self.set_storage_folder_path("assets/storage/") == False:
-            console.warn("Storage folder path not found!")
+            warn("Storage folder path not found!")
         if self.set_shortcuts_file_path("shortcuts.json") == False:
-            console.warn("Shortcuts file not found!")
+            warn("Shortcuts file not found!")
 
     def quit(self):
         """Save the shortcuts and quit"""
@@ -130,14 +130,14 @@ class storageHandler():
             if not new_file_short in self.shortcuts.keys():
                 self.shortcuts[new_file_short] = new_file_name
             else:
-                console.warn("Shortcut already exists. Can't apply new shortcut.")
+                warn("Shortcut already exists. Can't apply new shortcut.")
                 return False
         # Set a new shortcut.
         elif new_file_name != None and old_file_name == None:
             if not new_file_short in self.shortcuts.keys():
                 self.shortcuts[new_file_short] = new_file_name
             else:
-                console.warn("Shortcut already exists. Can't apply new shortcut.")
+                warn("Shortcut already exists. Can't apply new shortcut.")
                 return False
         # Delete a shortcut.
         elif new_file_name == None and old_file_name != None:
@@ -148,7 +148,7 @@ class storageHandler():
                 del self.shortcuts[key]
         # No input.
         else :
-            console.warn("Wrong input command.")
+            warn("Wrong input command.")
             return False
         return True
 
@@ -168,12 +168,12 @@ class storageHandler():
             if file_name in self.shortcuts.keys():
                 file_name = self.shortcuts[file_name]
             else:
-                console.warn("Unknown file name.")
+                warn("Unknown file name.")
                 return None
         if os.path.exists(self.storage_folder_path + file_name):
             return file_name
         else:
-            console.warn("Unknown file "+file_name+". Make sure the file exists.")
+            warn("Unknown file "+file_name+". Make sure the file exists.")
             return None
 
 
@@ -192,7 +192,7 @@ class storageHandler():
         """
         file_name = self.get_address_of(file_name)
         if file_name is None:
-            console.error("No files can be read!")
+            error("No files can be read!")
             return None
         if type is None:
             file_name, temp = file_name.split(".", 1)
@@ -203,10 +203,10 @@ class storageHandler():
                     return json.load(file)
                 elif type == ".txt":
                     return file.read()
-                console.warn("Unknown file type.")
+                warn("Unknown file type.")
                 return None
         else:
-            console.warn("No files were found")
+            warn("No files were found")
             return None
             
     def file_create(self, file_name:str, type=None, content=None, short:str=None):
@@ -240,7 +240,7 @@ class storageHandler():
                     file.write(content)
                 self.set_shortcut(file_name+type, None, short)
                 return True
-            console.warn("Unknown file type.")
+            warn("Unknown file type.")
             return False
             
     def file_delete(self, file_name:str, type:str=None):
@@ -256,17 +256,17 @@ class storageHandler():
         if type is None:
             file_name = self.get_address_of(file_name)
             if file_name is None:
-                console.warn("No file has been deleted.")
+                warn("No file has been deleted.")
                 return False
             file_name, temp = file_name.split(".", 1)
             type = "."+temp
         if not os.path.exists(self.storage_folder_path+file_name+type):
-            console.warn("Unknown file.")
+            warn("Unknown file.")
             return False
         os.remove(self.storage_folder_path+file_name+type)
         self.set_shortcut(None, file_name+type)
         if os.path.exists(self.storage_folder_path+file_name+type):
-            console.error("Unable to delete.")
+            error("Unable to delete.")
             return False
         return True
         
@@ -290,10 +290,10 @@ class storageHandler():
             short = new_name
         
         if old_name == None:
-            console.warn("File can't be rename because unable to open")
+            warn("File can't be rename because unable to open")
             return False
         if os.path.exists(self.storage_folder_path+new_name+type) == True:
-            console.debug("Rename has replaced the same named file.")
+            debug("Rename has replaced the same named file.")
             self.file_delete(new_name, type)
         os.rename(self.storage_folder_path+old_name+type, self.storage_folder_path+new_name+type)
         self.set_shortcut(new_name+type, old_name+type, short)
@@ -324,15 +324,15 @@ class storageHandler():
         # Set the file address
         file_name = self.get_address_of(file_name)
         if file_name is None:
-            console.warn("No files can be read!")
+            warn("No files can be read!")
             return None
         
         if type(param_name) != str:
-            console.warn("param_get take param_name as a str. No other types allowed.")
+            warn("param_get take param_name as a str. No other types allowed.")
             return False
         if param_name in self.file_read(file_name):
             return self.file_read(file_name)[param_name]
-        console.warn("Unknown parameter.")
+        warn("Unknown parameter.")
         return None
         
     def parameter_set(self, param_name, param_value, file_name=None):
@@ -351,7 +351,7 @@ class storageHandler():
             param_name = [param_name]
             param_value = [param_value]
         elif type(param_name) != list or type(param_value) != list:
-            console.warn("param_setlist take parameters as a list or str. No other types allowed.")
+            warn("param_setlist take parameters as a list or str. No other types allowed.")
             return False
         if file_name == None:
             file_name = [""]*len(param_name)
@@ -361,7 +361,7 @@ class storageHandler():
             file_name[k] = self.get_address_of(file_name[k])
 
             if file_name[k] is None:
-                console.warn("No files can be read!")
+                warn("No files can be read!")
                 return False
             modified = self.file_read(file_name[k])
             modified[param_name[k]] = param_value[k]
@@ -382,10 +382,10 @@ class storageHandler():
         if type(param_name) == str:
             param_name = [param_name]
         elif type(param_name) != list:
-                console.warn("param_dellist take param_name as a list. No other types allowed.")
+                warn("param_dellist take param_name as a list. No other types allowed.")
                 return False
         if file_name is None:
-            console.warn("No files can be deleted!")
+            warn("No files can be deleted!")
             return False
         elif type(file_name) == str:
             file_name = [file_name]*len(param_name)
@@ -398,7 +398,7 @@ class storageHandler():
                 del modified[param_name[k]]
                 json.dump(modified, open(self.storage_folder_path+file_name[k], "w"), indent=4)
             else:
-                console.trace("There is no parameter with this name. Skip.")
+                trace("There is no parameter with this name. Skip.")
                 return False
         return True  
 
@@ -414,7 +414,7 @@ class storageHandler():
         """
         file_name = self.get_address_of(file_name)
         if file_name is None:
-            console.warn("No files can be read!")
+            warn("No files can be read!")
             return False
         
         json.dump(reset, open(self.storage_folder_path+file_name, "w"), indent=4)
