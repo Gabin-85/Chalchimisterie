@@ -19,19 +19,22 @@ class Game:
         self.screen = pygame.display.set_mode(param_get("screen_size"))
         pygame.display.set_caption(self.window_name)
 
+        self.update_render()
+
+    def update_render(self):
         # Get all scenes and choose a scene
         # TODO: Add more scenes and make it save configurable
+        # Actuellement ceci est un easter-egg, a chaque frame le jeu change de map. C'est fluide hein ?
         scene.change_scene("scene1")
-        scene.map_name = "test"
-
-        # Set map layer and player
-        map_layer = pyscroll.orthographic.BufferedRenderer(scene.map_data(), self.screen.get_size())
-        map_layer.zoom = scene.get_zoom()
+        if scene.selected_map == "test":
+            scene.selected_map = "test1"
+        else:
+            scene.selected_map = "test"
 
         Player.position = scene.player().x, scene.player().y
         self.player = Player()
 
-        self.group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=4)
+        self.group = pyscroll.PyscrollGroup(map_layer=scene.map_layer(), default_layer=4)
         self.group.add(self.player)
 
     def run(self):

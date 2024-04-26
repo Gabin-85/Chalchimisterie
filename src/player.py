@@ -1,5 +1,5 @@
 import pygame
-from utils.consoleHandler import *
+from utils.sceneHandler import scene
 import math
 
 DIAGONALY = math.sqrt(2)/2

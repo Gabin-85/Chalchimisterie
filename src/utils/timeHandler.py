@@ -1,6 +1,7 @@
 # Time handler
 # It's a tool box that gives functions to manage time, chronometer, timer and clock.
 from datetime import datetime
+from time import sleep
 
 class Date:
 
@@ -249,3 +250,15 @@ class Timer:
         Check if the timer is running.
         """
         return self.running
+    
+def delay(time:int, unit:str = "ms"):
+    """
+    Delay the program for a given time.
+    """
+    match unit:
+        case "s":
+            sleep(time)
+        case "ms":
+            sleep(time/1000)
+        case "unix":
+            sleep(time/1000000)
