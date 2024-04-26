@@ -72,7 +72,7 @@ class Clock:
         self.update()
         return int(self.updated_date.timestamp() * 1000000 - self.start_time)
 
-# Create the main date and clock
+# Creating the date and clock objects
 date = Date()
 clock = Clock(0)
 

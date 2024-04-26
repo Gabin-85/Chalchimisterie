@@ -218,6 +218,9 @@
 </data>
  </layer>
  <objectgroup id="3" name="objects">
+  <properties>
+   <property name="zoom" type="float" value="2"/>
+  </properties>
   <object id="1" name="player" x="775.059" y="667.784">
    <point/>
   </object>
