@@ -13,20 +13,54 @@ def get_map_zoom(zoom, screen_width, screen_height):
 
 class sceneHandler:
 
-    def __init__(self):
-        # Creating the scene dictionary
+    def __init__(self, scene_name, map_name):
+        # Creating the dictionary of maps in the scene
         self.maps = {}
+        self.map_name = map_name
+        self.scene_name = scene_name
+        self.change_scene()
 
-        # Create a dict of scenes where all the map data is stored
-        all_scenes = param_get("scenes", "scenes")
-        for scene_name in all_scenes:
-            self.maps[scene_name] = {"file": all_scenes[scene_name]}
-            self.maps[scene_name]["tmx_data"] = pytmx.util_pygame.load_pygame("assets/scenes/" + self.maps[scene_name]["file"])
-            self.maps[scene_name]["map_data"] = pyscroll.TiledMapData(self.maps[scene_name]["tmx_data"])
+    def change_scene(self, scene_name=None):
+        """Update the scene dictionnary with the new scene"""
+        if scene_name is not None:
+            self.scene_name = scene_name
+        scene = param_get(self.scene_name, "scenes")
 
-            self.maps[scene_name]["walls"] = []
-            for obj in self.maps[scene_name]["tmx_data"].objects:
-                if obj.type == "collision":
-                    self.maps[scene_name]["walls"].append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+        # Create a dict named scene where all the map data is stored
+        for self.map_name in scene:
+            self.maps[self.map_name] = {"file": scene[self.map_name]}
+            self.maps[self.map_name]["tmx_data"] = pytmx.util_pygame.load_pygame("assets/scenes/" + self.maps[self.map_name]["file"])
+            self.maps[self.map_name]["map_data"] = pyscroll.TiledMapData(self.maps[self.map_name]["tmx_data"])
 
-            print(self.maps)
+            self.maps[self.map_name]["walls"] = {"solid": [], "sticky": [], "bouncy": []}
+            for obj in self.maps[self.map_name]["tmx_data"].objects:
+                if obj.name == "collision":
+                    self.maps[self.map_name]["walls"][obj.type].append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+
+            self.maps[self.map_name]["portals"] = []
+            for obj in self.maps[self.map_name]["tmx_data"].objects:
+                if obj.name == "portal":
+                    self.maps[self.map_name]["portals"].append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+
+            self.maps[self.map_name]["player"] = self.maps[self.map_name]["tmx_data"].get_object_by_name("player")
+
+    # Fast functions
+    def tmx_data(self):
+        """Get the tmx data of the map (pytmx.TiledMap)"""
+        return self.maps[self.map_name]["tmx_data"]
+    
+    def map_data(self):
+        """Get the map data of the map (pyscroll.TiledMapData)"""
+        return self.maps[self.map_name]["map_data"]
+    
+    def walls(self):
+        """Get the walls of the map (dict of list)"""
+        return self.maps[self.map_name]["walls"]
+    
+    def portals(self):
+        """Get the player position of the map (list)"""
+        return self.maps[self.map_name]["portals"]
+    
+    def player(self):
+        """Get the player position of the map (tuple)"""
+        return self.maps[self.map_name]["player"]

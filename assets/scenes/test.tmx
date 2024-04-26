@@ -221,7 +221,7 @@
   <object id="1" name="player" x="775.059" y="667.784">
    <point/>
   </object>
-  <object id="2" type="collision" x="1216" y="608" width="128" height="128"/>
-  <object id="3" type="collision" x="1280" y="544" width="64" height="64"/>
+  <object id="2" name="collision" type="solid" x="1216" y="608" width="128" height="128"/>
+  <object id="3" name="collision" type="solid" x="1280" y="544" width="64" height="64"/>
  </objectgroup>
 </map>
