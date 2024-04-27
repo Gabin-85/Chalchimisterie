@@ -19,22 +19,24 @@ class Game:
         self.screen = pygame.display.set_mode(param_get("screen_size"))
         pygame.display.set_caption(self.window_name)
 
-        self.update_render()
-
-    def update_render(self):
-        # Get all scenes and choose a scene
-        # TODO: Add more scenes and make it save configurable
-        # Actuellement ceci est un easter-egg, a chaque frame le jeu change de map. C'est fluide hein ?
-        scene.change_scene("scene1")
-        if scene.selected_map == "test":
-            scene.selected_map = "test1"
-        else:
-            scene.selected_map = "test"
-
-        Player.position = scene.player().x, scene.player().y
+        # Need to update player position at launch.
+        # TODO: Make it configurable with saved files.
+        Player.position = (400, 400)
         self.player = Player()
 
-        self.group = pyscroll.PyscrollGroup(map_layer=scene.map_layer(), default_layer=4)
+        self.update_render("scene1", "test")
+
+    def update_render(self, scene_name=None, map_name=None):
+        # Get all scenes and choose a scene.
+        # TODO: Add more scenes and make it save configurable.
+        if scene_name is None:
+            scene_name = scene.selected_scene
+        if map_name is None:
+            map_name = scene.selected_map
+        scene.change_scene(scene_name)
+        scene.selected_map = map_name
+
+        self.group = pyscroll.PyscrollGroup(map_layer=scene.map_layer(map_name), default_layer=4)
         self.group.add(self.player)
 
     def run(self):
@@ -42,7 +44,7 @@ class Game:
         Update the player position and make a draw call.
         """
 
-        # Update the player movement
+        # Update the player movement.
         self.player.move()
 
         # TODO: Modify the player move part so we can separate x and y

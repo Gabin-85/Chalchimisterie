@@ -25,16 +25,13 @@ class sceneHandler:
             self.maps[map_name]["tmx_data"] = pytmx.util_pygame.load_pygame("assets/scenes/" + self.maps[map_name]["file"]) # Setting here the scenes path
             self.maps[map_name]["map_data"] = pyscroll.TiledMapData(self.maps[map_name]["tmx_data"])
 
-            # Get the walls
+            # Get the walls and portals
             self.maps[map_name]["walls"] = {"solid": [], "sticky": [], "bouncy": []}
+            self.maps[map_name]["portals"] = []
             for obj in self.maps[map_name]["tmx_data"].objects:
                 if obj.type == "collision":
                     self.maps[map_name]["walls"][obj.properties["collision_type"]].append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
-
-            # Get the portals
-            self.maps[map_name]["portals"] = []
-            for obj in self.maps[map_name]["tmx_data"].objects:
-                if obj.name == "portal":
+                if obj.type == "portal":
                     self.maps[map_name]["portals"].append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
 
             # Get the map_layer and set the zoom
@@ -45,7 +42,7 @@ class sceneHandler:
             else:
                 self.maps[map_name]["map_layer"].zoom = screen_size[0]*self.maps[map_name]["tmx_data"].get_layer_by_name("objects").properties["zoom"]/self.tmx_data(map_name).width/self.tmx_data(map_name).tilewidth
 
-            # Get the player
+            # Get the player (not usefull in the future, it has to be in the save file)
             self.maps[map_name]["player"] = self.maps[map_name]["tmx_data"].get_object_by_name("player")
 
     # Fast functions
