@@ -1,14 +1,24 @@
 {
     "configurations": [
-    {
-        "name": "Launch Game",
-        "type": "debugpy",
-        "request": "launch",
-        "program": "${workspaceFolder}/src/main.py",
-        "windows": {
+        {
+            "name": "Launch Game",
+            "type": "debugpy",
+            "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
-            "console": "integratedTerminal",
-        }
-    },
-]
+            "windows": {
+                "program": "${workspaceFolder}/src/main.py",
+                "console": "integratedTerminal",
+            }
+        },
+        {
+            "name": "Launch Testbed",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/testbed.py",
+            "windows": {
+                "program": "${workspaceFolder}/src/testbed.py",
+                "console": "integratedTerminal",
+            }
+        },
+    ]
 }

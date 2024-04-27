@@ -1,4 +1,4 @@
-# Me-llamo-dio
+# Chalchimisterie
 This is a school game written in python
 
 # Lien google doc

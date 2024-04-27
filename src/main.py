@@ -1,15 +1,14 @@
 # This main file launch all files, dependencies and loop the bases functions.
 import pygame
-from utils.storageHandler import storageHandler
-from utils.consoleHandler import consoleHandler
+from utils.consoleHandler import console
+from utils.storageHandler import storage
+from utils.sceneHandler import scene
 from game import Game
 from game_logic import Game_logic
 
 if __name__ == "__main__":
     # Initialisation
     pygame.init()
-    storage = storageHandler()
-    console = consoleHandler()
     game = Game()
     game_logic = Game_logic()
 
@@ -32,6 +31,7 @@ if __name__ == "__main__":
     # Quit (The inverse order of initialization)
     game_logic.quit()
     game.quit()
+    scene.quit()
     console.quit()
     storage.quit()
     pygame.quit()
