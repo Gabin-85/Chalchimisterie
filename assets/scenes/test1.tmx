@@ -221,16 +221,14 @@
   <properties>
    <property name="zoom" type="float" value="2"/>
   </properties>
-  <object id="1" name="portal_test1" type="portal" x="896" y="640" width="32" height="64">
+  <object id="1" name="portal_test" type="portal" x="896" y="640" width="32" height="64">
    <properties>
+    <property name="targeted_exit_name" value="portal_test"/>
     <property name="targeted_map_name" value="test"/>
-    <property name="targeted_portal_exit_name" value="portal_test1"/>
+    <property name="targeted_scene_name" value="scene1"/>
    </properties>
   </object>
-  <object id="3" name="portal_test" type="portal_exit" x="800.5" y="672">
-   <point/>
-  </object>
-  <object id="4" name="player" x="672.5" y="660">
+  <object id="3" name="portal_test" type="portal_exit" x="585.348" y="641.697">
    <point/>
   </object>
  </objectgroup>

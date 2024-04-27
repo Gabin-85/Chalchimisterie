@@ -2,6 +2,7 @@
 import pygame, pytmx, pyscroll
 from utils.storageHandler import param_get
 from utils.sceneHandler import scene
+from utils.consoleHandler import error
 
 from player import *
 
@@ -19,24 +20,18 @@ class Game:
         self.screen = pygame.display.set_mode(param_get("screen_size"))
         pygame.display.set_caption(self.window_name)
 
-        # Need to update player position at launch.
         # TODO: Make it configurable with saved files.
-        Player.position = (None, None)
         self.player = Player()
+        self.player.position = (755, 670)
+        
+        self.update("test", "scene1")
 
-        scene.change_scene("scene1")
-        self.change_map("test")
+    def update(self, map_name=None, scene_name=None):
+        if map_name == None and scene_name != None or map_name != None and scene_name == None:
+            error("Map and scene must be both specified or both equal to None.")
+        scene.change_map(map_name, scene_name)
 
-    def change_map(self, map_name=None):
-        # TODO: Make it save configurable.
-        if map_name is None:
-            map_name = scene.selected_map
-        scene.selected_map = map_name
-
-        if Player.position == (None, None):
-            Player.position = (scene.player(map_name).x, scene.player(map_name).y)
-
-        self.group = pyscroll.PyscrollGroup(map_layer=scene.map_layer(map_name), default_layer=4)
+        self.group = pyscroll.PyscrollGroup(map_layer=scene.get_map_layer(map_name, scene_name), default_layer=4)
         self.group.add(self.player)
 
     def run(self):
@@ -48,13 +43,13 @@ class Game:
         self.player.move()
 
         # Teleport the player if he collide with a portal
-        for portal in scene.portals():
-            if self.player.feet.colliderect(scene.portals()[portal]["rect"]) == True:
-                self.player.position = (scene.portal_exit(scene.portals()[portal]).x, scene.portal_exit(scene.portals()[portal]).y)
-                self.change_map(scene.portals()[portal]["targeted_map_name"])
+        for portal in scene.get_portals():
+            if self.player.feet.colliderect(scene.get_portals()[portal]["rect"]) == True:
+                self.player.position = (scene.get_portal_exit(scene.get_portals()[portal]).x, scene.get_portal_exit(scene.get_portals()[portal]).y)
+                self.update(scene.get_portals()[portal]["targeted_map_name"], scene.get_portals()[portal]["targeted_scene_name"])
         
         # TODO: Modify the player move part so we can separate x and y
-        for wall in scene.walls():
+        for wall in scene.get_walls():
             if self.player.feet.colliderect(wall["rect"]) == True:
                 match wall["collision_type"]:
                     case "bouncy":
