@@ -16,7 +16,7 @@
 #  - param_reset: reset/patternate a json file and return True if the operation has been done.
 import json
 import os
-from utils.consoleHandler import error, warn, debug, trace
+from utils.consoleHandler import error, warn, debug, trace, info
 
 # Fast functions (function that use the storage class to be used elsewere)
 def file_read(file_name:str=None, type=None): return storage.file_read(file_name, type)
@@ -52,9 +52,12 @@ class storageHandler():
         if self.set_shortcuts_file_path("shortcuts.json") == False:
             warn("Shortcuts file not found!")
 
+        info("Storage handler initialized")
+
     def quit(self):
         """Save the shortcuts and quit"""
         self.parameter_reset("shortcuts", self.shortcuts)
+        info("Storage handler has quit")
 
     def set_storage_folder_path(self, folder_path:str):
         """

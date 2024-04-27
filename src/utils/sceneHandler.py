@@ -1,6 +1,7 @@
 # This a simple file (actually but after no) who is in charge of using the map.
 import pygame, pytmx, pyscroll
 from utils.storageHandler import param_get
+from utils.consoleHandler import info
 
 class sceneHandler:
 
@@ -10,8 +11,10 @@ class sceneHandler:
         self.selected_map = None
         self.selected_scene = None
 
+        info("Scene handler initialized")
+
     def quit(self):
-        pass
+        info("Scene handler has quit")
 
     def change_scene(self, scene_name=None):
         """Update the scene dictionnary with the new scene"""

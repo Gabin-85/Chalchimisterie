@@ -3,6 +3,7 @@
 import colorama
 import json
 
+# Fast functions (function that use the console class to be used elsewere)
 def fatal(msg): console.fatal(msg)
 def error(msg): console.error(msg)
 def warn(msg):  console.warn(msg)
@@ -14,7 +15,7 @@ class consoleHandler:
 
     def __init__(self, parameter_file_path):
         """Init the console handler"""
-        self.log_active = json.load(open(parameter_file_path))["log_active"] # Set the option file to the log_active variable
+        self.log_active = json.load(open(parameter_file_path))["log_active"] # Set the option file to the log_active variable in the parameter.
 
         # Colors and heading messages
         colorama.init(autoreset=True)
@@ -25,10 +26,12 @@ class consoleHandler:
         self.DEBUG = colorama.Fore.GREEN + colorama.Back.BLACK + "[DEBUG]: "
         self.TRACE = colorama.Fore.WHITE + colorama.Back.BLACK + "[TRACE]: "
 
+        self.info("Console handler initialized")
+
     def quit(self):
         """Quit the console handler"""
+        self.info("Console handler quit")
         colorama.deinit()
-
 
     # Logs functions
     def fatal(self, msg):

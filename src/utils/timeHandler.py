@@ -9,6 +9,7 @@ class Date:
         # Setting up the date
         self.update()
 
+
     def update(self):
         """
         Update the date.
