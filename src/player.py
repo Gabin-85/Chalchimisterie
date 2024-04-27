@@ -26,7 +26,8 @@ class Player(pygame.sprite.Sprite):
         image.blit(self.sprite_sheet, (0, 0), (x, y, 32, 64))
         return image
 
-    def player_move(self):
+    def move(self):
+        # TODO: Modifiy this to make set the player acceleration, merge it to the velocity, check here the collisions and update afterwards the position.
         pressed = pygame.key.get_pressed()
 
         if pressed[pygame.K_LSHIFT] or pressed[pygame.K_RSHIFT]:
@@ -77,6 +78,7 @@ class Player(pygame.sprite.Sprite):
         For updating your player stats, we have to update the renderer player part.
         All sets bellow are necessary.
         """
+        # TODO: Delete this. It has to be in move().
         if self.last_position != self.position:
             self.feet.midbottom = self.rect.midbottom
             self.last_position = self.position

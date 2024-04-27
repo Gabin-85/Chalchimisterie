@@ -6,6 +6,7 @@ class Game_logic:
         ...
 
     def run(self):
+        # TODO: Set here the key recording.
         ...
 
     def quit(self):

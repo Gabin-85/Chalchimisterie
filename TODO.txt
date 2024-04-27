@@ -1,8 +1,1 @@
-Planing work (set here all helping informations to manage your work):
-    
-    timeHandler :
-
-        - chronometer part (the time at a certain point)
-        - timer part (a delay but he can do other things)
-        - clock part (get the time)
-        
+Do vector movement and be sized by the size of the window

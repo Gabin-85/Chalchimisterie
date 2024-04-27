@@ -43,7 +43,7 @@ class Game:
         """
 
         # Update the player movement
-        self.player.player_move()
+        self.player.move()
 
         # TODO: Modify the player move part so we can separate x and y
         for sprite in self.group.sprites():
