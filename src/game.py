@@ -21,20 +21,20 @@ class Game:
 
         # Need to update player position at launch.
         # TODO: Make it configurable with saved files.
-        Player.position = (400, 400)
+        Player.position = (None, None)
         self.player = Player()
 
-        self.update_render("scene1", "test")
+        scene.change_scene("scene1")
+        self.change_map("test")
 
-    def update_render(self, scene_name=None, map_name=None):
-        # Get all scenes and choose a scene.
-        # TODO: Add more scenes and make it save configurable.
-        if scene_name is None:
-            scene_name = scene.selected_scene
+    def change_map(self, map_name=None):
+        # TODO: Make it save configurable.
         if map_name is None:
             map_name = scene.selected_map
-        scene.change_scene(scene_name)
         scene.selected_map = map_name
+
+        if Player.position == (None, None):
+            Player.position = (scene.player(map_name).x, scene.player(map_name).y)
 
         self.group = pyscroll.PyscrollGroup(map_layer=scene.map_layer(map_name), default_layer=4)
         self.group.add(self.player)
@@ -47,16 +47,22 @@ class Game:
         # Update the player movement.
         self.player.move()
 
+        # Teleport the player if he collide with a portal
+        for portal in scene.portals():
+            if self.player.feet.colliderect(scene.portals()[portal]["rect"]) == True:
+                self.player.position = (scene.portal_exit(scene.portals()[portal]).x, scene.portal_exit(scene.portals()[portal]).y)
+                self.change_map(scene.portals()[portal]["targeted_map_name"])
+        
         # TODO: Modify the player move part so we can separate x and y
-        for sprite in self.group.sprites():
-            if sprite.feet.collidelist(scene.walls()["sticky"]) > -1:
-                pass
-            elif sprite.feet.collidelist(scene.walls()["bouncy"]) > -1:
-                pass
-            elif sprite.feet.collidelist(scene.walls()["solid"]) > -1:
-                self.player.move_back()
-            elif sprite.feet.collidelist(scene.portals()) > -1:
-                pass
+        for wall in scene.walls():
+            if self.player.feet.colliderect(wall["rect"]) == True:
+                match wall["collision_type"]:
+                    case "bouncy":
+                        pass
+                    case "sticky":
+                        pass
+                    case "solid":
+                        self.player.move_back()
 
         # Update the player position
         self.player.update()

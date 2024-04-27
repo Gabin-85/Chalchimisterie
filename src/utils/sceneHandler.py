@@ -29,13 +29,17 @@ class sceneHandler:
             self.maps[map_name]["map_data"] = pyscroll.TiledMapData(self.maps[map_name]["tmx_data"])
 
             # Get the walls and portals
-            self.maps[map_name]["walls"] = {"solid": [], "sticky": [], "bouncy": []}
-            self.maps[map_name]["portals"] = []
+            self.maps[map_name]["walls"] = []
+            self.maps[map_name]["portals"] = {}
+            self.maps[map_name]["portals_exits"] = {}
             for obj in self.maps[map_name]["tmx_data"].objects:
-                if obj.type == "collision":
-                    self.maps[map_name]["walls"][obj.properties["collision_type"]].append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
-                if obj.type == "portal":
-                    self.maps[map_name]["portals"].append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+                match obj.type:
+                    case "collision":
+                        self.maps[map_name]["walls"].append({"rect": pygame.Rect(obj.x, obj.y, obj.width, obj.height), "collision_type": obj.properties["collision_type"]})
+                    case "portal":
+                        self.maps[map_name]["portals"][obj.name] = {"rect":pygame.Rect(obj.x, obj.y, obj.width, obj.height), "targeted_map_name": obj.properties["targeted_map_name"], "targeted_portal_exit_name": obj.properties["targeted_portal_exit_name"]}
+                    case "portal_exit":
+                        self.maps[map_name]["portals_exits"][obj.name] = self.maps[map_name]["tmx_data"].get_object_by_name(obj.name)
 
             # Get the map_layer and set the zoom
             self.maps[map_name]["map_layer"] = pyscroll.orthographic.BufferedRenderer(self.map_data(map_name), param_get("screen_size"))
@@ -78,6 +82,10 @@ class sceneHandler:
         if map_name is None:
             map_name = self.selected_map
         return self.maps[map_name]["portals"]
+    
+    def portal_exit(self, portals):
+        """Get the portal_exit of a portal"""
+        return self.maps[portals["targeted_map_name"]]["portals_exits"][portals["targeted_portal_exit_name"]]
     
     def player(self, map_name=None):
         """Get the player position of the map (tuple)"""
