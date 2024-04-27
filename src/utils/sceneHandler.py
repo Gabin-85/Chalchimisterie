@@ -84,16 +84,6 @@ class sceneHandler:
         if map_name is None:
             map_name = self.selected_map
         return self.maps[map_name]["player"]
-    
-    def extract_map_zoom(self, map_name=None):
-        """Get the zoom of the tmx map (float)"""
-        if map_name is None:
-            map_name = self.selected_map
-        screen_size = param_get("screen_size")
-        if screen_size[0] < screen_size[1]:
-            return screen_size[1]*self.maps[map_name]["tmx_data"].get_layer_by_name("objects").properties["zoom"]/self.tmx_data().height/self.tmx_data().tileheight
-        else:
-            return screen_size[0]*self.maps[map_name]["tmx_data"].get_layer_by_name("objects").properties["zoom"]/self.tmx_data().width/self.tmx_data().tilewidth
         
     def get_zoom(self, map_name=None):
         """Get the zoom of the map (float)"""
