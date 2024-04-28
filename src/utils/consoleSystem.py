@@ -14,7 +14,7 @@ def trace(msg): console.trace(msg)
 class consoleHandler:
 
     def __init__(self, parameter_file_path):
-        """Init the console"""
+        """Init the console system"""
 
         # Set the option file to the log_active variable in the parameter.
         self.log_active = json.load(open(parameter_file_path))["log_active"]
@@ -35,12 +35,12 @@ class consoleHandler:
         self.TRACE_COLOR = colorama.Fore.WHITE + colorama.Back.BLACK
         self.TRACE_PREFIX = "[TRACE]: "
 
-        self.info("Console initialized.")
+        self.info("Console system initialized.")
 
     def quit(self):
-        """Quit the console"""
+        """Quit the console system"""
 
-        self.info("Console quit.")
+        self.info("Console system quit.")
 
         # Create logs
         with open("output/logs.log", "w") as f:
