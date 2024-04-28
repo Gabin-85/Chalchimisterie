@@ -28,9 +28,9 @@ class consoleHandler:
         self.ERROR_PREFIX = "[ERROR]: "
         self.WARN_COLOR  = colorama.Fore.YELLOW + colorama.Back.BLACK
         self.WARN_PREFIX = "[WARN] : "
-        self.INFO_COLOR  = colorama.Fore.BLUE + colorama.Back.BLACK
+        self.INFO_COLOR  = colorama.Fore.GREEN + colorama.Back.BLACK
         self.INFO_PREFIX = "[INFO] : "
-        self.DEBUG_COLOR = colorama.Fore.GREEN + colorama.Back.BLACK
+        self.DEBUG_COLOR = colorama.Fore.BLUE + colorama.Back.BLACK
         self.DEBUG_PREFIX = "[DEBUG]: "
         self.TRACE_COLOR = colorama.Fore.WHITE + colorama.Back.BLACK
         self.TRACE_PREFIX = "[TRACE]: "
@@ -43,7 +43,7 @@ class consoleHandler:
         self.info("Console quit.")
 
         # Create logs
-        with open("output/logs.txt", "w") as f:
+        with open("output/logs.log", "w") as f:
             f.write("\n".join(self.logs))
         
         colorama.deinit()

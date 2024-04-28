@@ -3,6 +3,14 @@
 [INFO] : Scene handler initialized.
 [TRACE]: Scene 'scene1' not loaded.
 [TRACE]: 'scene1' loaded!
+[TRACE]: Scene 'scene2' not loaded.
+[TRACE]: 'scene2' loaded!
+[DEBUG]: Cleanup scene.
+[TRACE]: 'scene1' unloaded!
+[TRACE]: Scene 'scene1' not loaded.
+[TRACE]: 'scene1' loaded!
+[DEBUG]: Cleanup scene.
+[TRACE]: 'scene2' unloaded!
 [INFO] : Scene handler has quit.
 [INFO] : Storage handler has quit.
 [INFO] : Console quit.
