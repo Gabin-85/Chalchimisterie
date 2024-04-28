@@ -1,5 +1,6 @@
 # This is a system that gives functions to print.
 # It has 6 levels (FATAL, ERROR, WARN, INFO, DEBUG and TRACE) of log/print handling.
+from utils.timeToolbox import date
 import colorama
 import json
 
@@ -13,27 +14,70 @@ def trace(msg): console.trace(msg)
 
 class consoleHandler:
 
-    def __init__(self, parameter_file_path):
+    def __init__(self):
         """Init the console system"""
 
-        # Set the option file to the log_active variable in the parameter.
-        self.log_active = json.load(open(parameter_file_path))["log_active"]
+        self.log_option = json.load(open("assets/storage/options.json"))["log_option"]
+        # Activate or not live functions
+        self.live_active = self.log_option["live_active"]
+        self.log_active = self.log_option["log_active"]
+        # Set or not the colors
+        self.live_colors = self.log_option["colors"]
+        # Create or not the prefix
+        self.live_prefix = self.log_option["live_prefix"]
+        self.log_prefix = self.log_option["log_prefix"]
+        # Create or not the time
+        self.live_time = self.log_option["live_time"]
+        self.log_time = self.log_option["log_time"]
         self.logs = []
 
         # Colors and heading messages
         colorama.init(autoreset=True)
-        self.FATAL_COLOR = colorama.Fore.WHITE + colorama.Back.RED
-        self.FATAL_PREFIX = "[FATAL]: "
-        self.ERROR_COLOR = colorama.Fore.RED + colorama.Back.BLACK
-        self.ERROR_PREFIX = "[ERROR]: "
-        self.WARN_COLOR  = colorama.Fore.YELLOW + colorama.Back.BLACK
-        self.WARN_PREFIX = "[WARN] : "
-        self.INFO_COLOR  = colorama.Fore.GREEN + colorama.Back.BLACK
-        self.INFO_PREFIX = "[INFO] : "
-        self.DEBUG_COLOR = colorama.Fore.BLUE + colorama.Back.BLACK
-        self.DEBUG_PREFIX = "[DEBUG]: "
-        self.TRACE_COLOR = colorama.Fore.WHITE + colorama.Back.BLACK
-        self.TRACE_PREFIX = "[TRACE]: "
+        if self.live_colors:
+            self.FATAL_COLOR = colorama.Fore.WHITE + colorama.Back.RED
+            self.ERROR_COLOR = colorama.Fore.RED + colorama.Back.BLACK
+            self.WARN_COLOR  = colorama.Fore.YELLOW + colorama.Back.BLACK
+            self.INFO_COLOR  = colorama.Fore.GREEN + colorama.Back.BLACK
+            self.DEBUG_COLOR = colorama.Fore.BLUE + colorama.Back.BLACK
+            self.TRACE_COLOR = colorama.Fore.WHITE + colorama.Back.BLACK
+        else:
+            self.FATAL_COLOR = ""
+            self.ERROR_COLOR = ""
+            self.WARN_COLOR  = ""
+            self.INFO_COLOR  = ""
+            self.DEBUG_COLOR = ""
+            self.TRACE_COLOR = ""
+
+        if self.live_prefix:
+            self.FATAL_LIVE_PREFIX = "[FATAL]: "
+            self.ERROR_LIVE_PREFIX = "[ERROR]: "
+            self.WARN_LIVE_PREFIX = "[WARN] : "
+            self.INFO_LIVE_PREFIX = "[INFO] : "
+            self.DEBUG_LIVE_PREFIX = "[DEBUG]: "
+            self.TRACE_LIVE_PREFIX = "[TRACE]: "
+        else:
+            self.FATAL_LIVE_PREFIX = ""
+            self.ERROR_LIVE_PREFIX = ""
+            self.WARN_LIVE_PREFIX = ""
+            self.INFO_LIVE_PREFIX = ""
+            self.DEBUG_LIVE_PREFIX = ""
+            self.TRACE_LIVE_PREFIX = ""
+
+        if self.log_prefix:
+            self.FATAL_LOG_PREFIX = "[FATAL]: "
+            self.ERROR_LOG_PREFIX = "[ERROR]: "
+            self.WARN_LOG_PREFIX = "[WARN] : "
+            self.INFO_LOG_PREFIX = "[INFO] : "
+            self.DEBUG_LOG_PREFIX = "[DEBUG]: "
+            self.TRACE_LOG_PREFIX = "[TRACE]: "
+        else:
+            self.FATAL_LOG_PREFIX = ""
+            self.ERROR_LOG_PREFIX = ""
+            self.WARN_LOG_PREFIX = ""
+            self.INFO_LOG_PREFIX = ""
+            self.DEBUG_LOG_PREFIX = ""
+            self.TRACE_LOG_PREFIX = ""
+
 
         self.info("Console system initialized.")
 
@@ -50,29 +94,76 @@ class consoleHandler:
 
     # Logs functions
     def fatal(self, msg):
-        if self.log_active["fatal"] == True:
-            print(self.FATAL_COLOR + self.FATAL_PREFIX + str(msg))
-            self.logs.append(self.FATAL_PREFIX + str(msg))
+        if self.live_active["fatal"]:
+            if self.live_time:
+                print("("+date.get_formated_time()+") "+self.FATAL_LIVE_PREFIX + str(msg))
+            else:
+                print(self.FATAL_COLOR + self.FATAL_LIVE_PREFIX + str(msg))
+        if self.log_active["fatal"]:
+            if self.log_time:
+                self.logs.append("("+date.get_formated_time()+") "+self.FATAL_LOG_PREFIX + str(msg))
+            else:
+                self.logs.append(self.FATAL_LOG_PREFIX + str(msg))
+            
     def error(self, msg):
-        if self.log_active["error"] == True:
-            print(self.ERROR_COLOR + self.ERROR_PREFIX + str(msg))
-            self.logs.append(self.ERROR_PREFIX + str(msg))
+        if self.live_active["error"]:
+            if self.live_time:
+                print("("+date.get_formated_time()+") "+self.ERROR_LIVE_PREFIX + str(msg))
+            else:
+                print(self.ERROR_COLOR + self.ERROR_LIVE_PREFIX + str(msg))
+        if self.log_active["error"]:
+            if self.log_time:
+                self.logs.append("("+date.get_formated_time()+") "+self.ERROR_LOG_PREFIX + str(msg))
+            else:
+                self.logs.append(self.ERROR_LOG_PREFIX + str(msg))
+            
     def warn(self, msg):
-        if self.log_active["warn"] == True:
-            print(self.WARN_COLOR + self.WARN_PREFIX + str(msg))
-            self.logs.append(self.WARN_PREFIX + str(msg))
+        if self.live_active["warn"]:
+            if self.live_time:
+                print("("+date.get_formated_time()+") "+self.WARN_LIVE_PREFIX + str(msg))
+            else:
+                print(self.WARN_COLOR + self.WARN_LIVE_PREFIX + str(msg))
+        if self.log_active["warn"]:
+            if self.log_time:
+                self.logs.append("("+date.get_formated_time()+") "+self.WARN_LOG_PREFIX + str(msg))
+            else:
+                self.logs.append(self.WARN_LOG_PREFIX + str(msg))
+            
     def info(self, msg):
-        if self.log_active["info"] == True:
-            print(self.INFO_COLOR + self.INFO_PREFIX + str(msg))
-            self.logs.append(self.INFO_PREFIX + str(msg))
+        if self.live_active["info"]:
+            if self.live_time:
+                print("("+date.get_formated_time()+") "+self.INFO_LIVE_PREFIX + str(msg))
+            else:
+                print(self.INFO_COLOR + self.INFO_LIVE_PREFIX + str(msg))
+        if self.log_active["info"]:
+            if self.log_time:
+                self.logs.append("("+date.get_formated_time()+") "+self.INFO_LOG_PREFIX + str(msg))
+            else:
+                self.logs.append(self.INFO_LOG_PREFIX + str(msg))
+
     def debug(self, msg):
-        if self.log_active["debug"] == True:
-            print(self.DEBUG_COLOR + self.DEBUG_PREFIX + str(msg))
-            self.logs.append(self.DEBUG_PREFIX + str(msg))
+        if self.live_active["debug"]:
+            if self.live_time:
+                print("("+date.get_formated_time()+") "+self.DEBUG_LIVE_PREFIX + str(msg))
+            else:
+                print(self.DEBUG_COLOR + self.DEBUG_LIVE_PREFIX + str(msg))
+        if self.log_active["debug"]:
+            if self.log_time:
+                self.logs.append("("+date.get_formated_time()+") "+self.DEBUG_LOG_PREFIX + str(msg))
+            else:
+                self.logs.append(self.DEBUG_LOG_PREFIX + str(msg))
+
     def trace(self, msg):
-        if self.log_active["trace"] == True:
-            print(self.TRACE_COLOR + self.TRACE_PREFIX + str(msg))
-            self.logs.append(self.TRACE_PREFIX + str(msg))
+        if self.live_active["trace"]:
+            if self.live_time:
+                print("("+date.get_formated_time()+") "+self.TRACE_LIVE_PREFIX + str(msg))
+            else:
+                print(self.TRACE_COLOR + self.TRACE_LIVE_PREFIX + str(msg))
+        if self.log_active["trace"]:
+            if self.log_time:
+                self.logs.append("("+date.get_formated_time()+") "+self.TRACE_LOG_PREFIX + str(msg))
+            else:
+                self.logs.append(self.TRACE_LOG_PREFIX + str(msg))
 
 # Set the console object
-console = consoleHandler("assets/storage/options.json")
+console = consoleHandler()

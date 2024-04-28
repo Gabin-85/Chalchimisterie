@@ -1,16 +1,20 @@
-[INFO] : Console initialized.
-[INFO] : Storage handler initialized.
-[INFO] : Scene handler initialized.
-[TRACE]: Scene 'scene1' not loaded.
-[TRACE]: 'scene1' loaded!
-[TRACE]: Scene 'scene2' not loaded.
-[TRACE]: 'scene2' loaded!
-[DEBUG]: Cleanup scene.
-[TRACE]: 'scene1' unloaded!
-[TRACE]: Scene 'scene1' not loaded.
-[TRACE]: 'scene1' loaded!
-[DEBUG]: Cleanup scene.
-[TRACE]: 'scene2' unloaded!
-[INFO] : Scene handler has quit.
-[INFO] : Storage handler has quit.
-[INFO] : Console quit.
+(19:05:30:478534) [INFO] : Console system initialized.
+(19:05:30:481537) [INFO] : Storage handler initialized.
+(19:05:30:516206) [INFO] : Scene handler initialized.
+(19:05:30:908601) [TRACE]: Scene 'scene1' not loaded.
+(19:05:30:977899) [TRACE]: 'scene1' loaded!
+(19:05:34:944279) [TRACE]: Scene 'scene2' not loaded.
+(19:05:34:994025) [TRACE]: 'scene2' loaded!
+(19:05:34:995030) [DEBUG]: Cleanup scene.
+(19:05:34:995030) [TRACE]: 'scene1' unloaded!
+(19:05:36:495711) [TRACE]: Scene 'scene1' not loaded.
+(19:05:36:540407) [TRACE]: 'scene1' loaded!
+(19:05:36:541175) [DEBUG]: Cleanup scene.
+(19:05:36:541175) [TRACE]: 'scene2' unloaded!
+(19:05:36:939822) [TRACE]: Scene 'scene2' not loaded.
+(19:05:36:990486) [TRACE]: 'scene2' loaded!
+(19:05:36:990769) [DEBUG]: Cleanup scene.
+(19:05:36:990769) [TRACE]: 'scene1' unloaded!
+(19:05:38:478984) [INFO] : Scene handler has quit.
+(19:05:38:479984) [INFO] : Storage handler has quit.
+(19:05:38:479984) [INFO] : Console system quit.

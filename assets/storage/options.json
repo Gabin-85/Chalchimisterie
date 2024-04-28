@@ -5,12 +5,27 @@
     ],
     "window_name": "Chalchimisterie",
     "fps": 60,
-    "log_active": {
-        "fatal": true,
-        "error": true,
-        "warn": true,
-        "info": true,
-        "debug": true,
-        "trace": true
+    "log_option": {
+        "live_active": {
+            "fatal": true,
+            "error": true,
+            "warn": true,
+            "info": true,
+            "debug": true,
+            "trace": false
+        },
+        "log_active": {
+            "fatal": true,
+            "error": true,
+            "warn": true,
+            "info": true,
+            "debug": true,
+            "trace": true
+        },
+        "colors": true,
+        "live_prefix": true,
+        "log_prefix": true,
+        "live_time": false,
+        "log_time": true
     }
 }
