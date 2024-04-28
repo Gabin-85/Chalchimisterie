@@ -24,15 +24,19 @@ class Game:
         self.player = Player()
         self.player.position = (755, 670)
         
-        self.update("test", "scene1")
+        self.update("testa", "scene1")
 
     def update(self, map_name=None, scene_name=None):
-        if map_name == None and scene_name != None or map_name != None and scene_name == None:
-            error("Map and scene must be both specified or both equal to None.")
+        if scene_name is None:
+            scene_name = self.selected_scene
+        if map_name is None:
+            map_name = self.selected_map
         scene.change_map(map_name, scene_name)
 
         self.group = pyscroll.PyscrollGroup(map_layer=scene.get_map_layer(map_name, scene_name), default_layer=4)
         self.group.add(self.player)
+
+        scene.scene_cleanup()
 
     def run(self):
         """

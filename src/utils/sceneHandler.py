@@ -1,20 +1,22 @@
 # This a simple file (actually but after no) who is in charge of using the map.
 import pygame, pytmx, pyscroll
+import os
 from utils.storageHandler import param_get
-from utils.consoleHandler import info, debug, trace
+from utils.consoleHandler import warn, info, debug, trace
 
 class sceneHandler:
 
     def __init__(self):
         # Creating the dictionary of maps in the scene and variables.
+        self.scene_folder_path = "assets/scenes/" # Setting here the scenes path
         self.data = {}
         self.selected_map = None
         self.selected_scene = None
 
-        info("Scene handler initialized")
+        info("Scene handler initialized.")
 
     def quit(self):
-        info("Scene handler has quit")
+        info("Scene handler has quit.")
 
     ##########
     # SCENES #
@@ -28,11 +30,18 @@ class sceneHandler:
             scene_name = self.selected_scene
         scene = param_get(scene_name, "scenes")
 
+        if scene == None:
+            trace("Scene '"+scene_name+"' not found.")
+            return False
+        self.data[scene_name] = {}
         for map_name in scene:
             # Load all the maps in scene
-            self.data[scene_name] = {}
             self.data[scene_name][map_name] = {"file": scene[map_name]}
-            self.data[scene_name][map_name]["tmx_data"] = pytmx.util_pygame.load_pygame("assets/scenes/" + self.data[scene_name][map_name]["file"]) # Setting here the scenes path
+            if os.path.exists(self.scene_folder_path+self.data[scene_name][map_name]["file"]):
+                self.data[scene_name][map_name]["tmx_data"] = pytmx.util_pygame.load_pygame(self.scene_folder_path + self.data[scene_name][map_name]["file"])
+            else:
+                warn("Map named '"+self.data[scene_name][map_name]["file"]+"' not found. Abort load.")
+                return False
             self.data[scene_name][map_name]["map_data"] = pyscroll.TiledMapData(self.data[scene_name][map_name]["tmx_data"])
 
             # Get the walls and portals
@@ -62,7 +71,8 @@ class sceneHandler:
             else:
                 self.data[scene_name][map_name]["map_layer"].zoom = screen_size[0]*self.data[scene_name][map_name]["tmx_data"].get_layer_by_name("objects").properties["zoom"]/self.get_tmx_data(map_name).width/self.get_tmx_data(map_name).tilewidth
             
-        trace("Scene '"+scene_name+"' loaded")
+        trace("Scene '"+scene_name+"' has been loaded.")
+        return True
 
     def unload_scene(self, scene_name=None):
         """Delete all maps from the dictionnary that are in the scene"""
@@ -73,27 +83,37 @@ class sceneHandler:
 
         if scene_name in self.data:
             del self.data[scene_name]
-            trace("Scene '"+scene_name+"' unloaded")
+            trace("Scene '"+scene_name+"' has been unloaded.")
             return True
         else:
             return False
-
+        
+    def scene_cleanup(self):
+        """Unload all used scenes"""
+        scenes = self.loaded_scenes()
+        if self.selected_scene in scenes:
+            scenes.remove(self.selected_scene)
+        if len(scenes) != 0:
+            debug("Cleanup scene.")
+            for scene in scenes:
+                self.unload_scene(scene)
+            
     def change_scene(self, scene_name=None):
         """Unload all scenes and load the one given in the parameter"""
         if scene_name is None:
             scene_name = self.selected_scene
         self.selected_scene = scene_name
-
-        for scene in self.loaded_scenes():
-            self.unload_scene(scene)
-        self.load_scene(scene_name)
+        
+        if self.has_scene_load(scene_name) == 0:
+            trace("Scene '"+scene_name+"' not loaded.")
+            self.load_scene(scene_name)
 
     def loaded_scenes(self):
-        """Get all the loaded scenes (empty or not)"""
+        """Get all the loaded scenes"""
         return list(self.data.keys())
 
     def has_scene_load(self, scene_name=None):
-        """Give the number of maps in the scene (if 0 then the scene is not loaded or empty)"""
+        """Give the number of maps in the scene, if 0 then the scene is not loaded"""
         if scene_name is None:
             scene_name = self.selected_scene
         if scene_name in self.data:
@@ -107,22 +127,11 @@ class sceneHandler:
         
     def change_map(self, map_name=None, scene_name=None):
         """Unset the current map and load the one given in the parameter"""
-        if scene_name is None:
-            scene_name = self.selected_scene
+        self.change_scene(scene_name)
+
         if map_name is None:
             map_name = self.selected_map
-
-        self.selected_scene = scene_name
         self.selected_map = map_name
-
-        for scene in self.loaded_scenes():
-            if scene != scene_name:
-                self.unload_scene(scene)
-        if self.has_scene_load(scene_name) == 0:
-            debug("Scene '"+scene_name+"' not loaded.")
-            self.load_scene(scene_name)
-
-        
 
     ###########
     # GETTERS #
@@ -133,7 +142,7 @@ class sceneHandler:
         if scene_name is None:
             scene_name = self.selected_scene
         if self.has_scene_load(scene_name) == 0:
-            debug("Scene '"+scene_name+"' not loaded.")
+            trace("Scene '"+scene_name+"' not loaded.")
             self.load_scene(scene_name)
         if map_name is None:
             map_name = self.selected_map
@@ -144,7 +153,7 @@ class sceneHandler:
         if scene_name is None:
             scene_name = self.selected_scene
         if self.has_scene_load(scene_name) == 0:
-            debug("Scene '"+scene_name+"' not loaded.")
+            trace("Scene '"+scene_name+"' not loaded.")
             self.load_scene(scene_name)
         if map_name is None:
             map_name = self.selected_map
@@ -155,7 +164,7 @@ class sceneHandler:
         if scene_name is None:
             scene_name = self.selected_scene
         if self.has_scene_load(scene_name) == 0:
-            debug("Scene '"+scene_name+"' not loaded.")
+            trace("Scene '"+scene_name+"' not loaded.")
             self.load_scene(scene_name)
         if map_name is None:
             map_name = self.selected_map
@@ -166,7 +175,7 @@ class sceneHandler:
         if scene_name is None:
             scene_name = self.selected_scene
         if self.has_scene_load(scene_name) == 0:
-            debug("Scene '"+scene_name+"' not loaded.")
+            trace("Scene '"+scene_name+"' not loaded.")
             self.load_scene(scene_name)
         if map_name is None:
             map_name = self.selected_map
@@ -177,7 +186,7 @@ class sceneHandler:
         if scene_name is None:
             scene_name = self.selected_scene
         if self.has_scene_load(scene_name) == 0:
-            debug("Scene '"+scene_name+"' not loaded.")
+            trace("Scene '"+scene_name+"' not loaded.")
             self.load_scene(scene_name)
         if map_name is None:
             map_name = self.selected_map
@@ -188,7 +197,7 @@ class sceneHandler:
         if scene_name is None:
             scene_name = self.selected_scene
         if self.has_scene_load(scene_name) == 0:
-            debug("Scene '"+scene_name+"' not loaded.")
+            trace("Scene '"+scene_name+"' not loaded.")
             self.load_scene(scene_name)
         if map_name is None:
             map_name = self.selected_map
@@ -197,7 +206,7 @@ class sceneHandler:
     def get_portal_exit(self, portals):
         """Get the portal_exit of a portal"""
         if self.has_scene_load(portals["targeted_scene_name"]) == 0:
-            info("Scene '"+portals["targeted_scene_name"]+"' not loaded, trying to load it")
+            trace("Scene '"+portals["targeted_scene_name"]+"' not loaded.")
             self.load_scene(portals["targeted_scene_name"])
         return self.data[portals["targeted_scene_name"]][portals["targeted_map_name"]]["portals_exits"][portals["targeted_exit_name"]]
 

@@ -26,11 +26,11 @@ class consoleHandler:
         self.DEBUG = colorama.Fore.GREEN + colorama.Back.BLACK + "[DEBUG]: "
         self.TRACE = colorama.Fore.WHITE + colorama.Back.BLACK + "[TRACE]: "
 
-        self.info("Console handler initialized")
+        self.info("Console handler initialized.")
 
     def quit(self):
         """Quit the console handler"""
-        self.info("Console handler quit")
+        self.info("Console handler quit.")
         colorama.deinit()
 
     # Logs functions
