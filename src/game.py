@@ -2,7 +2,7 @@
 import pygame, pytmx, pyscroll
 from utils.storageHandler import param_get
 from utils.sceneHandler import scene
-from utils.console import error
+from utils.consoleSystem import error
 
 from player import *
 
@@ -31,12 +31,12 @@ class Game:
             scene_name = self.selected_scene
         if map_name is None:
             map_name = self.selected_map
+
         scene.change_map(map_name, scene_name)
+        scene.scene_cleanup()
 
         self.group = pyscroll.PyscrollGroup(map_layer=scene.get_map_layer(map_name, scene_name), default_layer=4)
         self.group.add(self.player)
-
-        scene.scene_cleanup()
 
     def run(self):
         """

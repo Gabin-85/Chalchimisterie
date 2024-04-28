@@ -230,7 +230,7 @@
    <properties>
     <property name="targeted_exit_name" value="portal_test"/>
     <property name="targeted_map_name" value="testb"/>
-    <property name="targeted_scene_name" value="scene1"/>
+    <property name="targeted_scene_name" value="scene2"/>
    </properties>
   </object>
   <object id="9" name="portal_test" type="portal_exit" x="1205.5" y="551">

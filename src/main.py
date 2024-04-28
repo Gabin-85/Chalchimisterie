@@ -1,6 +1,6 @@
 # This main file launch all files, dependencies and loop the bases functions.
 import pygame
-from utils.console import console
+from utils.consoleSystem import console
 from utils.storageHandler import storage
 from utils.sceneHandler import scene
 from game import Game
@@ -32,6 +32,6 @@ if __name__ == "__main__":
     game_logic.quit()
     game.quit()
     scene.quit()
-    console.quit()
     storage.quit()
+    console.quit()
     pygame.quit()

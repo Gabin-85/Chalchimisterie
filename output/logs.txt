@@ -1,0 +1,8 @@
+[INFO] : Console initialized.
+[INFO] : Storage handler initialized.
+[INFO] : Scene handler initialized.
+[TRACE]: Scene 'scene1' not loaded.
+[TRACE]: 'scene1' loaded!
+[INFO] : Scene handler has quit.
+[INFO] : Storage handler has quit.
+[INFO] : Console quit.

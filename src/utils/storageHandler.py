@@ -16,7 +16,7 @@
 #  - param_reset: reset/patternate a json file and return True if the operation has been done.
 import json
 import os
-from utils.console import error, warn, debug, trace, info
+from utils.consoleSystem import error, warn, trace, info
 
 # Fast functions (function that use the storage class to be used elsewere)
 def file_read(file_name:str=None, type=None): return storage.file_read(file_name, type)
@@ -167,7 +167,7 @@ class storageHandler():
         """
         if file_name is None or file_name == "":
             file_name = self.shortcuts["default"]
-        elif file_name.count(".json") == 0:
+        elif file_name.count(".json") + file_name.count(".txt") == 0:
             if file_name in self.shortcuts.keys():
                 file_name = self.shortcuts[file_name]
             else:

@@ -11,6 +11,6 @@
         "warn": true,
         "info": true,
         "debug": true,
-        "trace": false
+        "trace": true
     }
 }

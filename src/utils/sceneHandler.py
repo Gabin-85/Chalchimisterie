@@ -2,7 +2,7 @@
 import pygame, pytmx, pyscroll
 import os
 from utils.storageHandler import param_get
-from utils.console import warn, info, debug, trace
+from utils.consoleSystem import warn, info, debug, trace
 
 class sceneHandler:
 
@@ -24,7 +24,7 @@ class sceneHandler:
 
     def load_scene(self, scene_name=None):
         """Add the maps from the scene in the dictionnary"""
-
+        
         # Get all maps in scene
         if scene_name is None:
             scene_name = self.selected_scene
@@ -67,11 +67,11 @@ class sceneHandler:
             self.data[scene_name][map_name]["map_layer"] = pyscroll.orthographic.BufferedRenderer(self.get_map_data(map_name, scene_name), param_get("screen_size"))
             screen_size = param_get("screen_size")
             if screen_size[0] < screen_size[1]:
-                self.data[scene_name][map_name]["map_layer"].zoom = screen_size[1]*self.data[scene_name][map_name]["tmx_data"].get_layer_by_name("objects").properties["zoom"]/self.get_tmx_data(map_name).height/self.get_tmx_data(map_name).tileheight
+                self.data[scene_name][map_name]["map_layer"].zoom = screen_size[1]*self.data[scene_name][map_name]["tmx_data"].get_layer_by_name("objects").properties["zoom"]/self.get_tmx_data(map_name, scene_name).height/self.get_tmx_data(map_name, scene_name).tileheight
             else:
-                self.data[scene_name][map_name]["map_layer"].zoom = screen_size[0]*self.data[scene_name][map_name]["tmx_data"].get_layer_by_name("objects").properties["zoom"]/self.get_tmx_data(map_name).width/self.get_tmx_data(map_name).tilewidth
+                self.data[scene_name][map_name]["map_layer"].zoom = screen_size[0]*self.data[scene_name][map_name]["tmx_data"].get_layer_by_name("objects").properties["zoom"]/self.get_tmx_data(map_name, scene_name).width/self.get_tmx_data(map_name, scene_name).tilewidth
             
-        trace("Scene '"+scene_name+"' has been loaded.")
+        trace("'"+scene_name+"' loaded!")
         return True
 
     def unload_scene(self, scene_name=None):
@@ -83,7 +83,7 @@ class sceneHandler:
 
         if scene_name in self.data:
             del self.data[scene_name]
-            trace("Scene '"+scene_name+"' has been unloaded.")
+            trace("'"+scene_name+"' unloaded!")
             return True
         else:
             return False
