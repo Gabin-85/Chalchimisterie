@@ -1,4 +1,4 @@
-# This is a tool box that gives functions to print.
+# This is a file that gives functions to print.
 # It has 6 levels (FATAL, ERROR, WARN, INFO, DEBUG and TRACE) of log/print handling.
 import colorama
 import json
@@ -14,8 +14,10 @@ def trace(msg): console.trace(msg)
 class consoleHandler:
 
     def __init__(self, parameter_file_path):
-        """Init the console handler"""
-        self.log_active = json.load(open(parameter_file_path))["log_active"] # Set the option file to the log_active variable in the parameter.
+        """Init the console"""
+
+        # Set the option file to the log_active variable in the parameter.
+        self.log_active = json.load(open(parameter_file_path))["log_active"]
 
         # Colors and heading messages
         colorama.init(autoreset=True)
@@ -26,11 +28,11 @@ class consoleHandler:
         self.DEBUG = colorama.Fore.GREEN + colorama.Back.BLACK + "[DEBUG]: "
         self.TRACE = colorama.Fore.WHITE + colorama.Back.BLACK + "[TRACE]: "
 
-        self.info("Console handler initialized.")
+        self.info("Console initialized.")
 
     def quit(self):
-        """Quit the console handler"""
-        self.info("Console handler quit.")
+        """Quit the console"""
+        self.info("Console quit.")
         colorama.deinit()
 
     # Logs functions

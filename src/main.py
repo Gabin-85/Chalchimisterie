@@ -1,6 +1,6 @@
 # This main file launch all files, dependencies and loop the bases functions.
 import pygame
-from utils.consoleHandler import console
+from utils.console import console
 from utils.storageHandler import storage
 from utils.sceneHandler import scene
 from game import Game

@@ -1,8 +1,8 @@
-# This a simple file (actually but after no) who is in charge of using the map.
+# This file handle the loads of the scenes and the maps.
 import pygame, pytmx, pyscroll
 import os
 from utils.storageHandler import param_get
-from utils.consoleHandler import warn, info, debug, trace
+from utils.console import warn, info, debug, trace
 
 class sceneHandler:
 

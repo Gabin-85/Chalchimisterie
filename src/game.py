@@ -2,7 +2,7 @@
 import pygame, pytmx, pyscroll
 from utils.storageHandler import param_get
 from utils.sceneHandler import scene
-from utils.consoleHandler import error
+from utils.console import error
 
 from player import *
 

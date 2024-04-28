@@ -1,4 +1,4 @@
-# This is a tool box that gives functions to manipulate files.
+# This is a handler that gives functions to manipulate files.
 #
 # FUNCTION:
 #  - shortset: manipulate shortcuts creation, renaming, destuction, etc.
@@ -16,7 +16,7 @@
 #  - param_reset: reset/patternate a json file and return True if the operation has been done.
 import json
 import os
-from utils.consoleHandler import error, warn, debug, trace, info
+from utils.console import error, warn, debug, trace, info
 
 # Fast functions (function that use the storage class to be used elsewere)
 def file_read(file_name:str=None, type=None): return storage.file_read(file_name, type)
