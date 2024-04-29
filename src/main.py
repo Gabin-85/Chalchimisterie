@@ -27,7 +27,6 @@ if __name__ == "__main__":
         # Game showing stuff
         game.run()
 
-
     # Quit (The inverse order of initialization)
     game_logic.quit()
     game.quit()

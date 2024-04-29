@@ -17,7 +17,7 @@ class Player(pygame.sprite.Sprite):
         self.force = 1
         self.velocity = pygame.Vector2(0, 0)
         self.acceleration = pygame.Vector2(0, 0)
-        self.friction = -0.5
+        self.friction = 0.8
         # After this you can add varaibles for the player like inventory and others stuffs :
 
     def get_image(self, x, y):
@@ -26,9 +26,9 @@ class Player(pygame.sprite.Sprite):
         return image
         
     def phyiscs(self, dt):
-        self.acceleration.x += self.velocity.x * self.friction
-        self.velocity.x += self.acceleration.x * dt
-        self.rect.centerx += self.velocity.x * dt + (self.velocity.x/2) * dt
+        self.velocity.x = self.velocity.x * self.friction
+        self.velocity.x += self.acceleration.x
+        self.rect.centerx += (self.velocity.x + (self.velocity.x/2))*dt
         self.feet = pygame.Rect(self.rect.centerx, 28+0, 22, 18)
         self.acceleration = pygame.Vector2(0, 0)
 
