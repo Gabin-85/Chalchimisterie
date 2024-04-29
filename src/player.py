@@ -17,7 +17,7 @@ class Player(pygame.sprite.Sprite):
         self.force = 1
         self.velocity = pygame.Vector2(0, 0)
         self.acceleration = pygame.Vector2(0, 0)
-        self.friction = -0.5
+        self.friction = -0.05
         # After this you can add varaibles for the player like inventory and others stuffs :
 
     def get_image(self, x, y):
