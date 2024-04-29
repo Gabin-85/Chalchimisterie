@@ -1,8 +1,0 @@
-(15:46:02:293056) [INFO] : Console system initialized.
-(15:46:02:298058) [INFO] : Storage handler initialized.
-(15:46:02:361806) [INFO] : Scene handler initialized.
-(15:46:02:758041) [TRACE]: Scene 'scene1' not loaded.
-(15:46:02:935850) [TRACE]: 'scene1' loaded!
-(15:46:08:042342) [INFO] : Scene handler has quit.
-(15:46:08:044677) [INFO] : Storage handler has quit.
-(15:46:08:044677) [INFO] : Console system quit.
