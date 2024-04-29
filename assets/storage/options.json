@@ -27,5 +27,6 @@
         "log_prefix": true,
         "live_time": false,
         "log_time": true
-    }
+    },
+    "arbre": "lui"
 }

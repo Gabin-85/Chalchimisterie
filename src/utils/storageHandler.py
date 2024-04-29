@@ -47,51 +47,17 @@ class storageHandler():
 
     def __init__(self):
         # Setting up the storage handler
-        if self.set_storage_folder_path("assets/storage/") == False:
-            warn("Storage folder path not found!")
-        if self.set_shortcuts_file_path("shortcuts.json") == False:
-            warn("Shortcuts file not found!")
-
+        self.storage_folder_path = "assets/storage/"
+        try:
+            self.shortcuts = self.file_read("shortcuts.json")
+        except:
+            error("Shortcuts file not found. Make sure it exists and that the path is correct.")
         info("Storage handler initialized.")
 
     def quit(self):
         """Save the shortcuts and quit"""
         self.parameter_reset("shortcuts", self.shortcuts)
         info("Storage handler has quit.")
-
-    def set_storage_folder_path(self, folder_path:str):
-        """
-        Set the storage folder path.
-
-        Args:
-            path (str): path to the folder where the files are.
-
-        Returns:
-            True if the path has been set. False otherwise.
-        """
-        if os.path.isdir(folder_path):
-            self.storage_folder_path = folder_path
-            return True
-        else:
-            self.storage_folder_path = None
-            return False
-        
-    def set_shortcuts_file_path(self, file_path:str):
-        """
-        Set the shortcuts file.
-
-        Args:
-            file_path (str): path to the shortcuts file.
-
-        Returns:
-            True if the path has been set. False otherwise.
-        """
-        if os.path.isfile(self.storage_folder_path+file_path):
-            self.shortcuts = self.file_read(file_path)
-            return True
-        else:
-            self.shortcuts = None
-            return False
 
     def set_shortcut(self, new_file_name:str=None, old_file_name:str=None, new_file_short:str=None, old_file_short:str=None):
         """
@@ -133,14 +99,14 @@ class storageHandler():
             if not new_file_short in self.shortcuts.keys():
                 self.shortcuts[new_file_short] = new_file_name
             else:
-                warn("Shortcut already exists. Can't apply new shortcut '"+new_file_short+"'.")
+                warn("Shortcut already exists. Can't apply new shortcut '"+str(new_file_short)+"'.")
                 return False
         # Set a new shortcut.
         elif new_file_name != None and old_file_name == None:
             if not new_file_short in self.shortcuts.keys():
                 self.shortcuts[new_file_short] = new_file_name
             else:
-                warn("Shortcut already exists. Can't apply new shortcut '"+new_file_short+"'.")
+                warn("Shortcut already exists. Can't apply new shortcut '"+str(new_file_short)+"'.")
                 return False
         # Delete a shortcut.
         elif new_file_name == None and old_file_name != None:
@@ -168,15 +134,15 @@ class storageHandler():
         if file_name is None or file_name == "":
             file_name = self.shortcuts["default"]
         elif file_name.count(".json") + file_name.count(".txt") == 0:
-            if file_name in self.shortcuts.keys():
+            try:
                 file_name = self.shortcuts[file_name]
-            else:
-                warn("Unknown file name '"+file_name+"'.")
+            except:
+                warn("Unknown file name '"+str(file_name)+"'.")
                 return None
         if os.path.exists(self.storage_folder_path + file_name):
             return file_name
         else:
-            warn("Unknown file "+file_name+". Make sure the file exists.")
+            warn("Unknown file "+str(file_name)+". Make sure the file exists.")
             return None
 
 
@@ -194,22 +160,20 @@ class storageHandler():
             The content of the file (str).
         """
         file_name = self.get_address_of(file_name)
-        if file_name is None:
-            error("No files can be read!")
-            return None
         if type is None:
             file_name, temp = file_name.split(".", 1)
             type = "."+temp
-        if os.path.exists(self.storage_folder_path+file_name+type):
+        try:
             with open(self.storage_folder_path+file_name+type) as file:
                 if type == ".json":
                     return json.load(file)
                 elif type == ".txt":
                     return file.read()
-                warn("Unknown file extension '"+type+"'.")
-                return None
-        else:
-            warn("No files named '"+file_name+type+"' were found.")
+                else:
+                    warn("Unknown file extension '"+type+"'.")
+                    return None
+        except:
+            warn("No files named '"+str(file_name+type)+"' were found.")
             return None
             
     def file_create(self, file_name:str, type=None, content=None, short:str=None):
@@ -243,8 +207,9 @@ class storageHandler():
                     file.write(content)
                 self.set_shortcut(file_name+type, None, short)
                 return True
-            warn("Unknown file extension '"+type+"'.")
-            return False
+            else:
+                warn("Unknown file extension '"+str(type)+"'.")
+                return False
             
     def file_delete(self, file_name:str, type:str=None):
         """
@@ -258,20 +223,15 @@ class storageHandler():
         """
         if type is None:
             file_name = self.get_address_of(file_name)
-            if file_name is None:
-                warn("No file has been deleted.")
-                return False
             file_name, temp = file_name.split(".", 1)
             type = "."+temp
-        if not os.path.exists(self.storage_folder_path+file_name+type):
-            warn("Unknown file named '"+file_name+type+"'.")
+        try:
+            os.remove(self.storage_folder_path+file_name+type)
+            self.set_shortcut(None, file_name+type)
+            return True
+        except:
+            warn("Unknown file named '"+str(file_name+type)+"'.")
             return False
-        os.remove(self.storage_folder_path+file_name+type)
-        self.set_shortcut(None, file_name+type)
-        if os.path.exists(self.storage_folder_path+file_name+type):
-            error("Unable to delete.")
-            return False
-        return True
         
     def file_rename(self, old_name:str, new_name:str, short:str=None):
         """
@@ -292,15 +252,16 @@ class storageHandler():
         if short == None:
             short = new_name
         
-        if old_name == None:
-            warn("File can't be rename, unable to open it.")
-            return False
         if os.path.exists(self.storage_folder_path+new_name+type) == True:
-            trace("Rename has replaced the same named file.")
+            trace("Rename has replaced the name "+str(new_name+type)+".")
             self.file_delete(new_name, type)
-        os.rename(self.storage_folder_path+old_name+type, self.storage_folder_path+new_name+type)
-        self.set_shortcut(new_name+type, old_name+type, short)
-        return True
+        try:
+            os.rename(self.storage_folder_path+old_name+type, self.storage_folder_path+new_name+type)
+            self.set_shortcut(new_name+type, old_name+type, short)
+            return True
+        except:
+            warn("File can't be rename.")
+            return False
 
 
     ###################
@@ -326,17 +287,11 @@ class storageHandler():
 
         # Set the file address
         file_name = self.get_address_of(file_name)
-        if file_name is None:
-            warn("No files can be read!")
-            return None
-        
-        if type(param_name) != str:
-            warn("parameter_get() take param_name as a str. Type "+type(param_name)+" not allowed.")
-            return False
-        if param_name in self.file_read(file_name):
+        try:
             return self.file_read(file_name)[param_name]
-        warn("Can't find parameter named '"+param_name+"'.")
-        return None
+        except:
+            warn("Can't find parameter named '"+str(param_name)+"' in the file '"+str(file_name)+"'.")
+            return None
         
     def parameter_set(self, param_name, param_value, file_name=None):
         """
@@ -353,9 +308,6 @@ class storageHandler():
         if type(param_name) == str:
             param_name = [param_name]
             param_value = [param_value]
-        elif type(param_name) != list or type(param_value) != list:
-            warn("parameter_set() take parameters as a list or str. Type "+type(param_name)+" not allowed.")
-            return False
         if file_name == None:
             file_name = [""]*len(param_name)
         elif type(file_name) == str:
@@ -363,13 +315,13 @@ class storageHandler():
         for k in range(len(param_name)):
             file_name[k] = self.get_address_of(file_name[k])
 
-            if file_name[k] is None:
-                warn("No files can be read!")
-                return False
-            modified = self.file_read(file_name[k])
-            modified[param_name[k]] = param_value[k]
-            json.dump(modified, open(self.storage_folder_path+file_name[k], "w"), indent=4)
-        return True
+            try:
+                modified = self.file_read(file_name[k])
+                modified[param_name[k]] = param_value[k]
+                json.dump(modified, open(self.storage_folder_path+file_name[k], "w"), indent=4)
+                return True
+            except:
+                warn("Can't set the parameter named '"+str(param_name[k])+"' in the file '"+str(file_name[k])+"'.")
 
     def parameter_delete(self, param_name, file_name=None):
         """
@@ -384,26 +336,20 @@ class storageHandler():
         """
         if type(param_name) == str:
             param_name = [param_name]
-        elif type(param_name) != list:
-                warn("parameter_delete() take param_name as a list. Type "+type(param_name)+" not allowed.")
-                return False
-        if file_name is None:
-            warn("No files can be deleted!")
-            return False
-        elif type(file_name) == str:
+        if type(file_name) == str:
             file_name = [file_name]*len(param_name)
         
         for k in range(len(param_name)):
             file_name[k] = self.get_address_of(file_name[k])
         
-            if param_name[k] in self.file_read(file_name[k]).keys():
+            try:
                 modified = self.file_read(file_name[k])
                 del modified[param_name[k]]
                 json.dump(modified, open(self.storage_folder_path+file_name[k], "w"), indent=4)
-            else:
-                trace("Can't find the parameter named '"+ param_name[k] +"'. Skip.")
+                return True
+            except:
+                warn("Can't delete the parameter named '"+str(param_name[k])+"' in the file '"+str(file_name[k])+"'.")
                 return False
-        return True  
 
     def parameter_reset(self, file_name:str=None, reset:dict={}):
         """
@@ -416,15 +362,13 @@ class storageHandler():
             True if the file has been reset. False otherwise.
         """
         file_name = self.get_address_of(file_name)
-        if file_name is None:
-            warn("No files can be read!")
-            return False
-        if type(reset) != dict:
-            warn("parameter_reset() take reset as a dictionnary. Type "+type(reset)+" not allowed.")
-            return False
         
-        json.dump(reset, open(self.storage_folder_path+file_name, "w"), indent=4)
-        return True
+        try:
+            json.dump(reset, open(self.storage_folder_path+file_name, "w"), indent=4)
+            return True
+        except:
+            warn("Can't reset the file '"+str(file_name)+"'")
+            return False
 
 # Set the storage object
 storage = storageHandler()

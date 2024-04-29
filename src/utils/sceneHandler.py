@@ -31,15 +31,15 @@ class sceneHandler:
         scene = param_get(scene_name, "scenes")
 
         if scene == None:
-            trace("Scene '"+scene_name+"' not found.")
+            warn("Scene '"+scene_name+"' not found.")
             return False
         self.data[scene_name] = {}
         for map_name in scene:
             # Load all the maps in scene
             self.data[scene_name][map_name] = {"file": scene[map_name]}
-            if os.path.exists(self.scene_folder_path+self.data[scene_name][map_name]["file"]):
+            try:
                 self.data[scene_name][map_name]["tmx_data"] = pytmx.util_pygame.load_pygame(self.scene_folder_path + self.data[scene_name][map_name]["file"])
-            else:
+            except FileNotFoundError:
                 warn("Map named '"+self.data[scene_name][map_name]["file"]+"' not found. Abort load.")
                 return False
             self.data[scene_name][map_name]["map_data"] = pyscroll.TiledMapData(self.data[scene_name][map_name]["tmx_data"])
