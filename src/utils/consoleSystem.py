@@ -2,6 +2,7 @@
 # It has 6 levels (FATAL, ERROR, WARN, INFO, DEBUG and TRACE) of log/print handling.
 from utils.timeToolbox import date
 import colorama
+import os
 import json
 
 # Fast functions (function that use the console class to be used elsewere)
@@ -85,9 +86,8 @@ class consoleHandler:
         """Quit the console system"""
 
         self.info("Console system quit.")
-
         # Create logs
-        with open("output/logs.log", "w") as f:
+        with open("logs.log", "w") as f:
             f.write("\n".join(self.logs))
         
         colorama.deinit()
