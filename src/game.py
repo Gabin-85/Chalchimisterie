@@ -24,9 +24,9 @@ class Game:
         self.player = Player()
         self.player.position = (755, 670)
         
-        self.update("testa", "scene1")
+        self.update_map("testa", "scene1")
 
-    def update(self, map_name=None, scene_name=None):
+    def update_map(self, map_name=None, scene_name=None):
         if scene_name is None:
             scene_name = self.selected_scene
         if map_name is None:
@@ -43,14 +43,8 @@ class Game:
         Update the player position and make a draw call.
         """
 
-        # Update the player movement.
+        # Update the player movement. TODO: Dispatch it to the player class
         self.player.move()
-
-        # Teleport the player if he collide with a portal
-        for portal in scene.get_portals():
-            if self.player.feet.colliderect(scene.get_portals()[portal]["rect"]) == True:
-                self.player.position = (scene.get_portal_exit(scene.get_portals()[portal]).x, scene.get_portal_exit(scene.get_portals()[portal]).y)
-                self.update(scene.get_portals()[portal]["targeted_map_name"], scene.get_portals()[portal]["targeted_scene_name"])
         
         # TODO: Modify the player move part so we can separate x and y
         for wall in scene.get_walls():
@@ -62,6 +56,12 @@ class Game:
                         pass
                     case "solid":
                         self.player.move_back()
+
+        # Teleport the player if he collide with a portal
+        for portal in scene.get_portals():
+            if self.player.feet.colliderect(scene.get_portals()[portal]["rect"]) == True:
+                self.player.position = (scene.get_portal_exit(scene.get_portals()[portal]).x, scene.get_portal_exit(scene.get_portals()[portal]).y)
+                self.update_map(scene.get_portals()[portal]["targeted_map_name"], scene.get_portals()[portal]["targeted_scene_name"])
 
         # Update the player position
         self.player.update()

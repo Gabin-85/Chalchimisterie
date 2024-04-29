@@ -28,6 +28,7 @@ class Player(pygame.sprite.Sprite):
 
     def move(self):
         # TODO: Modifiy this to make set the player acceleration, merge it to the velocity, check here the collisions and update afterwards the position.
+        # TODO: Move the keys detection part to the game_logic.
         pressed = pygame.key.get_pressed()
 
         if pressed[pygame.K_LSHIFT] or pressed[pygame.K_RSHIFT]:
@@ -70,6 +71,7 @@ class Player(pygame.sprite.Sprite):
                 self.allow_move = True
 
 
+        # TODO: Make the player position the center of his feets and correct the player feet rectangle.
         self.position = [self.position[0]+self.velocity[0], self.position[1]+self.velocity[1]]
         self.feet = pygame.Rect(self.position[0], 28+self.position[1], 22, 18)
 
