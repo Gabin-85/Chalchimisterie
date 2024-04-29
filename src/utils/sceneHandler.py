@@ -182,7 +182,7 @@ class sceneHandler:
         return self.data[scene_name][map_name]["map_layer"]
     
     def get_walls(self, map_name=None, scene_name=None):
-        """Get the walls of the map (dict of list)"""
+        """Get the walls of the map (list)"""
         if scene_name is None:
             scene_name = self.selected_scene
         if self.has_scene_load(scene_name) == 0:
