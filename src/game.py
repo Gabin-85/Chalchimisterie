@@ -2,7 +2,6 @@
 import pygame, pytmx, pyscroll
 from utils.storageHandler import param_get
 from utils.sceneHandler import scene
-from utils.consoleSystem import error
 
 from player import *
 
@@ -23,7 +22,7 @@ class Game:
 
         # TODO: Make it configurable with saved files.
         self.player = Player()
-        self.player.position = (755, 670)
+        self.player.rect.center = (755, 670)
         
         self.update_map("testa", "scene1")
 
@@ -51,22 +50,11 @@ class Game:
         except:
             dt = 0
         self.player.update(dt)
-        
-        # TODO: Modify the player move part so we can separate x and y
-        for wall in scene.get_walls():
-            if self.player.feet.colliderect(wall["rect"]) == True:
-                match wall["collision_type"]:
-                    case "bouncy":
-                        pass
-                    case "sticky":
-                        pass
-                    case "solid":
-                        self.player.move_back()
 
         # Teleport the player if he collide with a portal
         for portal in scene.get_portals():
             if self.player.feet.colliderect(scene.get_portals()[portal]["rect"]) == True:
-                self.player.position = (scene.get_portal_exit(scene.get_portals()[portal]).x, scene.get_portal_exit(scene.get_portals()[portal]).y)
+                self.player.rect.center = (scene.get_portal_exit(scene.get_portals()[portal]).x, scene.get_portal_exit(scene.get_portals()[portal]).y)
                 self.update_map(scene.get_portals()[portal]["targeted_map_name"], scene.get_portals()[portal]["targeted_scene_name"])
 
         # Recenter and draw
