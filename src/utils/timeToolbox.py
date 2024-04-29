@@ -28,6 +28,13 @@ class Date:
         """
         self.update()
         return int(self.updated_date.timestamp()*1000000)
+    
+    def get_formated_time(self):
+        """
+        Get the current time (str format) in the format "HH:MM:SS:MS".
+        """
+        self.update()
+        return self.updated_date.strftime("%H:%M:%S:%f")
 
 class Clock:
 

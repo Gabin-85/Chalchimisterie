@@ -11,6 +11,7 @@ class Game:
         """
         This is the game init function. It's called at the beginning of the game.
         """
+        self.clock = pygame.time.Clock()
 
         # Get variables
         self.window_name = param_get("window_name")
@@ -19,22 +20,22 @@ class Game:
         self.screen = pygame.display.set_mode(param_get("screen_size"))
         pygame.display.set_caption(self.window_name)
 
-        self.update_render()
-
-    def update_render(self):
-        # Get all scenes and choose a scene
-        # TODO: Add more scenes and make it save configurable
-        # Actuellement ceci est un easter-egg, a chaque frame le jeu change de map. C'est fluide hein ?
-        scene.change_scene("scene1")
-        if scene.selected_map == "test":
-            scene.selected_map = "test1"
-        else:
-            scene.selected_map = "test"
-
-        Player.position = scene.player().x, scene.player().y
+        # TODO: Make it configurable with saved files.
         self.player = Player()
+        self.player.rect.center = (755, 670)
+        
+        self.update_map("testa", "scene1")
 
-        self.group = pyscroll.PyscrollGroup(map_layer=scene.map_layer(), default_layer=4)
+    def update_map(self, map_name=None, scene_name=None):
+        if scene_name is None:
+            scene_name = self.selected_scene
+        if map_name is None:
+            map_name = self.selected_map
+
+        scene.change_map(map_name, scene_name)
+        scene.scene_cleanup()
+
+        self.group = pyscroll.PyscrollGroup(map_layer=scene.get_map_layer(map_name, scene_name), default_layer=4)
         self.group.add(self.player)
 
     def run(self):
@@ -42,22 +43,19 @@ class Game:
         Update the player position and make a draw call.
         """
 
-        # Update the player movement
-        self.player.player_move()
+        # Update the player movement. TODO: Dispatch it to the player class
+        self.clock.tick(60)
+        try:
+            dt = 50 / self.clock.get_fps()
+        except:
+            dt = 0
+        self.player.update(dt)
 
-        # TODO: Modify the player move part so we can separate x and y
-        for sprite in self.group.sprites():
-            if sprite.feet.collidelist(scene.walls()["sticky"]) > -1:
-                pass
-            elif sprite.feet.collidelist(scene.walls()["bouncy"]) > -1:
-                pass
-            elif sprite.feet.collidelist(scene.walls()["solid"]) > -1:
-                self.player.move_back()
-            elif sprite.feet.collidelist(scene.portals()) > -1:
-                pass
-
-        # Update the player position
-        self.player.update()
+        # Teleport the player if he collide with a portal
+        for portal in scene.get_portals():
+            if self.player.feet.colliderect(scene.get_portals()[portal]["rect"]) == True:
+                self.player.rect.center = (scene.get_portal_exit(scene.get_portals()[portal]).x, scene.get_portal_exit(scene.get_portals()[portal]).y)
+                self.update_map(scene.get_portals()[portal]["targeted_map_name"], scene.get_portals()[portal]["targeted_scene_name"])
 
         # Recenter and draw
         self.group.center(self.player.rect.center)

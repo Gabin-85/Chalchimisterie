@@ -1,7 +1,5 @@
+from utils.sceneHandler import scene
 import pygame
-import math
-
-DIAGONALY = math.sqrt(2)/2
 
 class Player(pygame.sprite.Sprite):
 
@@ -13,74 +11,67 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.last_position = [None, None]
         self.feet = pygame.Rect(0, 0, 0, 0)
-        self.glide = 0.5
-        self.allow_move = True
+        # self.glide = 0.5
+        # self.allow_move = True
+        self.speed = 60
+        self.force = 1
         self.velocity = pygame.Vector2(0, 0)
-        self.acceleration = pygame.Vector2(0, 0)
-        
+        self.friction = 0.8
         # After this you can add varaibles for the player like inventory and others stuffs :
 
     def get_image(self, x, y):
-
         image = pygame.Surface([32, 64])
         image.blit(self.sprite_sheet, (0, 0), (x, y, 32, 64))
         return image
+        
+    def phyiscs(self, dt):
+        self.feet = pygame.Rect(self.rect.centerx-15, self.rect.centery-5, 19, 16)
+        feetx = self.feet
+        feety = self.feet
 
-    def player_move(self):
+        self.velocity = self.velocity * self.friction
+        self.velocity += self.acceleration
+
+        feetx.x += self.velocity.x
+        feety.y += self.velocity.y
+
+        # TODO: Modify the player move part so we can separate x and y
+        for wall in scene.get_walls():
+            if feetx.colliderect(wall["rect"]) == True:
+                match wall["collision_type"]:
+                    case "bouncy":
+                        pass
+                    case "sticky":
+                        pass
+                    case "solid":
+                        self.velocity.x = 0
+            if feety.colliderect(wall["rect"]) == True:
+                match wall["collision_type"]:
+                    case "bouncy":
+                        pass
+                    case "sticky":
+                        pass
+                    case "solid":
+                        self.velocity.y = 0
+
+        self.rect.center += (self.velocity + (self.velocity/2))*dt
+        self.feet = pygame.Rect(self.rect.centerx-15, self.rect.centery-5, 19, 16)
+        self.acceleration = pygame.Vector2(0, 0)
+
+    def move(self):
+        # TODO: Modifiy this to make set the player acceleration, merge it to the velocity, check here the collisions and update afterwards the position.
         pressed = pygame.key.get_pressed()
 
-        if pressed[pygame.K_LSHIFT] or pressed[pygame.K_RSHIFT]:
-            self.acceleration = [0.8, 0.8]
-        else:
-            self.acceleration = [0.5, 0.5]
+        self.acceleration = pygame.Vector2(0, 0)
+        if pressed[pygame.K_LEFT]:
+            self.acceleration.x -= self.force
+        if pressed[pygame.K_RIGHT]:
+            self.acceleration.x += self.force
+        if pressed[pygame.K_UP]:
+            self.acceleration.y -= self.force
+        elif pressed[pygame.K_DOWN]:
+            self.acceleration.y += self.force
 
-        if pressed[pygame.K_UP] and not pressed[pygame.K_DOWN]:
-            if pressed[pygame.K_LEFT] and not pressed[pygame.K_RIGHT]:
-                self.acceleration = [-self.acceleration[0]*DIAGONALY, -self.acceleration[1]*DIAGONALY]
-            elif pressed[pygame.K_RIGHT] and not pressed[pygame.K_LEFT]:
-                self.acceleration = [self.acceleration[0]*DIAGONALY, -self.acceleration[1]*DIAGONALY]
-            else:
-                self.acceleration = [0, -self.acceleration[1]]
-        elif pressed[pygame.K_DOWN] and not pressed[pygame.K_UP]:
-            if pressed[pygame.K_LEFT] and not pressed[pygame.K_RIGHT]:
-                self.acceleration = [-self.acceleration[0]*DIAGONALY, self.acceleration[1]*DIAGONALY]
-            elif pressed[pygame.K_RIGHT] and not pressed[pygame.K_LEFT]:
-                self.acceleration = [self.acceleration[0]*DIAGONALY, self.acceleration[1]*DIAGONALY]
-            else:
-                self.acceleration = [0, self.acceleration[1]]
-        else:
-            if pressed[pygame.K_LEFT] and not pressed[pygame.K_RIGHT]:
-                self.acceleration = [-self.acceleration[0], 0]
-            elif pressed[pygame.K_RIGHT] and not pressed[pygame.K_LEFT]:
-                self.acceleration = [self.acceleration[0], 0]
-            else:
-                self.acceleration = [0, 0]
-        if pressed[pygame.K_SPACE]:
-            self.acceleration = self.acceleration[0]*500, self.acceleration[1]*500
-            if self.allow_move: 
-                self.velocity = self.velocity[0]*self.glide + self.acceleration[0]*(-self.glide+1), self.velocity[1]*self.glide + self.acceleration[1]*(-self.glide+1)
-            self.allow_move = False
-
-        if self.allow_move:
-            self.velocity = self.velocity[0]*self.glide + self.acceleration[0]*(-self.glide+1), self.velocity[1]*self.glide + self.acceleration[1]*(-self.glide+1)
-        else:
-            self.velocity = self.velocity[0]*self.glide, self.velocity[1]*self.glide
-            if round(self.velocity[0], 1) == 0 and round(self.velocity[1], 1) == 0:
-                self.allow_move = True
-
-
-        self.position = [self.position[0]+self.velocity[0], self.position[1]+self.velocity[1]]
-        self.feet = pygame.Rect(self.position[0], 28+self.position[1], 22, 18)
-
-    def update(self):
-        """
-        For updating your player stats, we have to update the renderer player part.
-        All sets bellow are necessary.
-        """
-        if self.last_position != self.position:
-            self.feet.midbottom = self.rect.midbottom
-            self.last_position = self.position
-            self.rect.topleft = self.position
-
-    def move_back(self):
-        self.position = self.last_position
+    def update(self, dt):
+        self.move()
+        self.phyiscs(dt)
