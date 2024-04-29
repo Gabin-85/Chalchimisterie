@@ -3,11 +3,10 @@
 class Game_logic:
 
     def __init__(self):
-        ...
+        pass
 
     def run(self):
-        # TODO: Set here the key recording.
-        ...
+        pass
 
     def quit(self):
-        ...
+        pass

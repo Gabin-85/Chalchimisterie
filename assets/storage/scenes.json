@@ -1,8 +1,6 @@
 {
     "scene1": {
-        "testa": "testa.tmx"
-    },
-    "scene2": {
+        "testa": "testa.tmx",
         "testb": "testb.tmx"
     }
 }

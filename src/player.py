@@ -1,8 +1,6 @@
 import pygame
 import math
 
-DIAGONALY = math.sqrt(2)/2
-
 class Player(pygame.sprite.Sprite):
 
     def __init__(self):
@@ -13,78 +11,40 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.last_position = [None, None]
         self.feet = pygame.Rect(0, 0, 0, 0)
-        self.glide = 0.5
-        self.allow_move = True
+        # self.glide = 0.5
+        # self.allow_move = True
+        self.speed = 60
+        self.force = 1
         self.velocity = pygame.Vector2(0, 0)
         self.acceleration = pygame.Vector2(0, 0)
-        
+        self.friction = -0.5
         # After this you can add varaibles for the player like inventory and others stuffs :
 
     def get_image(self, x, y):
-
         image = pygame.Surface([32, 64])
         image.blit(self.sprite_sheet, (0, 0), (x, y, 32, 64))
         return image
+        
+    def phyiscs(self, dt):
+        self.acceleration.x += self.velocity.x * self.friction
+        self.velocity.x += self.acceleration.x * dt
+        self.rect.centerx += self.velocity.x * dt + (self.velocity.x/2) * dt
+        self.feet = pygame.Rect(self.rect.centerx, 28+0, 22, 18)
+        self.acceleration = pygame.Vector2(0, 0)
 
     def move(self):
         # TODO: Modifiy this to make set the player acceleration, merge it to the velocity, check here the collisions and update afterwards the position.
-        # TODO: Move the keys detection part to the game_logic.
         pressed = pygame.key.get_pressed()
-
-        if pressed[pygame.K_LSHIFT] or pressed[pygame.K_RSHIFT]:
-            self.acceleration = [0.8, 0.8]
+        if pressed[pygame.K_LEFT]:
+            self.acceleration.x = -self.force
+        elif pressed[pygame.K_RIGHT]:
+            self.acceleration.x = self.force
         else:
-            self.acceleration = [0.5, 0.5]
+            self.acceleration.x = 0
 
-        if pressed[pygame.K_UP] and not pressed[pygame.K_DOWN]:
-            if pressed[pygame.K_LEFT] and not pressed[pygame.K_RIGHT]:
-                self.acceleration = [-self.acceleration[0]*DIAGONALY, -self.acceleration[1]*DIAGONALY]
-            elif pressed[pygame.K_RIGHT] and not pressed[pygame.K_LEFT]:
-                self.acceleration = [self.acceleration[0]*DIAGONALY, -self.acceleration[1]*DIAGONALY]
-            else:
-                self.acceleration = [0, -self.acceleration[1]]
-        elif pressed[pygame.K_DOWN] and not pressed[pygame.K_UP]:
-            if pressed[pygame.K_LEFT] and not pressed[pygame.K_RIGHT]:
-                self.acceleration = [-self.acceleration[0]*DIAGONALY, self.acceleration[1]*DIAGONALY]
-            elif pressed[pygame.K_RIGHT] and not pressed[pygame.K_LEFT]:
-                self.acceleration = [self.acceleration[0]*DIAGONALY, self.acceleration[1]*DIAGONALY]
-            else:
-                self.acceleration = [0, self.acceleration[1]]
-        else:
-            if pressed[pygame.K_LEFT] and not pressed[pygame.K_RIGHT]:
-                self.acceleration = [-self.acceleration[0], 0]
-            elif pressed[pygame.K_RIGHT] and not pressed[pygame.K_LEFT]:
-                self.acceleration = [self.acceleration[0], 0]
-            else:
-                self.acceleration = [0, 0]
-        if pressed[pygame.K_SPACE]:
-            self.acceleration = self.acceleration[0]*500, self.acceleration[1]*500
-            if self.allow_move: 
-                self.velocity = self.velocity[0]*self.glide + self.acceleration[0]*(-self.glide+1), self.velocity[1]*self.glide + self.acceleration[1]*(-self.glide+1)
-            self.allow_move = False
-
-        if self.allow_move:
-            self.velocity = self.velocity[0]*self.glide + self.acceleration[0]*(-self.glide+1), self.velocity[1]*self.glide + self.acceleration[1]*(-self.glide+1)
-        else:
-            self.velocity = self.velocity[0]*self.glide, self.velocity[1]*self.glide
-            if round(self.velocity[0], 1) == 0 and round(self.velocity[1], 1) == 0:
-                self.allow_move = True
-
-
-        # TODO: Make the player position the center of his feets and correct the player feet rectangle.
-        self.position = [self.position[0]+self.velocity[0], self.position[1]+self.velocity[1]]
-        self.feet = pygame.Rect(self.position[0], 28+self.position[1], 22, 18)
-
-    def update(self):
-        """
-        For updating your player stats, we have to update the renderer player part.
-        All sets bellow are necessary.
-        """
-        # TODO: Delete this. It has to be in move().
-        if self.last_position != self.position:
-            self.feet.midbottom = self.rect.midbottom
-            self.last_position = self.position
-            self.rect.topleft = self.position
+    def update(self, dt):
+        self.move()
+        self.phyiscs(dt)
 
     def move_back(self):
         self.position = self.last_position

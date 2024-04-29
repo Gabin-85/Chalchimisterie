@@ -1,9 +1,8 @@
-(13:00:27:432945) [INFO] : Console system initialized.
-(13:00:27:435944) [INFO] : Storage handler initialized.
-(13:00:27:670553) [INFO] : Scene handler initialized.
-(13:00:27:671563) [WARN] : Unknown file name 'lui'.
-(13:00:27:672561) [WARN] : Unknown file name 'lui'.
-(13:00:27:672561) [WARN] : Can't delete the parameter named 'arbre' in the file 'None'.
-(13:00:27:675561) [WARN] : Unknown file name 'arbre'.
-(13:00:27:675561) [WARN] : Can't reset the file 'None'
-(13:00:27:676893) [INFO] : Console system quit.
+(15:00:32:327561) [INFO] : Console system initialized.
+(15:00:32:329566) [INFO] : Storage handler initialized.
+(15:00:32:370562) [INFO] : Scene handler initialized.
+(15:00:32:623511) [TRACE]: Scene 'scene1' not loaded.
+(15:00:32:729570) [TRACE]: 'scene1' loaded!
+(15:01:00:804311) [INFO] : Scene handler has quit.
+(15:01:00:807314) [INFO] : Storage handler has quit.
+(15:01:00:807314) [INFO] : Console system quit.

@@ -44,7 +44,8 @@ class Game:
         """
 
         # Update the player movement. TODO: Dispatch it to the player class
-        self.player.move()
+        dt = 0.1
+        self.player.update(dt)
         
         # TODO: Modify the player move part so we can separate x and y
         for wall in scene.get_walls():
@@ -62,9 +63,6 @@ class Game:
             if self.player.feet.colliderect(scene.get_portals()[portal]["rect"]) == True:
                 self.player.position = (scene.get_portal_exit(scene.get_portals()[portal]).x, scene.get_portal_exit(scene.get_portals()[portal]).y)
                 self.update_map(scene.get_portals()[portal]["targeted_map_name"], scene.get_portals()[portal]["targeted_scene_name"])
-
-        # Update the player position
-        self.player.update()
 
         # Recenter and draw
         self.group.center(self.player.rect.center)
