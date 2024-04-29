@@ -223,7 +223,7 @@
   </properties>
   <object id="2" type="collision" x="1216" y="608" width="128" height="128">
    <properties>
-    <property name="collision_type" value="solid"/>
+    <property name="collision_type" value="bouncy"/>
    </properties>
   </object>
   <object id="4" name="portal_test" type="portal" x="1280" y="544" width="64" height="64">
