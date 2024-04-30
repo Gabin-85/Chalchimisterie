@@ -11,7 +11,7 @@ class Game:
         """
         This is the game init function. It's called at the beginning of the game.
         """
-        self.clock = pygame.time.Clock()
+        self.fps_clock = pygame.time.Clock()
 
         # Get variables
         self.window_name = param_get("window_name")
@@ -44,9 +44,9 @@ class Game:
         """
 
         # Update the player movement. TODO: Dispatch it to the player class
-        self.clock.tick(60)
+        self.fps_clock.tick(60)
         try:
-            dt = 50 / self.clock.get_fps()
+            dt = 50 / self.fps_clock.get_fps()
         except:
             dt = 0
         self.player.update(dt)

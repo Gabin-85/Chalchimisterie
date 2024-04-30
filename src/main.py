@@ -3,6 +3,7 @@ import pygame
 from utils.consoleSystem import console
 from utils.storageHandler import storage
 from utils.sceneHandler import scene
+from utils.timeToolbox import clock, date
 from game import Game
 from game_logic import Game_logic
 

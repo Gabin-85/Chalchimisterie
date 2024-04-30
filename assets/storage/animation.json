@@ -1,0 +1,31 @@
+{
+    "player": {
+        "sprite_sheet": "player.png",
+        "animations": {
+            "down": [
+                {
+                    "x": 0,
+                    "y": 0
+                }
+            ],
+            "up": [
+                {
+                    "x": 1,
+                    "y": 0
+                }
+            ],
+            "left": [
+                {
+                    "x": 2,
+                    "y": 0
+                }
+            ],
+            "right": [
+                {
+                    "x": 3,
+                    "y": 0
+                }
+            ]
+        }
+    }
+}
