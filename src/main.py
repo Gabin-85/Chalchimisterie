@@ -2,16 +2,16 @@
 import pygame
 from utils.consoleSystem import console
 from utils.storageHandler import storage
+from utils.saveHandler import save
 from utils.sceneHandler import scene
 from utils.timeToolbox import clock, date
 from game import Game
-from game_logic import Game_logic
 
 if __name__ == "__main__":
     # Initialisation
     pygame.init()
+    save.selected_save = "save1"
     game = Game()
-    game_logic = Game_logic()
 
     # This is the code run
     running = True
@@ -21,15 +21,11 @@ if __name__ == "__main__":
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-
-        # Game logic part
-        game_logic.run()
-
-        # Game showing stuff
+        
+        # Game loop
         game.run()
 
     # Quit (The inverse order of initialization)
-    game_logic.quit()
     game.quit()
     scene.quit()
     storage.quit()

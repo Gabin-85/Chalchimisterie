@@ -22,9 +22,8 @@ class Game:
 
         # TODO: Make it configurable with saved files.
         self.player = Player()
-        self.player.position = (755, 670)
         
-        self.update_map("testa", "scene1")
+        self.update_map(self.player.map_name, self.player.scene_name)
 
     def update_map(self, map_name=None, scene_name=None):
         if scene_name is None:
@@ -51,11 +50,8 @@ class Game:
             dt = 0
         self.player.update(dt)
 
-        # Teleport the player if he collide with a portal
-        for portal in scene.get_portals():
-            if self.player.feet.colliderect(scene.get_portals()[portal]["rect"]) == True:
-                self.player.position = (scene.get_portal_exit(scene.get_portals()[portal]).x, scene.get_portal_exit(scene.get_portals()[portal]).y)
-                self.update_map(scene.get_portals()[portal]["targeted_map_name"], scene.get_portals()[portal]["targeted_scene_name"])
+        if self.player.map_name != scene.selected_map or self.player.scene_name != scene.selected_scene:
+            self.update_map(self.player.map_name, self.player.scene_name)
 
         # Recenter and draw
         self.group.center(self.player.rect.center)
@@ -66,4 +62,4 @@ class Game:
         """
         This is empty for the moment.
         """
-        ...
+        self.player.quit()

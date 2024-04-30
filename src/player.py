@@ -1,22 +1,32 @@
 from utils.sceneHandler import scene
 from animation import EntityAnimation
+from utils.saveHandler import SaveObject
 import pygame
+import math
 
 class Player(pygame.sprite.Sprite):
 
     def __init__(self):
         super().__init__()
         self.player_animation = EntityAnimation("player", (21, 48), 50)
-        self.feet = pygame.Rect(0, 0, 21, 16)
+        self.feet = pygame.Rect(0, 0, 21, 18)
         
         self.position = pygame.Vector2(0, 0)
         self.velocity = pygame.Vector2(0, 0)
-        self.acceleration = pygame.Vector2(0, 0)
-        self.linear_force = 1.0
-        self.diagonal_force = (self.linear_force**2)/2**0.5
+        self.force = 1.0
         self.friction = 0.8
+        
+        self.save = SaveObject("player")
+        self.position = pygame.Vector2(self.save.get_save("position")[0], self.save.get_save("position")[1])
+        self.map_name = self.save.get_save("map_name")
+        self.scene_name = self.save.get_save("scene_name")
         # After this you can add variables for the player like inventory and others stuffs :
-    
+
+    def quit(self):
+        self.save.set_save("map_name", self.map_name)
+        self.save.set_save("scene_name", self.scene_name)
+        self.save.set_save("position", (self.position.x, self.position.y))
+
     def update(self, dt):
         self.move()
         self.phyiscs(dt)
@@ -25,7 +35,7 @@ class Player(pygame.sprite.Sprite):
         # Check if a key is pressed and set the player acceleration
         pressed = pygame.key.get_pressed()
 
-        self.acceleration.x, self.acceleration.y = 0, 0
+        self.acceleration = pygame.Vector2(0, 0)
         if pressed[pygame.K_LEFT]:
             self.acceleration.x -= 1
             self.player_animation.reset_to("left")
@@ -39,20 +49,28 @@ class Player(pygame.sprite.Sprite):
             self.acceleration.y += 1
             self.player_animation.reset_to("down")
         
-        if self.acceleration.x != 0 and self.acceleration.y != 0:
-            self.acceleration *= self.diagonal_force
-        else:
-            self.acceleration *= self.linear_force
+        try:
+            self.acceleration.scale_to_length(self.force)
+        except:
+            pass
 
         self.rect = self.player_animation.next()
         self.image = self.player_animation.current_image
             
     def phyiscs(self, dt):
-        self.velocity = self.velocity * self.friction
-        self.velocity += self.acceleration
+        self.velocity = self.velocity * self.friction + self.acceleration
 
-        feetx = pygame.Rect(self.feet.x + self.velocity.x, self.feet.y, self.feet.width, self.feet.height)
-        feety = pygame.Rect(self.feet.x, self.feet.y + self.velocity.y, self.feet.width, self.feet.height)
+        marging = pygame.Vector2(0, 0)
+        if self.velocity.x > 0:
+            marging.x = math.ceil(self.velocity.x)
+        else:
+            marging.x = math.floor(self.velocity.x)
+        if self.velocity.y > 0:
+            marging.y = math.ceil(self.velocity.y)
+        else:
+            marging.y = math.floor(self.velocity.y)
+        feetx = pygame.Rect(self.feet.x + marging.x, self.feet.y, self.feet.width, self.feet.height)
+        feety = pygame.Rect(self.feet.x, self.feet.y + marging.y, self.feet.width, self.feet.height)
 
         # TODO: Modify the player move part so we can separate x and y
         for wall in scene.get_walls():
@@ -75,7 +93,12 @@ class Player(pygame.sprite.Sprite):
                     case "solid":
                         self.velocity.y = 0
 
-        self.position += (self.velocity)*dt
+        self.position += self.velocity*dt
         self.feet.center = self.position
-        self.rect.center = (self.feet.x+16, self.feet.y+4)
-        self.acceleration = pygame.Vector2(0, 0)
+        self.rect.center = (self.feet.x+10, self.feet.y-6)
+
+        # Teleport the player if he collide with a portal
+        for portal in scene.get_portals():
+            if self.feet.colliderect(scene.get_portals()[portal]["rect"]) == True:
+                self.position.x, self.position.y = scene.get_portal_exit(scene.get_portals()[portal]).x, scene.get_portal_exit(scene.get_portals()[portal]).y
+                self.map_name, self.scene_name = scene.get_portals()[portal]["targeted_map_name"], scene.get_portals()[portal]["targeted_scene_name"]
