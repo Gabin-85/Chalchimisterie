@@ -1,6 +1,8 @@
 from utils.storageHandler import param_get, param_reset, param_set
 from utils.consoleSystem import warn
 
+#TODO: Need a refactor of this handler.
+
 class saveHandler:
     
     def __init__(self):
@@ -15,7 +17,7 @@ class saveHandler:
 
 
 save = saveHandler()
-    
+
 class SaveObject:
 
     def __init__(self, object):

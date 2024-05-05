@@ -1,6 +1,6 @@
 class Entity:
-    def __init__(self):
-        pass
+    
+    #TODO: Set a pattern to entities.
 
-    def update(self):
+    def __init__(self) -> None:
         pass
