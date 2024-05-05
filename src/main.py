@@ -4,7 +4,6 @@ from utils.consoleSystem import console
 from utils.storageHandler import storage
 from utils.saveHandler import save
 from utils.sceneHandler import scene
-from utils.timeToolbox import clock, date
 from game import Game
 
 if __name__ == "__main__":
