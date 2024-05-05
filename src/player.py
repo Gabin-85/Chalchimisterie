@@ -9,12 +9,13 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.player_animation = EntityAnimation("player", (21, 48), 50)
-        self.feet = pygame.Rect(0, 0, 21, 18)
+        self.hitbox = pygame.Rect(0, 0, 21, 18)
         
         self.position = pygame.Vector2(0, 0)
         self.velocity = pygame.Vector2(0, 0)
+        self.mass = 1.0
         self.force = 1.0
-        self.friction = 0.8
+        self.friction = 0.2
         
         self.save = SaveObject("player")
         self.position = pygame.Vector2(self.save.get_save("position")[0], self.save.get_save("position")[1])
@@ -50,7 +51,7 @@ class Player(pygame.sprite.Sprite):
             self.player_animation.reset_to("down")
         
         try:
-            self.acceleration.scale_to_length(self.force)
+            self.acceleration.scale_to_length(self.force/self.mass)
         except:
             pass
 
@@ -58,7 +59,7 @@ class Player(pygame.sprite.Sprite):
         self.image = self.player_animation.current_image
             
     def phyiscs(self, dt):
-        self.velocity = self.velocity * self.friction + self.acceleration
+        self.velocity -= self.velocity * self.friction / self.mass - self.acceleration
 
         marging = pygame.Vector2(0, 0)
         if self.velocity.x > 0:
@@ -69,8 +70,8 @@ class Player(pygame.sprite.Sprite):
             marging.y = math.ceil(self.velocity.y)
         else:
             marging.y = math.floor(self.velocity.y)
-        feetx = pygame.Rect(self.feet.x + marging.x, self.feet.y, self.feet.width, self.feet.height)
-        feety = pygame.Rect(self.feet.x, self.feet.y + marging.y, self.feet.width, self.feet.height)
+        feetx = pygame.Rect(self.hitbox.x + marging.x, self.hitbox.y, self.hitbox.width, self.hitbox.height)
+        feety = pygame.Rect(self.hitbox.x, self.hitbox.y + marging.y, self.hitbox.width, self.hitbox.height)
 
         # TODO: Modify the player move part so we can separate x and y
         for wall in scene.get_walls():
@@ -94,11 +95,11 @@ class Player(pygame.sprite.Sprite):
                         self.velocity.y = 0
 
         self.position += self.velocity*dt
-        self.feet.center = self.position
-        self.rect.center = (self.feet.x+10, self.feet.y-6)
+        self.hitbox.center = self.position
+        self.rect.center = (self.hitbox.x+10, self.hitbox.y-6)
 
         # Teleport the player if he collide with a portal
         for portal in scene.get_portals():
-            if self.feet.colliderect(scene.get_portals()[portal]["rect"]) == True:
+            if self.hitbox.colliderect(scene.get_portals()[portal]["rect"]) == True:
                 self.position.x, self.position.y = scene.get_portal_exit(scene.get_portals()[portal]).x, scene.get_portal_exit(scene.get_portals()[portal]).y
                 self.map_name, self.scene_name = scene.get_portals()[portal]["targeted_map_name"], scene.get_portals()[portal]["targeted_scene_name"]
