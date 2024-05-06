@@ -2,7 +2,7 @@ import pygame
 from utils.timeToolbox import Timer
 from utils.storageHandler import param_get
 
-#TODO: This needs to be moved in entittToolbox.py
+#TODO: This needs to be moved in entityToolbox.py
 
 class EntityAnimation:
 

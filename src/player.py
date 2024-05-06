@@ -10,6 +10,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.player_animation = EntityAnimation("player", (21, 48), 50)
         self.hitbox = pygame.Rect(0, 0, 21, 18)
+        self.hurtbox = pygame.Rect(0, 0, 21, 18)
         
         self.position = pygame.Vector2(0, 0)
         self.velocity = pygame.Vector2(0, 0)

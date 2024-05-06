@@ -1,10 +1,10 @@
 {
     "player": {
         "position": [
-            1205.2642572333036,
-            624.6343746770532
+            500,
+            500
         ],
-        "map_name": "testa",
+        "map_name": "testb",
         "scene_name": "scene1"
     }
 }
