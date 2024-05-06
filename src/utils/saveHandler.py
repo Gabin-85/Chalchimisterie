@@ -1,39 +1,69 @@
-from utils.storageHandler import param_get, param_reset, param_set
 from utils.consoleSystem import warn
-
-#TODO: Need a refactor of this handler.
+import json
 
 class saveHandler:
-    
-    def __init__(self):
-        self.save_folder_path = "saves/"
-        self.saves = param_get("saved", self.save_folder_path+"saved.json")
+
+    def __init__(self) -> None:
+        self.save_folder_path = "assets/storage/saves/"
         self.selected_save = None
+        self.data = {}
 
-    def create_save(self, name):
-        if name == None:
-            name = self.selected_save
-        param_reset(self.save_folder_path+name+".json")
+    def quit(self):
+        saves = list(self.data.keys())
+        for save in saves:
+            self.unload_save(save)
 
+    def load_save(self, save_name:str):
+        if save_name is None:
+            save_name = self.selected_save
+        if self.selected_save is None:
+            self.selected_save = save_name
 
-save = saveHandler()
-
-class SaveObject:
-
-    def __init__(self, object):
-        self.object = object
-
-    def get_save(self, param):
         try:
-            return param_get(self.object, save.saves[save.selected_save])[param]
+            # Loading the save
+            with open(self.save_folder_path+save_name+".json", "r") as file:
+                self.data[save_name] = json.load(file)
         except:
-            warn("No save named '"+str(save.selected_save)+"' was found.")
-            return None
+            warn("No save named '"+str(save_name)+"' was found.")
 
-    def set_save(self, param, data):
+    def unload_save(self, save_name:str):
+        if save_name is None:
+            save_name = self.selected_save
+        
         try:
-            temp = param_get(self.object, save.saves[save.selected_save])
-            temp[param] = data
-            param_set(self.object, temp, save.saves[save.selected_save])
+            # Saving the save
+            with open(self.save_folder_path+save_name+".json", "w") as file:
+                json.dump(self.data[save_name], file, indent=4)
+            # Deleting the live save
+            del self.data[save_name]
+            if self.selected_save == save_name:
+                self.selected_save = None
         except:
-            warn("No save named '"+str(save.selected_save)+"' was found.")
+            warn("Can't unload save named '"+str(save_name)+"'.")
+
+    def create_save(self, save_name:str):
+        try:
+            with open(self.save_folder_path+save_name+".json", "w") as file:
+                file.write('{"entity":{}}')
+            self.load_save(save_name)
+        except:
+            warn("Can't create save named '"+str(save_name)+"'.")
+saver = saveHandler()
+
+class saveObject:
+
+    def __init__(self, type:str, id:str) -> None:
+        # Setting up the identity
+        self.type = type
+        self.id = id
+
+        try:
+            saver.data[saver.selected_save][self.type][self.id]
+        except:
+            saver.data[saver.selected_save][self.type][self.id] = {"position": [500, 500], "map_name": "testa", "scene_name": "scene1"}
+
+    def get(self, parameter:str):
+        return saver.data[saver.selected_save][self.type][self.id][parameter]
+    
+    def set(self, parameter:str, value):
+        saver.data[saver.selected_save][self.type][self.id][parameter] = value

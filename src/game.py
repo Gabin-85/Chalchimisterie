@@ -1,8 +1,7 @@
 # This game file is not the game logic, it's the handling of the game and the rendering part.
-import pygame, pytmx, pyscroll
+import pygame, pyscroll
 from utils.storageHandler import param_get
 from utils.sceneHandler import scene
-
 from player import *
 
 class Game:
@@ -20,10 +19,15 @@ class Game:
         self.screen = pygame.display.set_mode(param_get("screen_size"))
         pygame.display.set_caption(self.window_name)
 
-        # TODO: Make it configurable with saved files.
         self.player = Player()
+        self.selected_scene = None
+        self.selected_map = None
         
         self.update_map(self.player.map_name, self.player.scene_name)
+
+    def quit(self):
+        # We save the game
+        self.player.quit()
 
     def update_map(self, map_name=None, scene_name=None):
         if scene_name is None:
@@ -57,9 +61,3 @@ class Game:
         self.group.center(self.player.rect.center)
         self.group.draw(self.screen)
         pygame.display.flip()
-
-    def quit(self):
-        """
-        This is empty for the moment.
-        """
-        self.player.quit()

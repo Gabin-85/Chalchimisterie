@@ -1,6 +1,6 @@
 from utils.sceneHandler import scene
 from animation import EntityAnimation
-from utils.saveHandler import SaveObject
+from utils.saveHandler import saveObject
 import pygame
 import math
 
@@ -16,18 +16,18 @@ class Player(pygame.sprite.Sprite):
         self.velocity = pygame.Vector2(0, 0)
         self.mass = 1.0
         self.force = 1.0
-        self.friction = 0.2
+        self.friction = 0.05
         
-        self.save = SaveObject("player")
-        self.position = pygame.Vector2(self.save.get_save("position")[0], self.save.get_save("position")[1])
-        self.map_name = self.save.get_save("map_name")
-        self.scene_name = self.save.get_save("scene_name")
+        self.save = saveObject("entity", "player")
+        self.position = pygame.Vector2(self.save.get("position")[0], self.save.get("position")[1])
+        self.map_name = self.save.get("map_name")
+        self.scene_name = self.save.get("scene_name")
         # After this you can add variables for the player like inventory and others stuffs :
 
     def quit(self):
-        self.save.set_save("map_name", self.map_name)
-        self.save.set_save("scene_name", self.scene_name)
-        self.save.set_save("position", (self.position.x, self.position.y))
+        self.save.set("map_name", self.map_name)
+        self.save.set("scene_name", self.scene_name)
+        self.save.set("position", (self.position.x, self.position.y))
 
     def update(self, dt):
         self.move()

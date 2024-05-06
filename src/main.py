@@ -2,14 +2,14 @@
 import pygame
 from utils.consoleSystem import console
 from utils.storageHandler import storage
-from utils.saveHandler import save
 from utils.sceneHandler import scene
+from utils.saveHandler import saver
 from game import Game
 
 if __name__ == "__main__":
     # Initialisation
     pygame.init()
-    save.selected_save = "save1"
+    saver.load_save("save1")
     game = Game()
 
     # This is the code run
@@ -27,6 +27,7 @@ if __name__ == "__main__":
     # Quit (The inverse order of initialization)
     game.quit()
     scene.quit()
+    saver.quit()
     storage.quit()
     console.quit()
     pygame.quit()
