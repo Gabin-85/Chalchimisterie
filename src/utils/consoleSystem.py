@@ -100,7 +100,7 @@ class consoleHandler:
     def fatal(self, msg):
         if self.live_active["fatal"]:
             if self.live_time:
-                print("("+date.get_formated_time()+") "+self.FATAL_LIVE_PREFIX + str(msg))
+                print(self.FATAL_COLOR + "("+date.get_formated_time()+") "+self.FATAL_LIVE_PREFIX + str(msg))
             else:
                 print(self.FATAL_COLOR + self.FATAL_LIVE_PREFIX + str(msg))
         if self.log_active["fatal"]:
@@ -112,7 +112,7 @@ class consoleHandler:
     def error(self, msg):
         if self.live_active["error"]:
             if self.live_time:
-                print("("+date.get_formated_time()+") "+self.ERROR_LIVE_PREFIX + str(msg))
+                print(self.ERROR_COLOR + "("+date.get_formated_time()+") "+self.ERROR_LIVE_PREFIX + str(msg))
             else:
                 print(self.ERROR_COLOR + self.ERROR_LIVE_PREFIX + str(msg))
         if self.log_active["error"]:
@@ -124,7 +124,7 @@ class consoleHandler:
     def warn(self, msg):
         if self.live_active["warn"]:
             if self.live_time:
-                print("("+date.get_formated_time()+") "+self.WARN_LIVE_PREFIX + str(msg))
+                print(self.WARN_COLOR + "("+date.get_formated_time()+") "+self.WARN_LIVE_PREFIX + str(msg))
             else:
                 print(self.WARN_COLOR + self.WARN_LIVE_PREFIX + str(msg))
         if self.log_active["warn"]:
@@ -136,7 +136,7 @@ class consoleHandler:
     def info(self, msg):
         if self.live_active["info"]:
             if self.live_time:
-                print("("+date.get_formated_time()+") "+self.INFO_LIVE_PREFIX + str(msg))
+                print(self.INFO_COLOR + "("+date.get_formated_time()+") "+self.INFO_LIVE_PREFIX + str(msg))
             else:
                 print(self.INFO_COLOR + self.INFO_LIVE_PREFIX + str(msg))
         if self.log_active["info"]:
@@ -148,7 +148,7 @@ class consoleHandler:
     def debug(self, msg):
         if self.live_active["debug"]:
             if self.live_time:
-                print("("+date.get_formated_time()+") "+self.DEBUG_LIVE_PREFIX + str(msg))
+                print(self.DEBUG_COLOR + "("+date.get_formated_time()+") "+self.DEBUG_LIVE_PREFIX + str(msg))
             else:
                 print(self.DEBUG_COLOR + self.DEBUG_LIVE_PREFIX + str(msg))
         if self.log_active["debug"]:
@@ -160,7 +160,7 @@ class consoleHandler:
     def trace(self, msg):
         if self.live_active["trace"]:
             if self.live_time:
-                print("("+date.get_formated_time()+") "+self.TRACE_LIVE_PREFIX + str(msg))
+                print(self.TRACE_COLOR + "("+date.get_formated_time()+") "+self.TRACE_LIVE_PREFIX + str(msg))
             else:
                 print(self.TRACE_COLOR + self.TRACE_LIVE_PREFIX + str(msg))
         if self.log_active["trace"]:

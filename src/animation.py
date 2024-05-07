@@ -20,6 +20,12 @@ class EntityAnimation:
 
         self.reset_to("down")
 
+    def start(self):
+        self.timer.start()
+
+    def stop(self):
+        self.timer.stop()
+
     def load_images(self, dict):
         images = {}
         for event in dict:

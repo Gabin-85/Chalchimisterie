@@ -4,7 +4,7 @@ import json
 class saveHandler:
 
     def __init__(self) -> None:
-        self.save_folder_path = "assets/storage/saves/"
+        self.save_folder_path = "saves/"
         self.selected_save = None
         self.data = {}
 
@@ -26,7 +26,7 @@ class saveHandler:
         except:
             warn("No save named '"+str(save_name)+"' was found.")
 
-    def unload_save(self, save_name:str):
+    def unload_save(self, save_name:str=None):
         if save_name is None:
             save_name = self.selected_save
         
