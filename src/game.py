@@ -2,7 +2,7 @@
 import pygame, pyscroll
 from utils.storageHandler import param_get
 from utils.sceneHandler import scene
-from player import *
+from player import Player
 
 class Game:
 
@@ -20,10 +20,8 @@ class Game:
         pygame.display.set_caption(self.window_name)
 
         self.player = Player()
-        self.selected_scene = None
-        self.selected_map = None
         
-        self.update_map(self.player.map_name, self.player.scene_name)
+        self.update_map(self.player.player.map_name, self.player.player.scene_name)
 
     def quit(self):
         # We save the game
@@ -39,7 +37,7 @@ class Game:
         scene.scene_cleanup()
 
         self.group = pyscroll.PyscrollGroup(map_layer=scene.get_map_layer(map_name, scene_name), default_layer=4)
-        self.group.add(self.player)
+        self.group.add(self.player.player)
 
     def run(self):
         """
@@ -54,10 +52,10 @@ class Game:
             dt = 0
         self.player.update(dt)
 
-        if self.player.map_name != scene.selected_map or self.player.scene_name != scene.selected_scene:
-            self.update_map(self.player.map_name, self.player.scene_name)
+        if self.player.player.map_name != scene.selected_map or self.player.player.scene_name != scene.selected_scene:
+            self.update_map(self.player.player.map_name, self.player.player.scene_name)
 
         # Recenter and draw
-        self.group.center(self.player.rect.center)
+        self.group.center(self.player.player.rect.center)
         self.group.draw(self.screen)
         pygame.display.flip()

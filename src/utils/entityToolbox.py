@@ -1,60 +1,153 @@
+from utils.storageHandler import param_get
+from utils.saveHandler import saveObject, saver
+from utils.timeToolbox import Timer
 from utils.sceneHandler import scene
-from animation import EntityAnimation
 import pygame
 import math
 
-class EntityAnimation():
-    pass
+class Entity(pygame.sprite.Sprite):
 
-class BaseEntity(pygame.sprite.Sprite):
-    
-    #TODO: Set a pattern to entities.
-
-    def __init__(self, name) -> None:
+    def __init__ (self) -> None:
         super().__init__()
+        self.name = None
+        self.id = None
+        self.save = None
+
+    def create(self, name:str):
+        template = param_get(name, "entity")
+
+        # General
+        self.id = len(saver.data[saver.selected_save]["entity"])
+        self.name = name
+        self.rect = pygame.Rect(0, 0, 0, 0)
 
         # Position
-        self.scene_name = None
-        self.map_name = None
-        self.position = pygame.Vector2(0, 0)
+        self.scene_name:str = template["scene_name"]
+        self.map_name:str = template["map_name"]
+        self.position:pygame.Vector2 = pygame.Vector2(*template["position"])
 
-    def quit(self):
-        # Save here the positions
-        pass
-
-class StandardEntity(BaseEntity):
-    
-    def __init__(self, name) -> None:
-        super().__init__(name)
-        # Hitbox
-        self.hitbox = pygame.Rect(0, 0, 0, 0)
-
-    def quit(self):
-        # Save here nothing
-        pass
-
-
-class DynamicEntity(StandardEntity):
-    
-    def __init__(self, name) -> None:
-        super().__init__(name)
-        # Hitbox
-        self.hurtbox = pygame.Rect(0, 0, 0, 0)
+        # Boxes
+        self.hitbox:pygame.Rect = pygame.Rect(*template["hitbox"])
+        self.hurtbox:pygame.Rect = pygame.Rect(*template["hurtbox"])
 
         # Physics
-        self.velocity = pygame.Vector2(0, 0)
-        self.mass = 1.0
-        self.force = 1.0
-        self.friction = 1.0
+        self.velocity:pygame.Vector2 = pygame.Vector2(*template["velocity"])
+        self.acceleration:pygame.Vector2 = pygame.Vector2(0, 0)
+        self.mass:float = template["mass"]
+        self.force:float = template["force"]
+        self.friction:float = template["friction"]
+
+        # Textures and animation
+        self.texture:dict = param_get(self.name, "animation")
+        self.texture_image:pygame.image = pygame.image.load("assets/sprites/" + self.texture["file"])
+        self.texture_size:list = self.texture["size"]
+        self.texture_images:dict = {}
+
+        self.animation:str = template["animation"]
+        self.animation_frame:int = template["animation_frame"]
+        self.animation_time:int = self.texture["time"]
+        self.animation_timer:Timer = Timer(template["animation_timer"])
+
+        for animation in self.texture["animations"].keys():
+            self.texture_images[animation] = [None]*self.texture["animations"][animation]
+            for frame in range(len(self.texture_images[animation])):
+                self.texture_images[animation][frame] = [frame * self.texture_size[0], list(self.texture["animations"].keys()).index(animation) * self.texture_size[1], self.texture_size[0], self.texture_size[1]]
+
+    def load(self, id:int):
+        self.save:saveObject = saveObject("entity", id)
+        self.save.load()
+
+        # General
+        self.id = id
+        self.name = self.save.get("name")
+        self.rect = pygame.Rect(0, 0, 0, 0)
+
+        # Position
+        self.scene_name:str = self.save.get("scene_name")
+        self.map_name:str = self.save.get("map_name")
+        self.position:pygame.Vector2 = pygame.Vector2(*self.save.get("position"))
+
+        # Boxes
+        self.hitbox:pygame.Rect = pygame.Rect(*self.save.get("hitbox"))
+        self.hurtbox:pygame.Rect = pygame.Rect(*self.save.get("hurtbox"))
+
+        # Physics
+        self.velocity:pygame.Vector2 = pygame.Vector2(*self.save.get("velocity"))
+        self.acceleration:pygame.Vector2 = pygame.Vector2(0, 0)
+        self.mass:float = self.save.get("mass")
+        self.force:float = self.save.get("force")
+        self.friction:float = self.save.get("friction")
+
+        # Textures and animation
+        self.texture:dict = param_get(self.name, "animation")
+        self.texture_image:pygame.image = pygame.image.load("assets/sprites/" + self.texture["file"])
+        self.texture_size:list = self.texture["size"]
+        self.texture_images:dict = {}
+
+        self.animation:str = self.save.get("animation")
+        self.animation_frame:int = self.save.get("animation_frame")
+        self.animation_time:int = self.texture["time"]
+        self.animation_timer:Timer = Timer(self.save.get("animation_timer"))
+
+        for animation in self.texture["animations"].keys():
+            self.texture_images[animation] = [None]*self.texture["animations"][animation]
+            for frame in range(len(self.texture_images[animation])):
+                self.texture_images[animation][frame] = [frame * self.texture_size[0], list(self.texture["animations"].keys()).index(animation) * self.texture_size[1], self.texture_size[0], self.texture_size[1]]
+
+    def unload(self):
+        self.save = saveObject("entity", self.id)
+        self.save.create()
+
+        # General
+        self.save.set("name", self.name)
+
+        # Position
+        self.save.set("scene_name", self.scene_name)
+        self.save.set("map_name", self.map_name)
+        self.save.set("position", [self.position.x, self.position.y])
+
+        # Boxes
+        self.save.set("hitbox", [self.hitbox.x, self.hitbox.y, self.hitbox.w, self.hitbox.h])
+        self.save.set("hurtbox", [self.hurtbox.x, self.hurtbox.y, self.hurtbox.w, self.hurtbox.h])
+
+        # Physics
+        self.save.set("velocity", [self.velocity.x, self.velocity.y])
+        self.save.set("mass", self.mass)
+        self.save.set("force", self.force)
+        self.save.set("friction", self.friction)
 
         # Animation
-        self.animation = EntityAnimation(name, (0, 0), 0)
+        self.save.set("animation", self.animation)
+        self.save.set("animation_frame", self.animation_frame)
+        self.save.set("animation_timer", self.animation_timer.remaining_time())
 
-    def quit(self):
-        # Save here the animation
-        pass
+    def start_animation(self):
+        self.animation_timer.start()
+
+    def stop_animation(self):
+        self.animation_timer.stop()
+
+    def change_animation(self, animation:str):
+        if self.animation != animation:
+            self.animation = animation
+            self.animation_frame = -1
+            self.animation_timer.reset(self.animation_time)
+
+    def change_frame(self, frame:int=None) -> pygame.Rect:
+        if self.animation_timer.check() or self.animation_frame == -1:
+            if frame is None:
+                frame = (self.animation_frame + 1) % len(self.texture_images[self.animation])
+            if self.animation_frame != frame:
+                self.image = pygame.Surface(self.texture_size)
+                self.image.blit(self.texture_image, (0, 0), self.texture_images[self.animation][frame])
+                self.image.set_colorkey((0, 0, 0))
+                self.rect = self.image.get_rect()
 
     def update(self, dt):
+        try:
+            self.acceleration.scale_to_length(self.force/self.mass)
+        except ValueError:
+            self.acceleration = pygame.Vector2(0, 0)
         self.velocity -= self.velocity * self.friction / self.mass - self.acceleration
 
         marging = pygame.Vector2(0, 0)

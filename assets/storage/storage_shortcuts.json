@@ -1,6 +1,0 @@
-{
-    "default": "options.json",
-    "storage_shortcuts": "storage_shortcuts.json",
-    "scenes": "scenes.json",
-    "animation": "animation.json"
-}

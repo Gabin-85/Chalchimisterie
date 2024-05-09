@@ -49,14 +49,14 @@ class storageHandler():
         # Setting up the storage handler
         self.storage_folder_path = "assets/storage/"
         try:
-            self.shortcuts = self.file_read("storage_shortcuts.json")
+            self.shortcuts = self.file_read("shortcuts.json")
         except:
             error("Shortcuts file not found. Make sure it exists and that the path is correct.")
         info("Storage handler initialized.")
 
     def quit(self):
         """Save the shortcuts and quit"""
-        self.parameter_reset("storage_shortcuts", self.shortcuts)
+        self.parameter_reset("shortcuts", self.shortcuts)
         info("Storage handler has quit.")
 
     def set_shortcut(self, new_file_name:str=None, old_file_name:str=None, new_file_short:str=None, old_file_short:str=None):

@@ -44,7 +44,7 @@ class saveHandler:
     def create_save(self, save_name:str):
         try:
             with open(self.save_folder_path+save_name+".json", "w") as file:
-                file.write('{"entity":{}}')
+                file.write('{"entity":[]}')
             self.load_save(save_name)
         except:
             warn("Can't create save named '"+str(save_name)+"'.")
@@ -52,18 +52,30 @@ saver = saveHandler()
 
 class saveObject:
 
-    def __init__(self, type:str, id:str) -> None:
+    def __init__(self, type:str, id:int) -> None:
         # Setting up the identity
         self.type = type
         self.id = id
+        self.data = None
 
+        if self.id > len(saver.data[saver.selected_save][self.type]):
+            saver.data[saver.selected_save][self.type][self.id] = {}
+
+    def load(self):
         try:
-            saver.data[saver.selected_save][self.type][self.id]
+            self.data = saver.data[saver.selected_save][self.type][self.id]
         except:
-            saver.data[saver.selected_save][self.type][self.id] = {"position": [500, 500], "map_name": "testa", "scene_name": "scene1"}
+            warn("The save "+saver.selected_save+" don't have an object of type "+self.type+" with id "+self.id+".")
+        
+    def create(self):
+        try:
+            saver.data[saver.selected_save][self.type][self.id] = {}
+            self.load()
+        except:
+            warn("Can't create object of type "+self.type+" with id "+self.id+".")
 
     def get(self, parameter:str):
         return saver.data[saver.selected_save][self.type][self.id][parameter]
     
-    def set(self, parameter:str, value):
+    def set(self, parameter:str, value:any):
         saver.data[saver.selected_save][self.type][self.id][parameter] = value

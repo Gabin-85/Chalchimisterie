@@ -1,0 +1,19 @@
+{
+    "player": {
+        "scene_name": "scene1",
+        "map_name": "testa",
+        "position": [500, 500],
+
+        "hitbox": [0, 0, 21, 18],
+        "hurtbox": [0, 0, 21, 18],
+
+        "velocity": [0, 0],
+        "mass": 1.0,
+        "force": 1.0,
+        "friction": 0.2,
+
+        "animation": "down",
+        "animation_frame": 0,
+        "animation_timer": 50
+    }
+}
