@@ -11,24 +11,25 @@ def warn(msg):  console.warn(msg)
 def info(msg):  console.info(msg)
 def debug(msg): console.debug(msg)
 def trace(msg): console.trace(msg)
+def exception(msg): console.exception(msg)
 
 class consoleHandler:
 
     def __init__(self):
         """Init the console system"""
 
-        self.log_option = json.load(open("assets/storage/options.json"))["log_option"]
+        self.console_option = json.load(open("resources/console.json"))
         # Activate or not live functions
-        self.live_active = self.log_option["live_active"]
-        self.log_active = self.log_option["log_active"]
+        self.live_active = self.console_option["live_active"]
+        self.log_active = self.console_option["log_active"]
         # Set or not the colors
-        self.live_colors = self.log_option["colors"]
+        self.live_colors = self.console_option["colors"]
         # Create or not the prefix
-        self.live_prefix = self.log_option["live_prefix"]
-        self.log_prefix = self.log_option["log_prefix"]
+        self.live_prefix = self.console_option["live_prefix"]
+        self.log_prefix = self.console_option["log_prefix"]
         # Create or not the time
-        self.live_time = self.log_option["live_time"]
-        self.log_time = self.log_option["log_time"]
+        self.live_time = self.console_option["live_time"]
+        self.log_time = self.console_option["log_time"]
 
         # Create or clear logs
         with open("logs.log", "w") as f:
@@ -43,6 +44,7 @@ class consoleHandler:
             self.INFO_COLOR  = colorama.Fore.GREEN + colorama.Back.BLACK
             self.DEBUG_COLOR = colorama.Fore.BLUE + colorama.Back.BLACK
             self.TRACE_COLOR = colorama.Fore.WHITE + colorama.Back.BLACK
+            self.EXEPTION_COLOR = colorama.Fore.MAGENTA + colorama.Back.BLACK
         else:
             self.FATAL_COLOR = ""
             self.ERROR_COLOR = ""
@@ -50,6 +52,7 @@ class consoleHandler:
             self.INFO_COLOR  = ""
             self.DEBUG_COLOR = ""
             self.TRACE_COLOR = ""
+            self.EXEPTION_COLOR = ""
 
         if self.live_prefix:
             self.FATAL_LIVE_PREFIX = "[FATAL]: "
@@ -80,7 +83,6 @@ class consoleHandler:
             self.INFO_LOG_PREFIX = ""
             self.DEBUG_LOG_PREFIX = ""
             self.TRACE_LOG_PREFIX = ""
-
 
         self.info("Console system initialized.")
 
@@ -168,6 +170,18 @@ class consoleHandler:
                 self.logit("("+date.get_formated_time()+") "+self.TRACE_LOG_PREFIX + str(msg))
             else:
                 self.logit(self.TRACE_LOG_PREFIX + str(msg))
+
+    def exception(self, msg):
+        if self.live_active["exeption"]:
+            if self.live_time:
+                print(self.EXEPTION_COLOR + "("+date.get_formated_time()+") " + str(msg))
+            else:
+                print(self.EXEPTION_COLOR + str(msg))
+        if self.log_active["exeption"]:
+            if self.log_time:
+                self.logit("("+date.get_formated_time()+") " + str(msg))
+            else:
+                self.logit(str(msg))
 
 # Set the console object
 console = consoleHandler()

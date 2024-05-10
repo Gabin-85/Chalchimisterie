@@ -1,7 +1,0 @@
-{
-    "default": "options.json",
-    "shortcuts": "shortcuts.json",
-    "scenes": "scenes.json",
-    "animation": "animation.json",
-    "entity": "entity.json"
-}

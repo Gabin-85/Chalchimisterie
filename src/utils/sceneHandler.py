@@ -1,7 +1,7 @@
 # This file handle the loads of the scenes and the maps.
 import pygame, pytmx, pyscroll
-from utils.storageHandler import param_get
-from utils.consoleSystem import warn, info, debug, trace
+from utils.resourcesHandler import storage
+from utils.consoleSystem import warn, info, debug, trace, exception
 
 class sceneHandler:
 
@@ -27,7 +27,7 @@ class sceneHandler:
         # Get all maps in scene
         if scene_name is None:
             scene_name = self.selected_scene
-        scene = param_get(scene_name, "scenes")
+        scene = storage.get(scene_name, "scenes")
 
         if scene == None:
             warn("Scene '"+scene_name+"' not found.")
@@ -38,8 +38,9 @@ class sceneHandler:
             self.data[scene_name][map_name] = {"file": scene[map_name]}
             try:
                 self.data[scene_name][map_name]["tmx_data"] = pytmx.util_pygame.load_pygame(self.scene_folder_path + self.data[scene_name][map_name]["file"])
-            except FileNotFoundError:
+            except Exception as e:
                 warn("Map named '"+self.data[scene_name][map_name]["file"]+"' not found. Abort load.")
+                exception(e)
                 return False
             self.data[scene_name][map_name]["map_data"] = pyscroll.TiledMapData(self.data[scene_name][map_name]["tmx_data"])
 
@@ -63,8 +64,8 @@ class sceneHandler:
                         self.data[scene_name][map_name]["portals_exits"][obj.name] = self.data[scene_name][map_name]["tmx_data"].get_object_by_name(obj.name)
 
             # Get the map_layer and set the zoom
-            self.data[scene_name][map_name]["map_layer"] = pyscroll.orthographic.BufferedRenderer(self.get_map_data(map_name, scene_name), param_get("screen_size"))
-            screen_size = param_get("screen_size")
+            self.data[scene_name][map_name]["map_layer"] = pyscroll.orthographic.BufferedRenderer(self.get_map_data(map_name, scene_name), storage.get("screen_size"))
+            screen_size = storage.get("screen_size")
             if screen_size[0] < screen_size[1]:
                 self.data[scene_name][map_name]["map_layer"].zoom = screen_size[1]*self.data[scene_name][map_name]["tmx_data"].get_layer_by_name("objects").properties["zoom"]/self.get_tmx_data(map_name, scene_name).height/self.get_tmx_data(map_name, scene_name).tileheight
             else:

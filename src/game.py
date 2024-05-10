@@ -1,6 +1,6 @@
 # This game file is not the game logic, it's the handling of the game and the rendering part.
 import pygame, pyscroll
-from utils.storageHandler import param_get
+from utils.resourcesHandler import storage
 from utils.sceneHandler import scene
 from player import Player
 
@@ -13,10 +13,10 @@ class Game:
         self.fps_clock = pygame.time.Clock()
 
         # Get variables
-        self.window_name = param_get("window_name")
+        self.window_name = storage.get("window_name")
 
         # Renderer part
-        self.screen = pygame.display.set_mode(param_get("screen_size"))
+        self.screen = pygame.display.set_mode(storage.get("screen_size"))
         pygame.display.set_caption(self.window_name)
 
         self.player = Player()
@@ -44,7 +44,7 @@ class Game:
         Update the player position and make a draw call.
         """
 
-        # Update the player movement. TODO: Dispatch it to the player class
+        # Update the player movement.
         self.fps_clock.tick(60)
         try:
             dt = 50 / self.fps_clock.get_fps()

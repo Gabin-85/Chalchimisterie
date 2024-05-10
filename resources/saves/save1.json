@@ -3,14 +3,14 @@
         {
             "name": "player",
             "scene_name": "scene1",
-            "map_name": "testa",
+            "map_name": "testb",
             "position": [
-                1074.5138916492613,
-                591.0496605835282
+                794.6249077501272,
+                684.8758118160932
             ],
             "hitbox": [
-                1065,
-                582,
+                785,
+                676,
                 21,
                 18
             ],
@@ -21,15 +21,15 @@
                 18
             ],
             "velocity": [
-                -0.18788512110330507,
-                0.045558243189007065
+                0.4651329503858606,
+                4.984803091592834e-05
             ],
             "mass": 1.0,
             "force": 1.0,
             "friction": 0.2,
-            "animation": "left",
+            "animation": "right",
             "animation_frame": -1,
-            "animation_timer": -307
+            "animation_timer": -781
         }
     ]
 }
