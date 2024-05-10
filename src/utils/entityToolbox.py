@@ -1,5 +1,5 @@
-from utils.resourcesHandler import param_get
-from utils.saveHandler import saveObject, saver
+from utils.resourcesHandler import storage
+from utils.saveHandler import saveEntity, save
 from utils.timeToolbox import Timer
 from utils.sceneHandler import scene
 import pygame
@@ -14,10 +14,10 @@ class Entity(pygame.sprite.Sprite):
         self.save = None
 
     def create(self, name:str):
-        template = param_get(name, "entity")
+        template = storage.get(name, "entity")
 
         # General
-        self.id = len(saver.data[saver.selected_save]["entity"])
+        self.id = len(save.loaded_files[save.selected_save]["entity"])
         self.name = name
         self.rect = pygame.Rect(0, 0, 0, 0)
 
@@ -38,7 +38,7 @@ class Entity(pygame.sprite.Sprite):
         self.friction:float = template["friction"]
 
         # Textures and animation
-        self.texture:dict = param_get(self.name, "animation")
+        self.texture:dict = storage.get(self.name, "animations")
         self.texture_image:pygame.image = pygame.image.load("assets/sprites/" + self.texture["file"])
         self.texture_size:list = self.texture["size"]
         self.texture_images:dict = {}
@@ -54,7 +54,7 @@ class Entity(pygame.sprite.Sprite):
                 self.texture_images[animation][frame] = [frame * self.texture_size[0], list(self.texture["animations"].keys()).index(animation) * self.texture_size[1], self.texture_size[0], self.texture_size[1]]
 
     def load(self, id:int):
-        self.save:saveObject = saveObject("entity", id)
+        self.save:saveEntity = saveEntity(id)
         self.save.load()
 
         # General
@@ -65,7 +65,7 @@ class Entity(pygame.sprite.Sprite):
         # Position
         self.scene_name:str = self.save.get("scene_name")
         self.map_name:str = self.save.get("map_name")
-        self.position:pygame.Vector2 = pygame.Vector2(*self.save.get("position"))
+        self.position:pygame.Vector2 = pygame.Vector2(self.save.get("position"))
 
         # Boxes
         self.hitbox:pygame.Rect = pygame.Rect(*self.save.get("hitbox"))
@@ -79,7 +79,7 @@ class Entity(pygame.sprite.Sprite):
         self.friction:float = self.save.get("friction")
 
         # Textures and animation
-        self.texture:dict = param_get(self.name, "animation")
+        self.texture:dict = storage.get(self.name, "animations")
         self.texture_image:pygame.image = pygame.image.load("assets/sprites/" + self.texture["file"])
         self.texture_size:list = self.texture["size"]
         self.texture_images:dict = {}
@@ -95,7 +95,7 @@ class Entity(pygame.sprite.Sprite):
                 self.texture_images[animation][frame] = [frame * self.texture_size[0], list(self.texture["animations"].keys()).index(animation) * self.texture_size[1], self.texture_size[0], self.texture_size[1]]
 
     def unload(self):
-        self.save = saveObject("entity", self.id)
+        self.save:saveEntity = saveEntity(self.id)
         self.save.create()
 
         # General

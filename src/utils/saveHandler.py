@@ -1,81 +1,66 @@
-from utils.consoleSystem import warn
-import json
+from utils.resourcesHandler import resourcesHandler
+from utils.consoleSystem import warn, exception
 
-class saveHandler:
+class saveHandler(resourcesHandler):
 
     def __init__(self) -> None:
-        self.save_folder_path = "resources/saves/"
+        super().__init__("saves", None)
         self.selected_save = None
-        self.data = {}
 
     def quit(self):
-        saves = list(self.data.keys())
+        saves = list(self.loaded_files.keys())
         for save in saves:
-            self.unload_save(save)
+            self.unload_file(save)
+save = saveHandler()
 
-    def load_save(self, save_name:str):
-        if save_name is None:
-            save_name = self.selected_save
-        if self.selected_save is None:
-            self.selected_save = save_name
+class saveEntity:
 
-        try:
-            # Loading the save
-            with open(self.save_folder_path+save_name+".json", "r") as file:
-                self.data[save_name] = json.load(file)
-        except:
-            warn("No save named '"+str(save_name)+"' was found.")
-
-    def unload_save(self, save_name:str=None):
-        if save_name is None:
-            save_name = self.selected_save
-        
-        try:
-            # Saving the save
-            with open(self.save_folder_path+save_name+".json", "w") as file:
-                json.dump(self.data[save_name], file, indent=4)
-            # Deleting the live save
-            del self.data[save_name]
-            if self.selected_save == save_name:
-                self.selected_save = None
-        except:
-            warn("Can't unload save named '"+str(save_name)+"'.")
-
-    def create_save(self, save_name:str):
-        try:
-            with open(self.save_folder_path+save_name+".json", "w") as file:
-                file.write('{"entity":[]}')
-            self.load_save(save_name)
-        except:
-            warn("Can't create save named '"+str(save_name)+"'.")
-saver = saveHandler()
-
-class saveObject:
-
-    def __init__(self, type:str, id:int) -> None:
+    def __init__(self, id:int) -> None:
         # Setting up the identity
-        self.type = type
         self.id = id
         self.data = None
 
-        if self.id > len(saver.data[saver.selected_save][self.type]):
-            saver.data[saver.selected_save][self.type][self.id] = {}
-
     def load(self):
         try:
-            self.data = saver.data[saver.selected_save][self.type][self.id]
-        except:
-            warn("The save "+saver.selected_save+" don't have an object of type "+self.type+" with id "+self.id+".")
+            self.data = save.loaded_files[save.selected_save]["data"]["entity"][self.id]
+            return True
+        except Exception as e:
+            warn("Can't load entity '"+str(id)+"' from save '"+str(save.selected_save)+"'.")
+            exception(e)
+            return False
         
     def create(self):
         try:
-            saver.data[saver.selected_save][self.type][self.id] = {}
+            save.loaded_files[save.selected_save]["data"]["entity"][self.id] = {}
             self.load()
-        except:
-            warn("Can't create object of type "+self.type+" with id "+self.id+".")
+            return True
+        except Exception as e:
+            warn("Can't create entity '"+str(id)+"' in save '"+str(save.selected_save)+"'.")
+            exception(e)
+            return False
+        
+    def unload(self):
+        try:
+            save.loaded_files[save.selected_save]["data"]["entity"][self.id] = self.data
+            return True
+        except Exception as e:
+            warn("Can't unload entity '"+str(id)+"' in save '"+str(save.selected_save)+"'.")
+            exception(e)
+            return False
 
     def get(self, parameter:str):
-        return saver.data[saver.selected_save][self.type][self.id][parameter]
+        try:
+            return self.data[parameter]
+        except Exception as e:
+            warn("Can't get parameter '"+str(parameter)+"' from entity '"+str(id)+"' in save '"+str(save.selected_save)+"'.")
+            exception(e)
+            return None
     
     def set(self, parameter:str, value:any):
-        saver.data[saver.selected_save][self.type][self.id][parameter] = value
+        try:
+            self.data[parameter] = value
+            return True
+        except Exception as e:
+            warn("Can't set parameter '"+str(parameter)+"' in entity '"+str(id)+"' in save '"+str(save.selected_save)+"'.")
+            exception(e)
+            return False
