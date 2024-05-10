@@ -17,7 +17,7 @@ class consoleHandler:
     def __init__(self):
         """Init the console system"""
 
-        self.log_option = json.load(open("assets/storage/options.json"))["log_option"]
+        self.log_option = json.load(open("resources/storage/options.json"))["log_option"]
         # Activate or not live functions
         self.live_active = self.log_option["live_active"]
         self.log_active = self.log_option["log_active"]

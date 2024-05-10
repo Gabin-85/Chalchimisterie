@@ -1,4 +1,4 @@
-from utils.storageHandler import param_get
+from utils.resourcesHandler import param_get
 from utils.saveHandler import saveObject, saver
 from utils.timeToolbox import Timer
 from utils.sceneHandler import scene

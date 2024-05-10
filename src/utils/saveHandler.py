@@ -4,7 +4,7 @@ import json
 class saveHandler:
 
     def __init__(self) -> None:
-        self.save_folder_path = "saves/"
+        self.save_folder_path = "resources/saves/"
         self.selected_save = None
         self.data = {}
 

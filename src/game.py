@@ -1,6 +1,6 @@
 # This game file is not the game logic, it's the handling of the game and the rendering part.
 import pygame, pyscroll
-from utils.storageHandler import param_get
+from utils.resourcesHandler import param_get
 from utils.sceneHandler import scene
 from player import Player
 

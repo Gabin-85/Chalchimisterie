@@ -1,6 +1,6 @@
 # This file handle the loads of the scenes and the maps.
 import pygame, pytmx, pyscroll
-from utils.storageHandler import param_get
+from utils.resourcesHandler import param_get
 from utils.consoleSystem import warn, info, debug, trace
 
 class sceneHandler:
