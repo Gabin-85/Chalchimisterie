@@ -26,7 +26,7 @@ class Game:
     def quit(self):
         # We save the game
         self.player.quit()
-
+    
     def update_map(self, map_name=None, scene_name=None):
         if scene_name is None:
             scene_name = self.selected_scene
