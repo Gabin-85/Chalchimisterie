@@ -16,6 +16,22 @@
         "animation_frame": 0,
         "animation_timer": 50
     },
+    
+    "Theodorus_god_killer": {
+
+        "hitbox": [0, 0, 21, 18],
+        "hurtbox": [0, 0, 21, 18],
+
+        "velocity": [0, 0],
+        "mass": 1.0,
+        "force": 1.0,
+        "friction": 0.2,
+
+        "animation": "down",
+        "animation_frame": 0,
+        "animation_timer": 50
+    },
+
     "mush": {
         "hitbox": [0, 0, 21, 18],
         "hurtbox": [0, 0, 21, 18],
@@ -30,5 +46,33 @@
         "def": 0.0,
         "def_spe": 0.0
 
+    },
+    "slime": {
+        "hitbox": [0, 0, 21, 18],
+        "hurtbox": [0, 0, 21, 18],
+
+        "velocity": [0, 0],
+        "mass": 1.0,
+        "force": 1.0,
+        "friction": 0.2,
+
+        "hp": 5.0,
+        "atk": 1.0,
+        "def": 0.0,
+        "def_spe": 1.0
+    },
+    "penetrator": {
+        "hitbox": [0, 0, 21, 18],
+        "hurtbox": [0, 0, 21, 18],
+
+        "velocity": [0, 0],
+        "mass": 1.0,
+        "force": 1.0,
+        "friction": 0.2,
+
+        "hp": 40.0,
+        "atk": 2.0,
+        "def": 2.0,
+        "def_spe": 1.0
     }
 }
