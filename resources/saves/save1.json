@@ -5,12 +5,12 @@
             "scene_name": "scene1",
             "map_name": "testa",
             "position": [
-                1246.3679327867396,
-                551.0
+                1242.2343722451485,
+                746.3259838358281
             ],
             "hitbox": [
-                1236,
-                542,
+                1232,
+                737,
                 21,
                 18
             ],
@@ -21,15 +21,15 @@
                 18
             ],
             "velocity": [
-                9.213775442275983e-18,
+                4.204820718137287e-09,
                 0.0
             ],
             "mass": 1.0,
             "force": 1.0,
             "friction": 0.2,
-            "animation": "right",
+            "animation": "up",
             "animation_frame": -1,
-            "animation_timer": -4693
+            "animation_timer": -1475
         }
     ]
 }
