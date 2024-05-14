@@ -1,7 +1,7 @@
 from utils.resourcesHandler import storage
 from utils.saveHandler import saveEntity, save
 from utils.timeToolbox import Timer
-from utils.sceneHandler import scene
+from utils.loadHandler import scene
 import pygame
 import math
 

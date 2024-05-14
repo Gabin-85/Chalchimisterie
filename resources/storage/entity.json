@@ -17,7 +17,7 @@
         "animation_timer": 50
     },
     
-    "Theodorus_god_killer": {
+    "theodorus_god_killer": {
 
         "hitbox": [0, 0, 21, 18],
         "hurtbox": [0, 0, 21, 18],

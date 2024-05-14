@@ -2,7 +2,7 @@
 import pygame
 from utils.consoleSystem import console
 from utils.resourcesHandler import storage
-from utils.sceneHandler import scene
+from utils.loadHandler import scene
 from utils.saveHandler import save
 from game import Game
 
