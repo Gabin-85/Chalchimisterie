@@ -1,7 +1,8 @@
 from utils.resourcesHandler import storage
-from utils.saveHandler import saveEntity, save
+from utils.resourcesHandler import save
+from utils.saveHandler import saver
 from utils.timeToolbox import Timer
-from utils.loadHandler import scene
+from utils.consoleSystem import warn
 import pygame
 import math
 
@@ -14,10 +15,10 @@ class Entity(pygame.sprite.Sprite):
         self.save = None
 
     def create(self, name:str):
-        template = storage.get(name, "entity")
+        template = storage.get(name, "entities")
 
         # General
-        self.id = len(save.loaded_files[save.selected_save]["entity"])
+        self.id = len(saver.save["entities"])
         self.name = name
         self.rect = pygame.Rect(0, 0, 0, 0)
 
@@ -54,8 +55,8 @@ class Entity(pygame.sprite.Sprite):
                 self.texture_images[animation][frame] = [frame * self.texture_size[0], list(self.texture["animations"].keys()).index(animation) * self.texture_size[1], self.texture_size[0], self.texture_size[1]]
 
     def load(self, id:int):
-        self.save:saveEntity = saveEntity(id)
-        self.save.load()
+        self.save = saveEntity(id)
+        self.save.load(id)
 
         # General
         self.id = id
@@ -95,11 +96,11 @@ class Entity(pygame.sprite.Sprite):
                 self.texture_images[animation][frame] = [frame * self.texture_size[0], list(self.texture["animations"].keys()).index(animation) * self.texture_size[1], self.texture_size[0], self.texture_size[1]]
 
     def unload(self):
-        self.save:saveEntity = saveEntity(self.id)
-        self.save.create()
+        self.save = saveEntity(self.id)
 
         # General
         self.save.set("name", self.name)
+        self.save.set("id", self.id)
 
         # Position
         self.save.set("scene_name", self.scene_name)
@@ -120,6 +121,8 @@ class Entity(pygame.sprite.Sprite):
         self.save.set("animation", self.animation)
         self.save.set("animation_frame", self.animation_frame)
         self.save.set("animation_timer", self.animation_timer.remaining_time())
+
+        self.save.unload()
 
     def start_animation(self):
         self.animation_timer.start()
@@ -163,7 +166,8 @@ class Entity(pygame.sprite.Sprite):
         feety = pygame.Rect(self.hitbox.x, self.hitbox.y + marging.y, self.hitbox.width, self.hitbox.height)
 
         # TODO: Modify the player move part so we can separate x and y
-        for wall in scene.get_walls():
+        from utils.loadHandler import load
+        for wall in load.get_walls():
             if feetx.colliderect(wall["rect"]) == True:
                 match wall["collision_type"]:
                     case "bouncy":
@@ -188,7 +192,43 @@ class Entity(pygame.sprite.Sprite):
         self.rect.center = (self.hitbox.x+10, self.hitbox.y-6)
 
         # Teleport the player if he collide with a portal
-        for portal in scene.get_portals():
-            if self.hitbox.colliderect(scene.get_portals()[portal]["rect"]) == True:
-                self.position.x, self.position.y = scene.get_portal_exit(scene.get_portals()[portal]).x, scene.get_portal_exit(scene.get_portals()[portal]).y
-                self.map_name, self.scene_name = scene.get_portals()[portal]["targeted_map_name"], scene.get_portals()[portal]["targeted_scene_name"]
+        for portal in load.get_portals():
+            if self.hitbox.colliderect(load.get_portals()[portal]["rect"]) == True:
+                self.position.x, self.position.y = load.get_portal_exit(load.get_portals()[portal]).x, load.get_portal_exit(load.get_portals()[portal]).y
+                self.map_name, self.scene_name = load.get_portals()[portal]["targeted_map_name"], load.get_portals()[portal]["targeted_scene_name"]
+
+class saveEntity:
+    def __init__(self, id:int=None):
+        self.id:int = id
+        self.data:dict = {}
+
+    def load(self, id:int):
+        try:
+            self.data = saver.save["entities"][id]
+            return True
+        except KeyError:
+            self.data = {}
+            return False
+
+    def unload(self):
+        try:
+            saver.entities[self.id] = self.data
+            print(self.data)
+            return True
+        except KeyError:
+            warn("Can't unload entity n°"+str(self.id)+".")
+            return False
+
+    def get(self, parameter:str):
+        try:
+            return self.data[parameter]
+        except KeyError:
+            return None
+
+    def set(self, parameter:str, value:any):
+        try:
+            self.data[parameter] = value
+            return True
+        except KeyError:
+            warn("Can't set parameter '"+str(parameter)+"' in entity n°"+str(self.id)+".")
+            return False

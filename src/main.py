@@ -1,16 +1,15 @@
 # This main file launch all files, dependencies and loop the bases functions.
 import pygame
 from utils.consoleSystem import console
-from utils.resourcesHandler import storage
-from utils.loadHandler import scene
-from utils.saveHandler import save
+from utils.resourcesHandler import storage, save
+from utils.loadHandler import load
+from utils.saveHandler import saver
 from game import Game
 
 if __name__ == "__main__":
     # Initialisation
     pygame.init()
-    save.load_file("save1")
-    save.selected_save = "save1"
+    saver.setup("save1")
     game = Game()
 
     # This is the code run
@@ -27,7 +26,8 @@ if __name__ == "__main__":
 
     # Quit (The inverse order of initialization)
     game.quit()
-    scene.quit()
+    saver.quit()
+    load.quit()
     save.quit()
     storage.quit()
     console.quit()

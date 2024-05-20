@@ -1,79 +1,106 @@
 # This file handle the loads of the scenes and the maps.
 import pygame, pytmx, pyscroll
+from utils.saveHandler import saver
+from utils.entityToolbox import Entity
 from utils.resourcesHandler import storage
 from utils.consoleSystem import warn, info, debug, trace, exception
 
-class sceneHandler:
+class loadHandler:
 
     def __init__(self):
         # Creating the dictionary of maps in the scene and variables.
         self.scene_folder_path = "assets/scenes/" # Setting here the scenes path
-        self.data = {}
-        self.selected_map = None
+        self.selected_save = None
         self.selected_scene = None
+        self.selected_map = None
+        self.scenes = {}
 
         info("Scene handler initialized.")
 
     def quit(self):
+        """Quit the scene handler"""
+        del self.scene_folder_path
+        del self.selected_save
+        del self.selected_scene
+        del self.selected_map
+        del self.scenes
         info("Scene handler has quit.")
-
-    ##########
-    # SCENES #
-    ##########
-
-    def load_scene(self, scene_name=None):
-        """Add the maps from the scene in the dictionnary"""
         
-        # Get all maps in scene
+    ##########
+    # Scenes #
+    ##########
+
+    def load_scene(self, scene_name:str=None):
+        """Generate a scene"""
         if scene_name is None:
             scene_name = self.selected_scene
-        scene = storage.get(scene_name, "scenes")
+        scene_path = storage.get(scene_name, "scenes")
 
-        if scene == None:
+        if scene_path is None:
             warn("Scene '"+scene_name+"' not found.")
             return False
-        self.data[scene_name] = {}
-        for map_name in scene:
+        
+        self.scenes[scene_name] = {}
+        for map_name in scene_path:
             # Load all the maps in scene
-            self.data[scene_name][map_name] = {"file": scene[map_name]}
+            self.scenes[scene_name][map_name] = {"file": scene_path[map_name]}
             try:
-                self.data[scene_name][map_name]["tmx_data"] = pytmx.util_pygame.load_pygame(self.scene_folder_path + self.data[scene_name][map_name]["file"])
+                self.scenes[scene_name][map_name]["tmx_data"] = pytmx.util_pygame.load_pygame(self.scene_folder_path + self.scenes[scene_name][map_name]["file"])
             except Exception as e:
-                warn("Map named '"+self.data[scene_name][map_name]["file"]+"' not found. Abort load.")
+                warn("Map named '"+self.scenes[scene_name][map_name]["file"]+"' not found. Abort load.")
                 exception(e)
                 return False
-            self.data[scene_name][map_name]["map_data"] = pyscroll.TiledMapData(self.data[scene_name][map_name]["tmx_data"])
+            self.scenes[scene_name][map_name]["map_data"] = pyscroll.TiledMapData(self.scenes[scene_name][map_name]["tmx_data"])
 
             # Get the walls and portals
-            self.data[scene_name][map_name]["walls"] = []
-            self.data[scene_name][map_name]["portals"] = {}
-            self.data[scene_name][map_name]["portals_exits"] = {}
-            for obj in self.data[scene_name][map_name]["tmx_data"].objects:
+            self.scenes[scene_name][map_name]["walls"] = []
+            self.scenes[scene_name][map_name]["portals"] = {}
+            self.scenes[scene_name][map_name]["portals_exits"] = {}
+            self.scenes[scene_name][map_name]["entities_pattern"] = []
+            for obj in self.scenes[scene_name][map_name]["tmx_data"].objects:
                 match obj.type:
                     case "collision":
-                        self.data[scene_name][map_name]["walls"].append({
+                        self.scenes[scene_name][map_name]["walls"].append({
                             "rect": pygame.Rect(obj.x, obj.y, obj.width, obj.height),
                             "collision_type": obj.properties["collision_type"]})
                     case "portal":
-                        self.data[scene_name][map_name]["portals"][obj.name] = {
+                        self.scenes[scene_name][map_name]["portals"][obj.name] = {
                             "rect":pygame.Rect(obj.x, obj.y, obj.width, obj.height),
                             "targeted_scene_name": obj.properties["targeted_scene_name"],
                             "targeted_map_name": obj.properties["targeted_map_name"],
                             "targeted_exit_name": obj.properties["targeted_exit_name"]}
                     case "portal_exit":
-                        self.data[scene_name][map_name]["portals_exits"][obj.name] = self.data[scene_name][map_name]["tmx_data"].get_object_by_name(obj.name)
+                        self.scenes[scene_name][map_name]["portals_exits"][obj.name] = self.scenes[scene_name][map_name]["tmx_data"].get_object_by_name(obj.name)
+                    case "entity":
+                        self.scenes[scene_name][map_name]["entities_pattern"].append({
+                            "position":[obj.x, obj.y],
+                            "name": obj.name,
+                            "pattern": obj.properties["pattern"]})
 
             # Get the map_layer and set the zoom
-            self.data[scene_name][map_name]["map_layer"] = pyscroll.orthographic.BufferedRenderer(self.get_map_data(map_name, scene_name), storage.get("screen_size"))
+            self.scenes[scene_name][map_name]["map_layer"] = pyscroll.orthographic.BufferedRenderer(self.get_map_data(map_name, scene_name), storage.get("screen_size"))
             screen_size = storage.get("screen_size")
             if screen_size[0] < screen_size[1]:
-                self.data[scene_name][map_name]["map_layer"].zoom = screen_size[1]*self.data[scene_name][map_name]["tmx_data"].get_layer_by_name("objects").properties["zoom"]/self.get_tmx_data(map_name, scene_name).height/self.get_tmx_data(map_name, scene_name).tileheight
+                self.scenes[scene_name][map_name]["map_layer"].zoom = screen_size[1]*self.scenes[scene_name][map_name]["tmx_data"].get_layer_by_name("objects").properties["zoom"]/self.get_tmx_data(map_name, scene_name).height/self.get_tmx_data(map_name, scene_name).tileheight
             else:
-                self.data[scene_name][map_name]["map_layer"].zoom = screen_size[0]*self.data[scene_name][map_name]["tmx_data"].get_layer_by_name("objects").properties["zoom"]/self.get_tmx_data(map_name, scene_name).width/self.get_tmx_data(map_name, scene_name).tilewidth
-            
+                self.scenes[scene_name][map_name]["map_layer"].zoom = screen_size[0]*self.scenes[scene_name][map_name]["tmx_data"].get_layer_by_name("objects").properties["zoom"]/self.get_tmx_data(map_name, scene_name).width/self.get_tmx_data(map_name, scene_name).tilewidth
+
+            # Check the entities in the scenes are in the save
+            if scene_name in [scene for scene in [entities["scene_name"] for entities in saver.save["entities"]]]:
+                # If yes load all entities
+                for entity in saver.save["entities"]:
+                    if entity["map_name"] == map_name and entity["scene_name"] == scene_name:
+                        saver.entities.append(Entity())
+                        saver.entities[-1].load(entity["id"])
+            else:
+                # If not create and add all entities
+                for entity in self.get_entities_pattern(map_name, scene_name):
+                    saver.entities.append(Entity())
+                    saver.entities[-1].create(entity["pattern"])
+
         trace("'"+scene_name+"' loaded!")
         return True
-
+    
     def unload_scene(self, scene_name=None):
         """Delete all maps from the dictionnary that are in the scene"""
 
@@ -81,8 +108,8 @@ class sceneHandler:
         if scene_name is None:
             scene_name = self.selected_scene
 
-        if scene_name in self.data:
-            del self.data[scene_name]
+        if scene_name in self.scenes:
+            del self.scenes[scene_name]
             trace("'"+scene_name+"' unloaded!")
             return True
         else:
@@ -110,14 +137,14 @@ class sceneHandler:
 
     def loaded_scenes(self):
         """Get all the loaded scenes"""
-        return list(self.data.keys())
+        return list(saver.save.keys())
 
     def has_scene_load(self, scene_name=None):
         """Give the number of maps in the scene, if 0 then the scene is not loaded"""
         if scene_name is None:
             scene_name = self.selected_scene
-        if scene_name in self.data:
-            return len(self.data[scene_name])
+        if scene_name in self.scenes:
+            return len(self.scenes[scene_name])
         else:
             return 0
         
@@ -146,7 +173,7 @@ class sceneHandler:
             self.load_scene(scene_name)
         if map_name is None:
             map_name = self.selected_map
-        return self.data[scene_name][map_name]["map_layer"].zoom
+        return self.scenes[scene_name][map_name]["map_layer"].zoom
 
     def get_tmx_data(self, map_name=None, scene_name=None):
         """Get the tmx data of the map (pytmx.TiledMap)"""
@@ -157,7 +184,7 @@ class sceneHandler:
             self.load_scene(scene_name)
         if map_name is None:
             map_name = self.selected_map
-        return self.data[scene_name][map_name]["tmx_data"]
+        return self.scenes[scene_name][map_name]["tmx_data"]
     
     def get_map_data(self, map_name=None, scene_name=None):
         """Get the map data of the map (pyscroll.TiledMapData)"""
@@ -168,7 +195,7 @@ class sceneHandler:
             self.load_scene(scene_name)
         if map_name is None:
             map_name = self.selected_map
-        return self.data[scene_name][map_name]["map_data"]
+        return self.scenes[scene_name][map_name]["map_data"]
     
     def get_map_layer(self, map_name=None, scene_name=None):
         """Get the map layer of the map (pyscroll.orthographic.BufferedRenderer)"""
@@ -179,7 +206,7 @@ class sceneHandler:
             self.load_scene(scene_name)
         if map_name is None:
             map_name = self.selected_map
-        return self.data[scene_name][map_name]["map_layer"]
+        return self.scenes[scene_name][map_name]["map_layer"]
     
     def get_walls(self, map_name=None, scene_name=None):
         """Get the walls of the map (list)"""
@@ -190,7 +217,7 @@ class sceneHandler:
             self.load_scene(scene_name)
         if map_name is None:
             map_name = self.selected_map
-        return self.data[scene_name][map_name]["walls"]
+        return self.scenes[scene_name][map_name]["walls"]
     
     def get_portals(self, map_name=None, scene_name=None):
         """Get the player position of the map (list)"""
@@ -201,14 +228,26 @@ class sceneHandler:
             self.load_scene(scene_name)
         if map_name is None:
             map_name = self.selected_map
-        return self.data[scene_name][map_name]["portals"]
+        return self.scenes[scene_name][map_name]["portals"]
     
     def get_portal_exit(self, portals):
         """Get the portal_exit of a portal"""
         if self.has_scene_load(portals["targeted_scene_name"]) == 0:
             trace("Scene '"+portals["targeted_scene_name"]+"' not loaded.")
             self.load_scene(portals["targeted_scene_name"])
-        return self.data[portals["targeted_scene_name"]][portals["targeted_map_name"]]["portals_exits"][portals["targeted_exit_name"]]
+        return self.scenes[portals["targeted_scene_name"]][portals["targeted_map_name"]]["portals_exits"][portals["targeted_exit_name"]]
+    
+    def get_entities_pattern(self, map_name=None, scene_name=None):
+        """Get the entities pattern of the map (list)"""
+        if scene_name is None:
+            scene_name = self.selected_scene
+        if self.has_scene_load(scene_name) == 0:
+            trace("Scene '"+scene_name+"' not loaded.")
+            self.load_scene(scene_name)
+        if map_name is None:
+            map_name = self.selected_map
+        return self.scenes[scene_name][map_name]["entities_pattern"]
+
 
 # Set the console object
-scene = sceneHandler()
+load = loadHandler()

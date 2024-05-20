@@ -1,0 +1,7 @@
+Importer les infos sur les entitées avec loadHandler. <---
+
+loadHandler a besoin de géré les loads (chaques saves aura un json de load attribué). X impossible
+
+Game et entityToolbox doivent géré la partie sauvegarde d'un objet.
+
+loadHandler servira a sauvegarder le jeu.
