@@ -1,7 +1,7 @@
 # This game file is not the game logic, it's the handling of the game and the rendering part.
 import pygame, pyscroll
 from utils.resourcesHandler import storage
-from utils.sceneHandler import scene
+from utils.loadHandler import scene
 from player import Player
 
 class Game:
