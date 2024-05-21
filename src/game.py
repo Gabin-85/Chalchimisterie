@@ -1,5 +1,6 @@
 # This game file is not the game logic, it's the handling of the game and the rendering part.
 import pygame, pyscroll
+from utils.consoleSystem import info
 from utils.resourcesHandler import storage
 from utils.loadHandler import load
 from utils.saveHandler import saver
@@ -10,8 +11,7 @@ class Game:
         """
         This is the game init function. It's called at the beginning of the game.
         """
-        self.fps_clock = pygame.time.Clock()
-        self.window_name = storage.get("window_name")
+        self.window_name, self.fps_target = storage.get(["window_name","fps"])
         self.screen = pygame.display.set_mode(storage.get("screen_size"))
         pygame.display.set_caption(self.window_name)
 
@@ -23,11 +23,13 @@ class Game:
                     self.selected_scene, self.selected_map = entity["scene_name"], entity["map_name"]
         self.update_map(self.selected_map, self.selected_scene)
 
+        info("Game launched.")
+
     def quit(self):
         # We save the game
         for entity in saver.get_entities():
-            print(entity.name)
             entity.unload()
+        info("Game closed.")
     
     def update_map(self, map_name=None, scene_name=None):
         if scene_name is None:
@@ -42,17 +44,10 @@ class Game:
         for entity in saver.get_entities():
             self.group.add(entity)
 
-    def run(self):
+    def physics(self, dt):
         """
         Update the player position and make a draw call.
         """
-
-        # Update the player movement.
-        self.fps_clock.tick(60)
-        try:
-            dt = 50 / self.fps_clock.get_fps()
-        except:
-            dt = 0
 
         # Check if a key is pressed and set the player acceleration
         pressed = pygame.key.get_pressed()
@@ -81,5 +76,10 @@ class Game:
                 if entity.map_name != load.selected_map or entity.scene_name != load.selected_scene:
                     self.update_map(entity.map_name, entity.scene_name)
                 self.group.center(entity.rect.center)
+
+    def render(self):
+        """
+        Render the game.
+        """
         self.group.draw(self.screen)
         pygame.display.flip()

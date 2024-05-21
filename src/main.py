@@ -13,8 +13,10 @@ if __name__ == "__main__":
     game = Game()
 
     # This is the code run
+    fps_clock = pygame.time.Clock()
     running = True
     while running:
+    
 
         # Quit event registration
         for event in pygame.event.get():
@@ -22,7 +24,10 @@ if __name__ == "__main__":
                     running = False
         
         # Game loop
-        game.run()
+        game.physics(50 / fps_clock.get_fps() if fps_clock.get_fps() != 0 else 0.8)
+        game.render()
+
+        fps_clock.tick(game.fps_target)
 
     # Quit (The inverse order of initialization)
     game.quit()

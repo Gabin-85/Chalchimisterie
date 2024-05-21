@@ -14,18 +14,19 @@ class Entity(pygame.sprite.Sprite):
         self.id = None
         self.save = None
 
-    def create(self, name:str):
-        template = storage.get(name, "entities")
+    def create(self, name, pattern:str, position:pygame.Vector2, scene_name, map_name):
+        template = storage.get(pattern, "entities")
 
         # General
-        self.id = len(saver.save["entities"])
+        self.id = len(saver.entities)-1
         self.name = name
+        self.pattern = pattern
         self.rect = pygame.Rect(0, 0, 0, 0)
 
         # Position
-        self.scene_name:str = template["scene_name"]
-        self.map_name:str = template["map_name"]
-        self.position:pygame.Vector2 = pygame.Vector2(*template["position"])
+        self.scene_name:str = scene_name
+        self.map_name:str = map_name
+        self.position:pygame.Vector2 = position
 
         # Boxes
         self.hitbox:pygame.Rect = pygame.Rect(*template["hitbox"])
@@ -39,7 +40,7 @@ class Entity(pygame.sprite.Sprite):
         self.friction:float = template["friction"]
 
         # Textures and animation
-        self.texture:dict = storage.get(self.name, "animations")
+        self.texture:dict = storage.get(self.pattern, "animations")
         self.texture_image:pygame.image = pygame.image.load("assets/sprites/" + self.texture["file"])
         self.texture_size:list = self.texture["size"]
         self.texture_images:dict = {}
@@ -61,6 +62,7 @@ class Entity(pygame.sprite.Sprite):
         # General
         self.id = id
         self.name = self.save.get("name")
+        self.pattern = self.save.get("pattern")
         self.rect = pygame.Rect(0, 0, 0, 0)
 
         # Position
@@ -80,7 +82,7 @@ class Entity(pygame.sprite.Sprite):
         self.friction:float = self.save.get("friction")
 
         # Textures and animation
-        self.texture:dict = storage.get(self.name, "animations")
+        self.texture:dict = storage.get(self.pattern, "animations")
         self.texture_image:pygame.image = pygame.image.load("assets/sprites/" + self.texture["file"])
         self.texture_size:list = self.texture["size"]
         self.texture_images:dict = {}
@@ -99,8 +101,9 @@ class Entity(pygame.sprite.Sprite):
         self.save = saveEntity(self.id)
 
         # General
-        self.save.set("name", self.name)
         self.save.set("id", self.id)
+        self.save.set("name", self.name)
+        self.save.set("pattern", self.pattern)
 
         # Position
         self.save.set("scene_name", self.scene_name)
@@ -146,12 +149,12 @@ class Entity(pygame.sprite.Sprite):
                 self.image.set_colorkey((0, 0, 0))
                 self.rect = self.image.get_rect()
 
-    def update(self, dt):
+    def update(self, dt:float):
         try:
             self.acceleration.scale_to_length(self.force/self.mass)
         except ValueError:
             self.acceleration = pygame.Vector2(0, 0)
-        self.velocity -= self.velocity * self.friction / self.mass - self.acceleration
+        self.velocity -= (self.velocity * (self.friction / self.mass) - self.acceleration)*dt
 
         marging = pygame.Vector2(0, 0)
         if self.velocity.x > 0:
@@ -213,7 +216,6 @@ class saveEntity:
     def unload(self):
         try:
             saver.entities[self.id] = self.data
-            print(self.data)
             return True
         except KeyError:
             warn("Can't unload entity n°"+str(self.id)+".")

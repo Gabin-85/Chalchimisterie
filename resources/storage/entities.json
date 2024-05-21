@@ -1,11 +1,5 @@
 {
     "player": {
-        "scene_name": "scene1",
-        "map_name": "testa",
-        "position": [
-            500,
-            500
-        ],
         "hitbox": [
             0,
             0,
