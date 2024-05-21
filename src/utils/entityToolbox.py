@@ -1,7 +1,8 @@
 from utils.resourcesHandler import storage
-from utils.saveHandler import saveEntity, save
+from utils.resourcesHandler import save
+from utils.saveHandler import saver
 from utils.timeToolbox import Timer
-from utils.sceneHandler import scene
+from utils.consoleSystem import warn
 import pygame
 import math
 
@@ -13,18 +14,19 @@ class Entity(pygame.sprite.Sprite):
         self.id = None
         self.save = None
 
-    def create(self, name:str):
-        template = storage.get(name, "entity")
+    def create(self, name, pattern:str, position:pygame.Vector2, scene_name, map_name):
+        template = storage.get(pattern, "entities")
 
         # General
-        self.id = len(save.loaded_files[save.selected_save]["entity"])
+        self.id = len(saver.entities)-1
         self.name = name
+        self.pattern = pattern
         self.rect = pygame.Rect(0, 0, 0, 0)
 
         # Position
-        self.scene_name:str = template["scene_name"]
-        self.map_name:str = template["map_name"]
-        self.position:pygame.Vector2 = pygame.Vector2(*template["position"])
+        self.scene_name:str = scene_name
+        self.map_name:str = map_name
+        self.position:pygame.Vector2 = position
 
         # Boxes
         self.hitbox:pygame.Rect = pygame.Rect(*template["hitbox"])
@@ -38,7 +40,7 @@ class Entity(pygame.sprite.Sprite):
         self.friction:float = template["friction"]
 
         # Textures and animation
-        self.texture:dict = storage.get(self.name, "animations")
+        self.texture:dict = storage.get(self.pattern, "animations")
         self.texture_image:pygame.image = pygame.image.load("assets/sprites/" + self.texture["file"])
         self.texture_size:list = self.texture["size"]
         self.texture_images:dict = {}
@@ -54,12 +56,13 @@ class Entity(pygame.sprite.Sprite):
                 self.texture_images[animation][frame] = [frame * self.texture_size[0], list(self.texture["animations"].keys()).index(animation) * self.texture_size[1], self.texture_size[0], self.texture_size[1]]
 
     def load(self, id:int):
-        self.save:saveEntity = saveEntity(id)
-        self.save.load()
+        self.save = saveEntity(id)
+        self.save.load(id)
 
         # General
         self.id = id
         self.name = self.save.get("name")
+        self.pattern = self.save.get("pattern")
         self.rect = pygame.Rect(0, 0, 0, 0)
 
         # Position
@@ -79,7 +82,7 @@ class Entity(pygame.sprite.Sprite):
         self.friction:float = self.save.get("friction")
 
         # Textures and animation
-        self.texture:dict = storage.get(self.name, "animations")
+        self.texture:dict = storage.get(self.pattern, "animations")
         self.texture_image:pygame.image = pygame.image.load("assets/sprites/" + self.texture["file"])
         self.texture_size:list = self.texture["size"]
         self.texture_images:dict = {}
@@ -95,11 +98,12 @@ class Entity(pygame.sprite.Sprite):
                 self.texture_images[animation][frame] = [frame * self.texture_size[0], list(self.texture["animations"].keys()).index(animation) * self.texture_size[1], self.texture_size[0], self.texture_size[1]]
 
     def unload(self):
-        self.save:saveEntity = saveEntity(self.id)
-        self.save.create()
+        self.save = saveEntity(self.id)
 
         # General
+        self.save.set("id", self.id)
         self.save.set("name", self.name)
+        self.save.set("pattern", self.pattern)
 
         # Position
         self.save.set("scene_name", self.scene_name)
@@ -120,6 +124,8 @@ class Entity(pygame.sprite.Sprite):
         self.save.set("animation", self.animation)
         self.save.set("animation_frame", self.animation_frame)
         self.save.set("animation_timer", self.animation_timer.remaining_time())
+
+        self.save.unload()
 
     def start_animation(self):
         self.animation_timer.start()
@@ -143,12 +149,12 @@ class Entity(pygame.sprite.Sprite):
                 self.image.set_colorkey((0, 0, 0))
                 self.rect = self.image.get_rect()
 
-    def update(self, dt):
+    def update(self, dt:float):
         try:
             self.acceleration.scale_to_length(self.force/self.mass)
         except ValueError:
             self.acceleration = pygame.Vector2(0, 0)
-        self.velocity -= self.velocity * self.friction / self.mass - self.acceleration
+        self.velocity -= (self.velocity * (self.friction / self.mass) - self.acceleration)*dt
 
         marging = pygame.Vector2(0, 0)
         if self.velocity.x > 0:
@@ -163,7 +169,8 @@ class Entity(pygame.sprite.Sprite):
         feety = pygame.Rect(self.hitbox.x, self.hitbox.y + marging.y, self.hitbox.width, self.hitbox.height)
 
         # TODO: Modify the player move part so we can separate x and y
-        for wall in scene.get_walls():
+        from utils.loadHandler import load
+        for wall in load.get_walls():
             if feetx.colliderect(wall["rect"]) == True:
                 match wall["collision_type"]:
                     case "bouncy":
@@ -188,7 +195,42 @@ class Entity(pygame.sprite.Sprite):
         self.rect.center = (self.hitbox.x+10, self.hitbox.y-6)
 
         # Teleport the player if he collide with a portal
-        for portal in scene.get_portals():
-            if self.hitbox.colliderect(scene.get_portals()[portal]["rect"]) == True:
-                self.position.x, self.position.y = scene.get_portal_exit(scene.get_portals()[portal]).x, scene.get_portal_exit(scene.get_portals()[portal]).y
-                self.map_name, self.scene_name = scene.get_portals()[portal]["targeted_map_name"], scene.get_portals()[portal]["targeted_scene_name"]
+        for portal in load.get_portals():
+            if self.hitbox.colliderect(load.get_portals()[portal]["rect"]) == True:
+                self.position.x, self.position.y = load.get_portal_exit(load.get_portals()[portal]).x, load.get_portal_exit(load.get_portals()[portal]).y
+                self.map_name, self.scene_name = load.get_portals()[portal]["targeted_map_name"], load.get_portals()[portal]["targeted_scene_name"]
+
+class saveEntity:
+    def __init__(self, id:int=None):
+        self.id:int = id
+        self.data:dict = {}
+
+    def load(self, id:int):
+        try:
+            self.data = saver.save["entities"][id]
+            return True
+        except KeyError:
+            self.data = {}
+            return False
+
+    def unload(self):
+        try:
+            saver.entities[self.id] = self.data
+            return True
+        except KeyError:
+            warn("Can't unload entity n°"+str(self.id)+".")
+            return False
+
+    def get(self, parameter:str):
+        try:
+            return self.data[parameter]
+        except KeyError:
+            return None
+
+    def set(self, parameter:str, value:any):
+        try:
+            self.data[parameter] = value
+            return True
+        except KeyError:
+            warn("Can't set parameter '"+str(parameter)+"' in entity n°"+str(self.id)+".")
+            return False

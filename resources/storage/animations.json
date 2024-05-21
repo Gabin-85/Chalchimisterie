@@ -1,7 +1,10 @@
 {
     "player": {
         "file": "player.png",
-        "size": [21, 48],
+        "size": [
+            21,
+            48
+        ],
         "time": 50,
         "animations": {
             "down": 1,
