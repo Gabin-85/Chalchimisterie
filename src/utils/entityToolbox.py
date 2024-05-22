@@ -1,6 +1,6 @@
-from utils.resourcesHandler import storage
+from utils.resourcesHandler import storage, save
 from utils.mathToolbox import Vector2D, Rect2D
-from utils.saveHandler import saver
+from utils.entityHandler import entity_handler
 from utils.timeToolbox import Timer
 from utils.consoleSystem import warn
 import pygame
@@ -17,7 +17,7 @@ class Entity(pygame.sprite.Sprite):
         template = storage.get(pattern, "entities")
 
         # General
-        self.id = len(saver.entities)-1
+        self.id = len(entity_handler.entities)-1
         self.name = name
         self.pattern = pattern
         self.rect = pygame.Rect(0, 0, 0, 0)
@@ -157,7 +157,6 @@ class Entity(pygame.sprite.Sprite):
         feetx = Rect2D(self.hitbox.x + self.velocity.x, self.hitbox.y, self.hitbox.width, self.hitbox.height)
         feety = Rect2D(self.hitbox.x, self.hitbox.y + self.velocity.y, self.hitbox.width, self.hitbox.height)
 
-        # TODO: Modify the player move part so we can separate x and y
         from utils.loadHandler import load
         for wall in load.get_walls():
             if feetx.collide_rect(wall["rect"]) == True:
@@ -188,6 +187,7 @@ class Entity(pygame.sprite.Sprite):
             if self.hitbox.collide_rect(load.get_portals()[portal]["rect"]) == True:
                 self.position.x, self.position.y = load.get_portal_exit(load.get_portals()[portal]).x, load.get_portal_exit(load.get_portals()[portal]).y
                 self.map_name, self.scene_name = load.get_portals()[portal]["targeted_map_name"], load.get_portals()[portal]["targeted_scene_name"]
+                entity_handler.need_update = True
 
 class saveEntity:
     def __init__(self, id:int=None):
@@ -196,7 +196,7 @@ class saveEntity:
 
     def load(self, id:int):
         try:
-            self.data = saver.save["entities"][id]
+            self.data = entity_handler.entities[id]
             return True
         except KeyError:
             self.data = {}
@@ -204,7 +204,7 @@ class saveEntity:
 
     def unload(self):
         try:
-            saver.entities[self.id] = self.data
+            entity_handler.entities[self.id] = self.data
             return True
         except KeyError:
             warn("Can't unload entity n°"+str(self.id)+".")

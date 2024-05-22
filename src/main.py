@@ -1,15 +1,21 @@
 # This main file launch all files, dependencies and loop the bases functions.
 import pygame
-from utils.consoleSystem import console
+from utils.consoleSystem import console, info
 from utils.resourcesHandler import storage, save
+from utils.entityHandler import entity_handler
 from utils.loadHandler import load
-from utils.saveHandler import saver
 from game import Game
 
 if __name__ == "__main__":
     # Initialisation
     pygame.init()
-    saver.setup("save1")
+
+    # Manage saves
+    save.handler_default = "save1"
+    if save.handler_default not in save.paths:
+         save.create_file(save.handler_default, "json")
+         save.write_file("save1", {"entities": [], "shown_entities": [], "loaded_scenes": []})
+         
     game = Game()
 
     # This is the code run
@@ -31,8 +37,8 @@ if __name__ == "__main__":
 
     # Quit (The inverse order of initialization)
     game.quit()
-    saver.quit()
     load.quit()
+    entity_handler.quit()
     save.quit()
     storage.quit()
     console.quit()

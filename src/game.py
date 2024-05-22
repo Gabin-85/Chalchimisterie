@@ -1,10 +1,10 @@
 # This game file is not the game logic, it's the handling of the game and the rendering part.
 import pygame, pyscroll
 from utils.consoleSystem import info
-from utils.resourcesHandler import storage
+from utils.resourcesHandler import storage, save
+from utils.entityHandler import entity_handler
 from utils.loadHandler import load
-from utils.saveHandler import saver
-from utils.mathToolbox import Vector2D, Rect2D
+from utils.mathToolbox import Vector2D
 
 class Game:
 
@@ -12,14 +12,15 @@ class Game:
         """
         This is the game init function. It's called at the beginning of the game.
         """
+        # Initialisation
         self.window_name, self.fps_target = storage.get(["window_name","fps"])
         self.screen = pygame.display.set_mode(storage.get("screen_size"))
         pygame.display.set_caption(self.window_name)
 
         # Load the correct map
         self.selected_scene, self.selected_map = "scene1", "testa"
-        if saver.save["entities"] is not None:
-            for entity in saver.save["entities"]:
+        if entity_handler.entities is not None:
+            for entity in entity_handler.entities:
                 if entity["name"] == "player":
                     self.selected_scene, self.selected_map = entity["scene_name"], entity["map_name"]
         self.update_map(self.selected_map, self.selected_scene)
@@ -28,8 +29,9 @@ class Game:
 
     def quit(self):
         # We save the game
-        for entity in saver.get_entities():
+        for entity in entity_handler.entities:
             entity.unload()
+        save.set("entities", entity_handler.entities)
         info("Game closed.")
     
     def update_map(self, map_name=None, scene_name=None):
@@ -41,10 +43,6 @@ class Game:
         load.change_map(map_name, scene_name)
         load.scene_cleanup()
 
-        self.group = pyscroll.PyscrollGroup(map_layer=load.get_map_layer(map_name, scene_name), default_layer=4)
-        for entity in saver.get_entities():
-            self.group.add(entity)
-
     def physics(self, dt):
         """
         Update the player position and make a draw call.
@@ -53,9 +51,9 @@ class Game:
         # Check if a key is pressed and set the player acceleration
         pressed = pygame.key.get_pressed()
         
-        for entity in saver.get_entities():
+        for entity in entity_handler.shown_entities:
 
-            if entity.name == "player":
+            if entity.pattern == "player":
                 entity.acceleration = Vector2D(0, 0)
                 if pressed[pygame.K_LEFT]:
                     entity.acceleration.x -= 1
@@ -83,5 +81,14 @@ class Game:
         """
         Render the game.
         """
+        # Check if entity need to be updated
+        if entity_handler.need_update:
+            entity_handler.shown_entities = [entity for entity in entity_handler.entities if entity.map_name == load.selected_map and entity.scene_name == load.selected_scene]
+            self.group = pyscroll.PyscrollGroup(map_layer=load.get_map_layer(load.selected_map, load.selected_scene), default_layer=4)
+            for entity in entity_handler.shown_entities:
+                self.group.add(entity)
+            self.need_update = False
+
+        # Draw the screen
         self.group.draw(self.screen)
         pygame.display.flip()

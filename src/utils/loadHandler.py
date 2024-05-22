@@ -1,9 +1,10 @@
 # This file handle the loads of the scenes and the maps.
-import pygame, pytmx, pyscroll
-from utils.saveHandler import saver
+import pytmx, pyscroll
 from utils.mathToolbox import Vector2D
-from utils.entityToolbox import Entity, Rect2D
+from utils.resourcesHandler import save
 from utils.resourcesHandler import storage
+from utils.entityHandler import entity_handler
+from utils.entityToolbox import Entity, Rect2D
 from utils.consoleSystem import warn, info, debug, trace, exception
 
 class loadHandler:
@@ -87,17 +88,20 @@ class loadHandler:
                 self.scenes[scene_name][map_name]["map_layer"].zoom = screen_size[0]*self.scenes[scene_name][map_name]["tmx_data"].get_layer_by_name("objects").properties["zoom"]/self.get_tmx_data(map_name, scene_name).width/self.get_tmx_data(map_name, scene_name).tilewidth
 
             # Check the entities in the scenes are in the save
-            if scene_name in [scene for scene in [entities["scene_name"] for entities in saver.save["entities"]]]:
+            if scene_name in entity_handler.loaded_scenes:
                 # If yes load all entities
-                for entity in saver.save["entities"]:
+                for entity in save.get("entities"):
                     if entity["map_name"] == map_name and entity["scene_name"] == scene_name:
-                        saver.entities.append(Entity())
-                        saver.entities[-1].load(entity["id"])
+                        entity_handler.entities.append(Entity())
+                        entity_handler.entities[-1].load(entity["id"])
             else:
                 # If not create and add all entities
                 for entity in self.get_entities_pattern(map_name, scene_name):
-                    saver.entities.append(Entity())
-                    saver.entities[-1].create(entity["name"], entity["pattern"], Vector2D(*entity["position"]), scene_name, map_name)
+                    entity_handler.entities.append(Entity())
+                    entity_handler.entities[-1].create(entity["name"], entity["pattern"], Vector2D(*entity["position"]), scene_name, map_name)
+            
+        if scene_name not in entity_handler.loaded_scenes:
+            entity_handler.loaded_scenes.append(scene_name)
 
         trace("'"+scene_name+"' loaded!")
         return True
@@ -138,7 +142,7 @@ class loadHandler:
 
     def loaded_scenes(self):
         """Get all the loaded scenes"""
-        return list(saver.save.keys())
+        return list(save.loaded.keys())
 
     def has_scene_load(self, scene_name=None):
         """Give the number of maps in the scene, if 0 then the scene is not loaded"""
