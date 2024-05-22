@@ -1,7 +1,8 @@
 # This file handle the loads of the scenes and the maps.
 import pygame, pytmx, pyscroll
 from utils.saveHandler import saver
-from utils.entityToolbox import Entity
+from utils.mathToolbox import Vector2D
+from utils.entityToolbox import Entity, Rect2D
 from utils.resourcesHandler import storage
 from utils.consoleSystem import warn, info, debug, trace, exception
 
@@ -61,11 +62,11 @@ class loadHandler:
                 match obj.type:
                     case "collision":
                         self.scenes[scene_name][map_name]["walls"].append({
-                            "rect": pygame.Rect(obj.x, obj.y, obj.width, obj.height),
+                            "rect": Rect2D(obj.x, obj.y, obj.width, obj.height),
                             "collision_type": obj.properties["collision_type"]})
                     case "portal":
                         self.scenes[scene_name][map_name]["portals"][obj.name] = {
-                            "rect":pygame.Rect(obj.x, obj.y, obj.width, obj.height),
+                            "rect":Rect2D(obj.x, obj.y, obj.width, obj.height),
                             "targeted_scene_name": obj.properties["targeted_scene_name"],
                             "targeted_map_name": obj.properties["targeted_map_name"],
                             "targeted_exit_name": obj.properties["targeted_exit_name"]}
@@ -96,7 +97,7 @@ class loadHandler:
                 # If not create and add all entities
                 for entity in self.get_entities_pattern(map_name, scene_name):
                     saver.entities.append(Entity())
-                    saver.entities[-1].create(entity["name"], entity["pattern"], pygame.Vector2(*entity["position"]), scene_name, map_name)
+                    saver.entities[-1].create(entity["name"], entity["pattern"], Vector2D(*entity["position"]), scene_name, map_name)
 
         trace("'"+scene_name+"' loaded!")
         return True

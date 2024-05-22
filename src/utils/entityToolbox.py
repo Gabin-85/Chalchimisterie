@@ -1,10 +1,9 @@
 from utils.resourcesHandler import storage
-from utils.resourcesHandler import save
+from utils.mathToolbox import Vector2D, Rect2D
 from utils.saveHandler import saver
 from utils.timeToolbox import Timer
 from utils.consoleSystem import warn
 import pygame
-import math
 
 class Entity(pygame.sprite.Sprite):
 
@@ -14,7 +13,7 @@ class Entity(pygame.sprite.Sprite):
         self.id = None
         self.save = None
 
-    def create(self, name, pattern:str, position:pygame.Vector2, scene_name, map_name):
+    def create(self, name, pattern:str, position:Vector2D, scene_name, map_name):
         template = storage.get(pattern, "entities")
 
         # General
@@ -26,15 +25,15 @@ class Entity(pygame.sprite.Sprite):
         # Position
         self.scene_name:str = scene_name
         self.map_name:str = map_name
-        self.position:pygame.Vector2 = position
+        self.position:Vector2D = position
 
         # Boxes
-        self.hitbox:pygame.Rect = pygame.Rect(*template["hitbox"])
-        self.hurtbox:pygame.Rect = pygame.Rect(*template["hurtbox"])
+        self.hitbox:Rect2D = Rect2D(*template["hitbox"])
+        self.hurtbox:Rect2D = Rect2D(*template["hurtbox"])
 
         # Physics
-        self.velocity:pygame.Vector2 = pygame.Vector2(*template["velocity"])
-        self.acceleration:pygame.Vector2 = pygame.Vector2(0, 0)
+        self.velocity:Vector2D = Vector2D(*template["velocity"])
+        self.acceleration:Vector2D = Vector2D(0, 0)
         self.mass:float = template["mass"]
         self.force:float = template["force"]
         self.friction:float = template["friction"]
@@ -68,15 +67,15 @@ class Entity(pygame.sprite.Sprite):
         # Position
         self.scene_name:str = self.save.get("scene_name")
         self.map_name:str = self.save.get("map_name")
-        self.position:pygame.Vector2 = pygame.Vector2(self.save.get("position"))
+        self.position:Vector2D = Vector2D(*self.save.get("position"))
 
         # Boxes
-        self.hitbox:pygame.Rect = pygame.Rect(*self.save.get("hitbox"))
-        self.hurtbox:pygame.Rect = pygame.Rect(*self.save.get("hurtbox"))
+        self.hitbox:Rect2D = Rect2D(*self.save.get("hitbox"))
+        self.hurtbox:Rect2D = Rect2D(*self.save.get("hurtbox"))
 
         # Physics
-        self.velocity:pygame.Vector2 = pygame.Vector2(*self.save.get("velocity"))
-        self.acceleration:pygame.Vector2 = pygame.Vector2(0, 0)
+        self.velocity:Vector2D = Vector2D(*self.save.get("velocity"))
+        self.acceleration:Vector2D = Vector2D(0, 0)
         self.mass:float = self.save.get("mass")
         self.force:float = self.save.get("force")
         self.friction:float = self.save.get("friction")
@@ -111,8 +110,8 @@ class Entity(pygame.sprite.Sprite):
         self.save.set("position", [self.position.x, self.position.y])
 
         # Boxes
-        self.save.set("hitbox", [self.hitbox.x, self.hitbox.y, self.hitbox.w, self.hitbox.h])
-        self.save.set("hurtbox", [self.hurtbox.x, self.hurtbox.y, self.hurtbox.w, self.hurtbox.h])
+        self.save.set("hitbox", [self.hitbox.x, self.hitbox.y, self.hitbox.width, self.hitbox.height])
+        self.save.set("hurtbox", [self.hurtbox.x, self.hurtbox.y, self.hurtbox.width, self.hurtbox.height])
 
         # Physics
         self.save.set("velocity", [self.velocity.x, self.velocity.y])
@@ -151,27 +150,17 @@ class Entity(pygame.sprite.Sprite):
 
     def update(self, dt:float):
         try:
-            self.acceleration.scale_to_length(self.force/self.mass)
+            self.acceleration.scale(self.force/self.mass)
         except ValueError:
-            self.acceleration = pygame.Vector2(0, 0)
-        self.velocity -= (self.velocity * (self.friction / self.mass) - self.acceleration)*dt
-
-        marging = pygame.Vector2(0, 0)
-        if self.velocity.x > 0:
-            marging.x = math.ceil(self.velocity.x)
-        else:
-            marging.x = math.floor(self.velocity.x)
-        if self.velocity.y > 0:
-            marging.y = math.ceil(self.velocity.y)
-        else:
-            marging.y = math.floor(self.velocity.y)
-        feetx = pygame.Rect(self.hitbox.x + marging.x, self.hitbox.y, self.hitbox.width, self.hitbox.height)
-        feety = pygame.Rect(self.hitbox.x, self.hitbox.y + marging.y, self.hitbox.width, self.hitbox.height)
+            self.acceleration = Vector2D(0, 0)
+        self.velocity -= (self.velocity.scale(self.friction / self.mass) - self.acceleration).scale(dt)
+        feetx = Rect2D(self.hitbox.x + self.velocity.x, self.hitbox.y, self.hitbox.width, self.hitbox.height)
+        feety = Rect2D(self.hitbox.x, self.hitbox.y + self.velocity.y, self.hitbox.width, self.hitbox.height)
 
         # TODO: Modify the player move part so we can separate x and y
         from utils.loadHandler import load
         for wall in load.get_walls():
-            if feetx.colliderect(wall["rect"]) == True:
+            if feetx.collide_rect(wall["rect"]) == True:
                 match wall["collision_type"]:
                     case "bouncy":
                         self.velocity.x *= -1
@@ -180,7 +169,7 @@ class Entity(pygame.sprite.Sprite):
                         self.velocity.y = 0
                     case "solid":
                         self.velocity.x = 0
-            if feety.colliderect(wall["rect"]) == True:
+            if feety.collide_rect(wall["rect"]) == True:
                 match wall["collision_type"]:
                     case "bouncy":
                         self.velocity.y *= -1
@@ -190,13 +179,13 @@ class Entity(pygame.sprite.Sprite):
                     case "solid":
                         self.velocity.y = 0
 
-        self.position += self.velocity*dt
-        self.hitbox.center = self.position
+        self.position += self.velocity.scale(dt)
+        self.hitbox.set_center(self.position)
         self.rect.center = (self.hitbox.x+10, self.hitbox.y-6)
 
         # Teleport the player if he collide with a portal
         for portal in load.get_portals():
-            if self.hitbox.colliderect(load.get_portals()[portal]["rect"]) == True:
+            if self.hitbox.collide_rect(load.get_portals()[portal]["rect"]) == True:
                 self.position.x, self.position.y = load.get_portal_exit(load.get_portals()[portal]).x, load.get_portal_exit(load.get_portals()[portal]).y
                 self.map_name, self.scene_name = load.get_portals()[portal]["targeted_map_name"], load.get_portals()[portal]["targeted_scene_name"]
 

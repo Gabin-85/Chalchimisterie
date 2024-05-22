@@ -4,6 +4,7 @@ from utils.consoleSystem import info
 from utils.resourcesHandler import storage
 from utils.loadHandler import load
 from utils.saveHandler import saver
+from utils.mathToolbox import Vector2D, Rect2D
 
 class Game:
 
@@ -55,7 +56,7 @@ class Game:
         for entity in saver.get_entities():
 
             if entity.name == "player":
-                entity.acceleration = pygame.Vector2(0, 0)
+                entity.acceleration = Vector2D(0, 0)
                 if pressed[pygame.K_LEFT]:
                     entity.acceleration.x -= 1
                     entity.change_animation("left")
@@ -68,6 +69,7 @@ class Game:
                 if pressed[pygame.K_DOWN]:
                     entity.acceleration.y += 1
                     entity.change_animation("down")
+                entity.acceleration.inormalize()
 
             entity.change_frame()
 
