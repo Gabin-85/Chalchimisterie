@@ -53,7 +53,7 @@ class Game:
         
         for entity in entity_handler.shown_entities:
 
-            if entity.pattern == "player":
+            if entity.name == "player":
                 entity.acceleration = Vector2D(0, 0)
                 if pressed[pygame.K_LEFT]:
                     entity.acceleration.x -= 1

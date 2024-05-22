@@ -237,7 +237,6 @@ class resourcesHandler():
             warn("Can't cut parameter '"+str(parameter)+"' in file '"+str(loaded_file_name)+"'.")
             exception(e)
             return False
-
-# Set the storage object
+        
 storage = resourcesHandler("storage", "options")
-save = resourcesHandler("save", "options")
+save = resourcesHandler("save", )

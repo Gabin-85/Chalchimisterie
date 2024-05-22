@@ -196,7 +196,7 @@ class saveEntity:
 
     def load(self, id:int):
         try:
-            self.data = entity_handler.entities[id]
+            self.data = save.get("entities")[id]
             return True
         except KeyError:
             self.data = {}
