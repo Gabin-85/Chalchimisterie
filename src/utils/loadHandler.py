@@ -1,10 +1,10 @@
 # This file handle the loads of the scenes and the maps.
 import pytmx, pyscroll
-from utils.mathToolbox import Vector2D
+from utils.mathToolbox import Vector2D, Rect2D
 from utils.resourcesHandler import save
 from utils.resourcesHandler import storage
 from utils.entityHandler import entity_handler
-from utils.entityToolbox import Entity, Rect2D
+from utils.entityToolbox import Entity
 from utils.consoleSystem import warn, info, debug, trace, exception
 
 class loadHandler:
@@ -98,7 +98,7 @@ class loadHandler:
                 # If not create and add all entities
                 for entity in self.get_entities_pattern(map_name, scene_name):
                     entity_handler.entities.append(Entity())
-                    entity_handler.entities[-1].create(entity["name"], entity["pattern"], Vector2D(*entity["position"]), scene_name, map_name)
+                    entity_handler.entities[-1].create(entity["name"], entity["pattern"], scene_name, map_name, Vector2D(*entity["position"]))
             
         if scene_name not in entity_handler.loaded_scenes:
             entity_handler.loaded_scenes.append(scene_name)
@@ -123,12 +123,10 @@ class loadHandler:
     def scene_cleanup(self):
         """Unload all used scenes"""
         scenes = self.loaded_scenes()
-        if self.selected_scene in scenes:
-            scenes.remove(self.selected_scene)
-        if len(scenes) != 0:
-            debug("Cleanup scene.")
-            for scene in scenes:
+        for scene in scenes:
+            if scene != self.selected_scene:
                 self.unload_scene(scene)
+        debug("Cleanup scene.")
             
     def change_scene(self, scene_name=None):
         """Unload all scenes and load the one given in the parameter"""
@@ -142,7 +140,7 @@ class loadHandler:
 
     def loaded_scenes(self):
         """Get all the loaded scenes"""
-        return list(save.loaded.keys())
+        return list(self.scenes.keys())
 
     def has_scene_load(self, scene_name=None):
         """Give the number of maps in the scene, if 0 then the scene is not loaded"""

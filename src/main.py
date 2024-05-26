@@ -28,8 +28,8 @@ if __name__ == "__main__":
                     running = False
         
         # Game loop
-        game.physics(50 / fps_clock.get_fps() if fps_clock.get_fps() != 0 else 0.8)
         game.render()
+        game.physics(50 / fps_clock.get_fps() if fps_clock.get_fps() != 0 else 0.8)
 
         fps_clock.tick(game.fps_target)
 

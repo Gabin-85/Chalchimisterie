@@ -1,16 +1,16 @@
 {
     "player": {
         "hitbox": [
-            0,
-            0,
-            21,
-            18
+            -9,
+            3,
+            18,
+            7
         ],
         "hurtbox": [
-            0,
-            0,
-            21,
-            18
+            -9,
+            3,
+            18,
+            7
         ],
         "velocity": [
             0,
@@ -19,9 +19,7 @@
         "mass": 1.0,
         "force": 1.0,
         "friction": 0.2,
-        "animation": "down",
-        "animation_frame": -1,
-        "animation_timer": 50
+        "animation_default": "default"
     },
     "theodorus_god_killer": {
         "hitbox": [
@@ -43,9 +41,7 @@
         "mass": 1.0,
         "force": 1.0,
         "friction": 0.2,
-        "animation": "down",
-        "animation_frame": 0,
-        "animation_timer": 50
+        "animation_default": "default"
     },
     "mush": {
         "hitbox": [
