@@ -1,47 +1,40 @@
 {
     "player": {
-        "hitbox": [
-            -9,
-            3,
-            18,
-            7
+        "flags": [
+            "can_move",
+            "hitable",
+            "hurtable",
+            "animated",
+            "is_savable",
+            "pass_portals"
         ],
-        "hurtbox": [
-            -9,
-            3,
-            18,
-            7
-        ],
-        "velocity": [
-            0,
-            0
-        ],
-        "mass": 1.0,
-        "force": 1.0,
-        "friction": 0.2,
-        "animation_default": "default"
+        "data": {
+            "hitbox": [
+                -9,
+                3,
+                18,
+                7
+            ],
+            "animation_default": "default"
+        }
     },
-    "theodorus_god_killer": {
-        "hitbox": [
-            0,
-            0,
-            21,
-            18
+    "theodorus v1": {
+        "flags": [
+            "can_move",
+            "hurtable",
+            "animated",
+            "is_savable",
+            "block_portals"
         ],
-        "hurtbox": [
-            0,
-            0,
-            21,
-            18
-        ],
-        "velocity": [
-            0,
-            0
-        ],
-        "mass": 1.0,
-        "force": 1.0,
-        "friction": 0.2,
-        "animation_default": "default"
+        "data": {
+            "hitbox": [
+                0,
+                0,
+                21,
+                18
+            ],
+            "animation_default": "default"
+        }
     },
     "mush": {
         "hitbox": [

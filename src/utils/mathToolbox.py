@@ -15,6 +15,10 @@ class Vector2D:
     def __copy__(self) -> 'Vector2D':
         """Get a copy of the vector"""
         return Vector2D(self.x, self.y)
+    
+    def __type__(self) -> str:
+        """Get the type of the vector"""
+        return "Vector2D"
 
     #############
     # Operators #
@@ -135,6 +139,10 @@ class Vector3D:
     def __copy__(self) -> 'Vector3D':
         """Get a copy of the vector"""
         return Vector3D(self.x, self.y, self.z)
+    
+    def __type__(self) -> str:
+        """Get the type of the vector"""
+        return 'Vector3D'
     
     #############
     # Operators #
@@ -265,6 +273,10 @@ class Rect2D:
     def __copy__(self) -> 'Rect2D':
         return Rect2D(self.x, self.y, self.width, self.height)
     
+    def __type__(self) -> str:
+        """Get the type of the rect"""
+        return "Rect2D"
+    
     #############
     # Operators #
     #############
@@ -344,6 +356,10 @@ class Rect3D():
     
     def __copy__(self) -> 'Rect3D':
         return Rect3D(self.x, self.y, self.z, self.width, self.height, self.depth)
+    
+    def __type__(self) -> str:
+        """Get the type of the rect"""
+        return "Rect3D"
     
     #############
     # Operators #

@@ -13,10 +13,10 @@ class entityHandler:
         save.set("loaded_scenes", self.loaded_scenes)
 
     def update_shown_entities(self, scene_name, map_name):
-        self.shown_entities = [entity.id for entity in self.entities if entity.map_name == map_name and entity.scene_name == scene_name]
+        self.shown_entities = [entity.general_data["id"] for entity in self.entities if entity.general_data["map_name"] == map_name and entity.general_data["scene_name"] == scene_name]
         self.need_update = False
 
     def get_entities(self):
-        return [entity for entity in self.entities if entity.id in self.shown_entities]
+        return [entity for entity in self.entities if entity.general_data["id"] in self.shown_entities]
 
 entity_handler = entityHandler()

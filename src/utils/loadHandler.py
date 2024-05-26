@@ -91,9 +91,9 @@ class loadHandler:
             if scene_name in entity_handler.loaded_scenes:
                 # If yes load all entities
                 for entity in save.get("entities"):
-                    if entity["map_name"] == map_name and entity["scene_name"] == scene_name:
+                    if entity["general_data"]["map_name"] == map_name and entity["general_data"]["scene_name"] == scene_name:
                         entity_handler.entities.append(Entity())
-                        entity_handler.entities[-1].load(entity["id"])
+                        entity_handler.entities[-1].load(entity["general_data"]["id"])
             else:
                 # If not create and add all entities
                 for entity in self.get_entities_pattern(map_name, scene_name):

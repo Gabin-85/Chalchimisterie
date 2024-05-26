@@ -20,9 +20,9 @@ class Game:
         # Load the correct map
         self.selected_scene, self.selected_map = "scene1", "testa"
         for entity in save.get("entities"):
-            if entity["name"] == "player":
-                self.selected_scene = entity["scene_name"]
-                self.selected_map = entity["map_name"]
+            if entity["general_data"]["name"] == "player":
+                self.selected_scene = entity["general_data"]["scene_name"]
+                self.selected_map = entity["general_data"]["map_name"]
                 break
         self.update_map(self.selected_map, self.selected_scene)
 
@@ -54,24 +54,22 @@ class Game:
         
         for entity in entity_handler.get_entities():
 
-            if entity.name == "player":
-                entity.acceleration = Vector2D(0, 0)
+            if entity.general_data["name"] == "player":
+                entity.obj_data["acceleration"] = Vector2D(0, 0)
                 if pressed[pygame.K_LEFT]:
-                    entity.acceleration.x -= 1
+                    entity.obj_data["acceleration"].x -= 1
                 if pressed[pygame.K_RIGHT]:
-                    entity.acceleration.x += 1
+                    entity.obj_data["acceleration"].x += 1
                 if pressed[pygame.K_UP]:
-                    entity.acceleration.y -= 1
+                    entity.obj_data["acceleration"].y -= 1
                 if pressed[pygame.K_DOWN]:
-                    entity.acceleration.y += 1
-                entity.acceleration.inormalize()
-
-            entity.change_frame()
+                    entity.obj_data["acceleration"].y += 1
+                entity.obj_data["acceleration"].inormalize()
 
             entity.update(dt)
-            if entity.name == "player":
-                if entity.map_name != load.selected_map or entity.scene_name != load.selected_scene:
-                    self.update_map(entity.map_name, entity.scene_name)
+            if entity.general_data["name"] == "player":
+                if entity.general_data["map_name"] != load.selected_map or entity.general_data["scene_name"] != load.selected_scene:
+                    self.update_map(entity.general_data["map_name"], entity.general_data["scene_name"])
                 self.group.center(entity.rect.center)
 
     def render(self):
