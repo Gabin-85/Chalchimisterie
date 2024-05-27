@@ -17,18 +17,66 @@
                     "w": 32,
                     "h": 32
                 },
-                "duration": 1000
+                "duration": 200
+            },
+            {
+                "frame": {
+                    "x": 64,
+                    "y": 0,
+                    "w": 32,
+                    "h": 32
+                },
+                "duration": 100
+            },
+            {
+                "frame": {
+                    "x": 96,
+                    "y": 0,
+                    "w": 32,
+                    "h": 32
+                },
+                "duration": 100
+            },
+            {
+                "frame": {
+                    "x": 128,
+                    "y": 0,
+                    "w": 32,
+                    "h": 32
+                },
+                "duration": 100
+            },
+            {
+                "frame": {
+                    "x": 160,
+                    "y": 0,
+                    "w": 32,
+                    "h": 32
+                },
+                "duration": 100
+            },
+            {
+                "frame": {
+                    "x": 192,
+                    "y": 0,
+                    "w": 32,
+                    "h": 32
+                },
+                "duration": 100
             }
         ],
-        "anim": [
-            {
-                "name": "default",
+        "anim": {
+            "idle": {
                 "from": 0,
                 "to": 1
+            },
+            "running": {
+                "from": 2,
+                "to": 6
             }
-        ],
+        },
         "total_size": {
-            "w": 64,
+            "w": 224,
             "h": 32
         },
         "file": "player.png"

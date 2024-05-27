@@ -71,7 +71,7 @@
   "size": { "w": 224, "h": 32 },
   "scale": "1",
   "frameTags": [
-   { "name": "default", "from": 0, "to": 1, "direction": "forward", "color": "#000000ff" },
+   { "name": "idle", "from": 0, "to": 1, "direction": "forward", "color": "#000000ff" },
    { "name": "running", "from": 2, "to": 6, "direction": "forward", "color": "#000000ff" }
   ]
  }

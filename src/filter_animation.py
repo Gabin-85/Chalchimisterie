@@ -27,7 +27,9 @@ for tag in input_file["meta"]["frameTags"]:
         del tag["data"]
     except KeyError:
         pass
-filtered_data["anim"] = input_file["meta"]["frameTags"]
+filtered_data["anim"] = {}
+for tag in input_file["meta"]["frameTags"]:
+    filtered_data["anim"][tag["name"]] = {"from": tag["from"], "to": tag["to"]}
 filtered_data["total_size"] = input_file["meta"]["size"]
 filtered_data["file"] = name+".png"
 

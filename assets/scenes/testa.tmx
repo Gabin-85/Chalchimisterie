@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" infinite="0" nextlayerid="19" nextobjectid="106">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" infinite="0" nextlayerid="19" nextobjectid="108">
  <tileset firstgid="1" source="tilemap.tsx"/>
  <tileset firstgid="257" name="foliage" tilewidth="32" tileheight="32" tilecount="200" columns="10">
   <image source="bushes.png" width="320" height="640"/>

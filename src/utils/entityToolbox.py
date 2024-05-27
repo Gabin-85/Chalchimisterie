@@ -25,57 +25,68 @@ class Entity(pygame.sprite.Sprite):
 
         # Flags and data are additionnal activators and values that can be added to the entity
         self.flags = template["flags"]
-        self.fdata = template["data"]
+        self.fdata = template["fdata"]
         # Sdata and Udata is the actual values of the entity (U for unpacked and P for packed)
         self.data = {}
         self.obj_data = {}
         
-        # Flag CAN_MOVE
-        if "can_move" in self.flags:
+        # Flag move_self
+        if "move_self" in self.flags:
+
             if "velocity" in self.fdata:
                 self.obj_data["velocity"] = Vector2D(self.fdata["velocity"][0], self.fdata["velocity"][1])
             else:
                 self.obj_data["velocity"] = Vector2D(0, 0)
+
             if "mass" in self.fdata:
                 self.data["mass"] = self.fdata["mass"]
             else:
                 self.data["mass"] = 1
-            if "friction" in self.fdata:
-                self.data["friction"] = self.fdata["friction"]
-            else:
-                self.data["friction"] = 0.2
-            if "acceleration" in self.fdata:
-                self.obj_data["acceleration"] = Vector2D(self.fdata["acceleration"][0], self.fdata["acceleration"][1])
-            else:
-                self.obj_data["acceleration"] = Vector2D(0, 0)
-            if "force" in self.fdata:
-                self.data["force"] = self.fdata["force"]
-            else:
-                self.data["force"] = self.data["mass"]
-        # Flag IS_MOVABLE
-        elif "is_movable" in self.flags:
-            if "velocity" in self.fdata:
-                self.obj_data["velocity"] = Vector2D(self.fdata["velocity"][0], self.fdata["velocity"][1])
-            else:
-                self.obj_data["velocity"] = Vector2D(0, 0)
-            if "mass" in self.fdata:
-                self.data["mass"] = self.fdata["mass"]
-            else:
-                self.data["mass"] = 1
+
             if "friction" in self.fdata:
                 self.data["friction"] = self.fdata["friction"]
             else:
                 self.data["friction"] = 0.2
 
-        # Flag HITABLE
-        if "hitable" in self.flags:
+            if "acceleration" in self.fdata:
+                self.obj_data["acceleration"] = Vector2D(self.fdata["acceleration"][0], self.fdata["acceleration"][1])
+            else:
+                self.obj_data["acceleration"] = Vector2D(0, 0)
+
+            if "force" in self.fdata:
+                self.data["force"] = self.fdata["force"]
+            else:
+                self.data["force"] = self.data["mass"]
+
+        # Flag move_him
+        elif "move_him" in self.flags:
+
+            if "velocity" in self.fdata:
+                self.obj_data["velocity"] = Vector2D(self.fdata["velocity"][0], self.fdata["velocity"][1])
+            else:
+                self.obj_data["velocity"] = Vector2D(0, 0)
+
+            if "mass" in self.fdata:
+                self.data["mass"] = self.fdata["mass"]
+            else:
+                self.data["mass"] = 1
+
+            if "friction" in self.fdata:
+                self.data["friction"] = self.fdata["friction"]
+            else:
+                self.data["friction"] = 0.2
+
+        # Flag rect_hit
+        if "rect_hit" in self.flags:
+
             if "hitbox" in self.fdata:
                 self.obj_data["hitbox"] = Rect2D(self.fdata["hitbox"][0]+self.general_data["position"].x, self.fdata["hitbox"][1]+self.general_data["position"].y, self.fdata["hitbox"][2], self.fdata["hitbox"][3])
             else:
                 self.obj_data["hitbox"] = Rect2D(0, 0, 0, 0)
 
-        # Flag HURTABLE
-        if "hurtable" in self.flags:
+        # Flag rect_hurt
+        if "rect_hurt" in self.flags:
+
             if "hurtbox" in self.fdata:
                 self.obj_data["hurtbox"] = Rect2D(self.fdata["hurtbox"][0]+self.general_data["position"].x, self.fdata["hurtbox"][1]+self.general_data["position"].y, self.fdata["hurtbox"][2], self.fdata["hurtbox"][3])
             elif "hitbox" in self.data:
@@ -83,28 +94,35 @@ class Entity(pygame.sprite.Sprite):
             else:
                 self.obj_data["hurtbox"] = Rect2D(0, 0, 0, 0)
         
-        # Flag ANIMATED
-        if "animated" in self.flags:
-            if "animation_name" in self.fdata:
-                self.data["animation_data"] = storage.get(self.fdata["animation_name"], "animations")
+        # Flag display_anim
+        if "display_anim" in self.flags:
+
+            if "anim_name" in self.fdata:
+                self.data["anim_name"] = self.fdata["anim_name"]
             else:
-                self.data["animation_data"] = storage.get(self.general_data["pattern"], "animations")
-            if "animation_default" in self.fdata:
-                self.data["animation_default"] = self.fdata["animation_default"]
-                self.change_animation(self.fdata["animation_default"])
+                self.data["anim_name"] = self.general_data["pattern"]
+
+            if "anim_data" in self.fdata:
+                self.data["anim_data"] = self.fdata["anim_data"]
             else:
-                self.data["animation_default"] = None
+                self.data["anim_data"] = storage.get(self.data["anim_name"], "animations")
+
             if "image" in self.fdata:
                 self.data["image"] = "assets/sprites/" + self.fdata["image"]
             else:
-                self.data["image"] = "assets/sprites/" + self.data["animation_data"]["file"]
-            if "animation_timer" in self.fdata:
-                self.obj_data["animation_timer"] = Timer(self.fdata["animation_timer"])
+                self.data["image"] = "assets/sprites/" + self.data["anim_data"]["file"]
+
+            if "anim_timer" in self.fdata:
+                self.obj_data["anim_timer"] = Timer(self.fdata["anim_timer"])
             else:
-                self.obj_data["animation_timer"] = Timer(0)
+                self.obj_data["anim_timer"] = Timer(0)
+
+            self.data["anim_animation"] = {"direction": None, "action": None}
+            self.data["anim_target_animation"] = {"direction": None, "action": None}
             self.texture = pygame.image.load(self.data["image"])
-        # Flag DISPLAYED
-        elif "displayed" in self.flags:
+
+        # Flag display_show
+        elif "display_show" in self.flags:
             if "image" in self.fdata:
                 self.data["image"] = "assets/sprites/" + self.fdata["image"]
             else:
@@ -142,17 +160,17 @@ class Entity(pygame.sprite.Sprite):
                     self.obj_data[data] = Timer(self.obj_data[data]["data"][0])
 
         # Data or obj_data that are not saved (for space savings or possibility)
-        if "animated" in self.flags or "displayed" in self.flags:
+        if "display_anim" in self.flags or "display_show" in self.flags:
             self.texture = pygame.image.load(self.data["image"])
-        if "animated" in self.flags:
-            self.data["animation_data"] = storage.get(self.general_data["pattern"], "animations")
+        if "display_anim" in self.flags:
+            self.data["anim_data"] = storage.get(self.data["anim_name"], "animations")
             
 
     def unload(self):
         self.save = saveEntity(self.general_data["id"])
 
-        # Flag IS_SAVABLE
-        if "is_savable" in self.flags:
+        # Flag savable
+        if "savable" in self.flags:
 
             # General data
             self.general_data["position"] = [self.general_data["position"].x, self.general_data["position"].y]
@@ -162,8 +180,8 @@ class Entity(pygame.sprite.Sprite):
             self.save.set("flags", self.flags)
 
             # Data
-            if "animation_data" in self.data:
-                del self.data["animation_data"]
+            if "anim_data" in self.data:
+                del self.data["anim_data"]
             self.save.set("data", self.data)
 
             # Unpack obj_data
@@ -186,93 +204,76 @@ class Entity(pygame.sprite.Sprite):
 
         self.save.unload()
 
-    def start_animation(self):
-        self.obj_data["animation_timer"].start()
-
-    def stop_animation(self):
-        self.obj_data["animation_timer"].stop()
-
-    def change_animation(self, animation:str):
-        self.data["animation_selected_animation"] = [obj for obj in self.data["animation_data"]["anim"] if obj["name"] == animation][0]
-        self.data["animation_selected_frame"] = 0
-
-    def change_frame(self) -> pygame.Rect:
-        if "animated" in self.flags and self.obj_data["animation_timer"].check():
-
-            # Change the animation
-            self.data["animation_selected_frame"] = (self.data["animation_selected_frame"]+1)%(self.data["animation_selected_animation"]["to"]-self.data["animation_selected_animation"]["from"]+1)
-            self.obj_data["animation_timer"].reset(self.data["animation_data"]["frames"][self.data["animation_selected_frame"]+self.data["animation_selected_animation"]["from"]]["duration"])
-
-            # Change the frame
-            self.image = pygame.Surface([self.data["animation_data"]["frames"][self.data["animation_selected_frame"]+self.data["animation_selected_animation"]["from"]]["frame"]["w"],
-                                         self.data["animation_data"]["frames"][self.data["animation_selected_frame"]+self.data["animation_selected_animation"]["from"]]["frame"]["h"]])
-            self.image.blit(self.texture, (0, 0),
-                (self.data["animation_data"]["frames"][self.data["animation_selected_frame"]+self.data["animation_selected_animation"]["from"]]["frame"]["x"],
-                self.data["animation_data"]["frames"][self.data["animation_selected_frame"]+self.data["animation_selected_animation"]["from"]]["frame"]["y"],
-                self.data["animation_data"]["frames"][self.data["animation_selected_frame"]+self.data["animation_selected_animation"]["from"]]["frame"]["w"],
-                self.data["animation_data"]["frames"][self.data["animation_selected_frame"]+self.data["animation_selected_animation"]["from"]]["frame"]["h"]))
-            self.image.set_colorkey((0, 0, 0))
-            self.rect = self.image.get_rect()
-        elif "displayed" in self.flags:
-            self.image = pygame.Surface(self.texture.get_size())
-            self.image.blit(self.texture, (0, 0))
-            self.image.set_colorkey((0, 0, 0))
-            self.rect = self.image.get_rect()
-
-    def update(self, dt:float):
-        self.change_frame()
-
-
+    def physics(self, dt:float):
         from utils.loadHandler import load
-        if "is_movable" in self.flags or "can_move" in self.flags:
-            try:
-                self.obj_data["acceleration"].scale(self.data["force"]/self.data["mass"])
-            except ValueError:
-                self.obj_data["acceleration"] = Vector2D(0, 0)
-            self.obj_data["velocity"] -= (self.obj_data["velocity"].scale(self.data["friction"] / self.data["mass"]) - self.obj_data["acceleration"]).scale(dt)
 
-            if "hitable" in self.flags:
+        if "movable" in self.flags or "move_self" in self.flags:
+            if "move_self" in self.flags:
+                try:
+                    self.obj_data["acceleration"].iscale(self.data["force"]/self.data["mass"])
+                except ValueError:
+                    self.obj_data["acceleration"] = Vector2D(0, 0)
+                self.obj_data["velocity"] -= (self.obj_data["velocity"].scale(self.data["friction"] / self.data["mass"]) - self.obj_data["acceleration"]).scale(dt)
+            else:
+                self.obj_data["velocity"] -= (self.obj_data["velocity"].scale(self.data["friction"] / self.data["mass"]))
+
+            if "rect_hit" in self.flags:
                 feetx:Rect2D = self.obj_data["hitbox"]+Vector2D(self.obj_data["velocity"].x, 0)
                 feety:Rect2D = self.obj_data["hitbox"]+Vector2D(0, self.obj_data["velocity"].y)
 
-                for wall in load.get_walls():
-                    if feetx.collide_rect(wall["rect"]) == True:
-                        match wall["collision_type"]:
-                            case "bouncy":
-                                self.obj_data["velocity"].x *= -1
-                            case "sticky":
-                                self.obj_data["velocity"].x = 0
-                                self.obj_data["velocity"].y = 0
-                            case "solid":
-                                self.obj_data["velocity"].x = 0
-                    if feety.collide_rect(wall["rect"]) == True:
-                        match wall["collision_type"]:
-                            case "bouncy":
-                                self.obj_data["velocity"].y *= -1
-                            case "sticky":
-                                self.obj_data["velocity"].x = 0
-                                self.obj_data["velocity"].y = 0
-                            case "solid":
-                                self.obj_data["velocity"].y = 0
+                if "walls_collide" in self.flags:
+                    for wall in load.get_walls():
+                        if feetx.collide_rect(wall["rect"]) == True:
+                            match wall["collision_type"]:
+                                case "bouncy":
+                                    self.obj_data["velocity"].x *= -1
+                                case "sticky":
+                                    self.obj_data["velocity"].x = 0
+                                    self.obj_data["velocity"].y = 0
+                                case "solid":
+                                    self.obj_data["velocity"].x = 0
+                        if feety.collide_rect(wall["rect"]) == True:
+                            match wall["collision_type"]:
+                                case "bouncy":
+                                    self.obj_data["velocity"].y *= -1
+                                case "sticky":
+                                    self.obj_data["velocity"].x = 0
+                                    self.obj_data["velocity"].y = 0
+                                case "solid":
+                                    self.obj_data["velocity"].y = 0
                 
-                if "block_portals" in self.flags:
+                if "portals_collide" in self.flags:
                     for portal in load.get_portals():
                         if feetx.collide_rect(load.get_portals()[portal]["rect"]) == True:
                             self.obj_data["velocity"].x = 0
                         if feety.collide_rect(load.get_portals()[portal]["rect"]) == True:
                             self.obj_data["velocity"].y = 0
 
+                if "entities_collide" in self.flags:
+                    for entity in entity_handler.get_entities():
+                        if "hitbox" in entity.obj_data and self.general_data["id"] != entity.general_data["id"]:
+                            if self.obj_data["hitbox"].collide_rect(entity.obj_data["hitbox"]) == True:
+                                self.obj_data["velocity"] += Vector2D(self.obj_data["hitbox"].x - entity.obj_data["hitbox"].x, self.obj_data["hitbox"].y - entity.obj_data["hitbox"].y).normalize().scale(0.1)
+                                entity.obj_data["velocity"] -= Vector2D(self.obj_data["hitbox"].x - entity.obj_data["hitbox"].x, self.obj_data["hitbox"].y - entity.obj_data["hitbox"].y).normalize().scale(0.1)
+                            if feetx.collide_rect(entity.obj_data["hitbox"]) == True:
+                                temp_entity_velocity, temp_self_velocity = (self.data["mass"]/ entity.data["mass"]) * (self.obj_data["velocity"].x - entity.obj_data["velocity"].x), (entity.data["mass"]/ self.data["mass"]) * (self.obj_data["velocity"].x - entity.obj_data["velocity"].x)
+                                self.obj_data["velocity"].x -= temp_self_velocity
+                                entity.obj_data["velocity"].x += temp_entity_velocity
+                            if feety.collide_rect(entity.obj_data["hitbox"]) == True:
+                                temp_entity_velocity, temp_self_velocity = (self.data["mass"]/ entity.data["mass"]) * (self.obj_data["velocity"].y - entity.obj_data["velocity"].y), (entity.data["mass"]/ self.data["mass"]) * (self.obj_data["velocity"].y - entity.obj_data["velocity"].y)
+                                self.obj_data["velocity"].y -= temp_self_velocity
+                                entity.obj_data["velocity"].y += temp_entity_velocity  
 
             # Need update all physics position and rects
             self.general_data["position"] += self.obj_data["velocity"].scale(dt)
-            if "hittable" in self.flags:
+            if "rect_hit" in self.flags:
                 self.obj_data["hitbox"] += self.obj_data["velocity"].scale(dt)
-            if "hurtable" in self.flags:
+            if "rect_hurt" in self.flags:
                 self.obj_data["hurtbox"] += self.obj_data["velocity"].scale(dt)
         # Here we math.floor() because otherwise the player will be visualy stuck in the wall (It does not affect the physics)
         self.rect.center = (math.floor(self.general_data["position"].x), math.floor(self.general_data["position"].y))
 
-        if "pass_portals" in self.flags and "hittable" in self.flags:
+        if "portals_pass" in self.flags and "rect_hit" in self.flags:
             # Teleport the player if he collide with a portal
             for portal in load.get_portals():
                 if self.obj_data["hitbox"].collide_rect(load.get_portals()[portal]["rect"]) == True:
@@ -280,10 +281,57 @@ class Entity(pygame.sprite.Sprite):
                     temp = Vector2D(load.get_portal_exit(load.get_portals()[portal]).x-self.general_data["position"].x, load.get_portal_exit(load.get_portals()[portal]).y-self.general_data["position"].y)
                     self.general_data["position"] += temp
                     self.obj_data["hitbox"] += temp
-                    if "hurtable" in self.flags:
+                    if "rect_hurt" in self.flags:
                         self.obj_data["hurtbox"] += temp
                     self.general_data["map_name"], self.general_data["scene_name"] = load.get_portals()[portal]["targeted_map_name"], load.get_portals()[portal]["targeted_scene_name"]
                     entity_handler.need_update = True
+
+    def render(self):
+        if "display_anim" in self.flags:
+
+            # To verify if the surface need an update
+            anim_update = False
+
+            if self.data["anim_target_animation"]["action"] != self.data["anim_animation"]["action"] or self.data["anim_target_animation"]["direction"] != self.data["anim_animation"]["direction"]:
+                # Change the animation and the frame
+                self.data["anim_animation"] = self.data["anim_target_animation"].copy()
+                self.data["anim_frame"] = 0
+                self.obj_data["anim_timer"].reset(self.data["anim_data"]["frames"][self.data["anim_data"]["anim"][self.data["anim_animation"]["action"]]["from"]]["duration"])
+                anim_update = True
+            elif self.obj_data["anim_timer"].check():
+                # Change the frame
+                self.data["anim_frame"] = (self.data["anim_frame"]+1)%(self.data["anim_data"]["anim"][self.data["anim_animation"]["action"]]["to"]-self.data["anim_data"]["anim"][self.data["anim_animation"]["action"]]["from"]+1)
+                self.obj_data["anim_timer"].reset(self.data["anim_data"]["frames"][self.data["anim_frame"]+self.data["anim_data"]["anim"][self.data["anim_animation"]["action"]]["from"]]["duration"])
+                anim_update = True
+
+            if anim_update == True:
+
+                # Create the image (it's a surface DON'T RENAME IT)
+                self.image = pygame.Surface([self.data["anim_data"]["frames"][self.data["anim_frame"]+self.data["anim_data"]["anim"][self.data["anim_animation"]["action"]]["from"]]["frame"]["w"],
+                                                self.data["anim_data"]["frames"][self.data["anim_frame"]+self.data["anim_data"]["anim"][self.data["anim_animation"]["action"]]["from"]]["frame"]["h"]])
+
+                # Crop the imag into the surface
+                self.image.blit(self.texture, (0, 0),
+                    (self.data["anim_data"]["frames"][self.data["anim_frame"]+self.data["anim_data"]["anim"][self.data["anim_animation"]["action"]]["from"]]["frame"]["x"],
+                    self.data["anim_data"]["frames"][self.data["anim_frame"]+self.data["anim_data"]["anim"][self.data["anim_animation"]["action"]]["from"]]["frame"]["y"],
+                    self.data["anim_data"]["frames"][self.data["anim_frame"]+self.data["anim_data"]["anim"][self.data["anim_animation"]["action"]]["from"]]["frame"]["w"],
+                    self.data["anim_data"]["frames"][self.data["anim_frame"]+self.data["anim_data"]["anim"][self.data["anim_animation"]["action"]]["from"]]["frame"]["h"]))
+                
+                # Flit it if needed
+                if self.data["anim_animation"]["direction"] == "right":
+                    self.image = pygame.transform.flip(self.image, True, False)
+
+                # Set the colorkey (to black) and set the rect
+                self.image.set_colorkey((0, 0, 0))
+
+                # Set the rect (DON'T RENAME IT)
+                self.rect = self.image.get_rect()
+
+        elif "display_show" in self.flags:
+            self.image = pygame.Surface(self.texture.get_size())
+            self.image.blit(self.texture, (0, 0))
+            self.image.set_colorkey((0, 0, 0))
+            self.rect = self.image.get_rect()
 
 
 class saveEntity:
