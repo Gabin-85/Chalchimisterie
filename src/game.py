@@ -56,17 +56,25 @@ class Game:
 
             if entity.general_data["name"] == "player":
                 entity.obj_data["acceleration"] = Vector2D(0, 0)
+                entity.data["anim_target_animation"]["action"] = "idle"
+
                 if pressed[pygame.K_LEFT]:
                     entity.obj_data["acceleration"].x -= 1
+                    entity.data["anim_target_animation"]["action"] = "running"
+                    entity.data["anim_target_animation"]["direction"] = "left"
                 if pressed[pygame.K_RIGHT]:
                     entity.obj_data["acceleration"].x += 1
+                    entity.data["anim_target_animation"]["action"] = "running"
+                    entity.data["anim_target_animation"]["direction"] = "right"
                 if pressed[pygame.K_UP]:
                     entity.obj_data["acceleration"].y -= 1
+                    entity.data["anim_target_animation"]["action"] = "running"
                 if pressed[pygame.K_DOWN]:
                     entity.obj_data["acceleration"].y += 1
+                    entity.data["anim_target_animation"]["action"] = "running"
                 entity.obj_data["acceleration"].inormalize()
 
-            entity.update(dt)
+            entity.physics(dt)
             if entity.general_data["name"] == "player":
                 if entity.general_data["map_name"] != load.selected_map or entity.general_data["scene_name"] != load.selected_scene:
                     self.update_map(entity.general_data["map_name"], entity.general_data["scene_name"])
@@ -76,6 +84,8 @@ class Game:
         """
         Render the game.
         """
+        for entity in entity_handler.get_entities():
+            entity.render()
         # Check if entity need to be updated
         if entity_handler.need_update:
             entity_handler.update_shown_entities(load.selected_scene, load.selected_map)

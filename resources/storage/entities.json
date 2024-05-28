@@ -1,39 +1,39 @@
 {
     "player": {
         "flags": [
-            "can_move",
-            "hitable",
-            "hurtable",
-            "animated",
-            "is_savable",
-            "pass_portals"
+            "move_self",
+            "rect_hit",
+            "rect_hurt",
+            "walls_collide",
+            "entities_collide",
+            "display_anim",
+            "savable",
+            "portals_pass"
         ],
-        "data": {
+        "fdata": {
             "hitbox": [
                 -9,
                 3,
                 18,
                 7
-            ],
-            "animation_default": "default"
+            ]
         }
     },
     "theodorus v1": {
         "flags": [
-            "can_move",
-            "hurtable",
-            "animated",
-            "is_savable",
-            "block_portals"
+            "move_self",
+            "rect_hurt",
+            "display_anim",
+            "savable",
+            "portals_collide"
         ],
-        "data": {
+        "fdata": {
             "hitbox": [
                 0,
                 0,
                 21,
                 18
-            ],
-            "animation_default": "default"
+            ]
         }
     },
     "mush": {
