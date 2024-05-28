@@ -12,7 +12,6 @@ class Entity(pygame.sprite.Sprite):
 
     def create(self, name, pattern:str, scene_name, map_name, position:Vector2D):
         template = storage.get(pattern, "entities")
-        self.rect = pygame.Rect(0, 0, 0, 0)
 
         # General data (should not be changed) is the base data of the entity
         self.general_data = {
@@ -22,6 +21,8 @@ class Entity(pygame.sprite.Sprite):
         "scene_name":scene_name,
         "map_name":map_name,
         "position":position}
+
+        self.rect = pygame.Rect(0, 0, 0, 0)
 
         # Flags and data are additionnal activators and values that can be added to the entity
         self.flags = template["flags"]
@@ -112,13 +113,20 @@ class Entity(pygame.sprite.Sprite):
             else:
                 self.data["image"] = "assets/sprites/" + self.data["anim_data"]["file"]
 
+            if "anim_default" in self.fdata:
+                self.data["anim_animation"] = self.fdata["anim_default"]
+                self.data["anim_target_animation"] = self.fdata["anim_default"]
+                self.data["anim_frame"] = 0
+            else:
+                self.data["anim_animation"] = {"direction": None, "action": None}
+                self.data["anim_target_animation"] = {"direction": None, "action": None}
+
+
             if "anim_timer" in self.fdata:
                 self.obj_data["anim_timer"] = Timer(self.fdata["anim_timer"])
             else:
                 self.obj_data["anim_timer"] = Timer(0)
 
-            self.data["anim_animation"] = {"direction": None, "action": None}
-            self.data["anim_target_animation"] = {"direction": None, "action": None}
             self.texture = pygame.image.load(self.data["image"])
 
         # Flag display_show
@@ -132,13 +140,14 @@ class Entity(pygame.sprite.Sprite):
 
     def load(self, id:int):
         # Get the save
-        self.rect = pygame.Rect(0, 0, 0, 0)
         self.save = saveEntity(id)
         self.save.load(id)
 
         # Set the general data
         self.general_data = self.save.get("general_data")
         self.general_data["position"] = Vector2D(self.general_data["position"][0], self.general_data["position"][1])
+
+        self.rect = pygame.Rect(0, 0, 0, 0)
         
         # Set the flags
         self.flags = self.save.get("flags")
@@ -207,7 +216,7 @@ class Entity(pygame.sprite.Sprite):
     def physics(self, dt:float):
         from utils.loadHandler import load
 
-        if "movable" in self.flags or "move_self" in self.flags:
+        if "move_him" in self.flags or "move_self" in self.flags:
             if "move_self" in self.flags:
                 try:
                     self.obj_data["acceleration"].iscale(self.data["force"]/self.data["mass"])
@@ -307,8 +316,8 @@ class Entity(pygame.sprite.Sprite):
             if anim_update == True:
 
                 # Create the image (it's a surface DON'T RENAME IT)
-                self.image = pygame.Surface([self.data["anim_data"]["frames"][self.data["anim_frame"]+self.data["anim_data"]["anim"][self.data["anim_animation"]["action"]]["from"]]["frame"]["w"],
-                                                self.data["anim_data"]["frames"][self.data["anim_frame"]+self.data["anim_data"]["anim"][self.data["anim_animation"]["action"]]["from"]]["frame"]["h"]])
+                self.image = pygame.Surface((self.data["anim_data"]["frames"][self.data["anim_frame"]+self.data["anim_data"]["anim"][self.data["anim_animation"]["action"]]["from"]]["frame"]["w"],
+                                                self.data["anim_data"]["frames"][self.data["anim_frame"]+self.data["anim_data"]["anim"][self.data["anim_animation"]["action"]]["from"]]["frame"]["h"]))
 
                 # Crop the imag into the surface
                 self.image.blit(self.texture, (0, 0),

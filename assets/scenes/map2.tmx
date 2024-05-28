@@ -119,32 +119,32 @@
     <property name="collision_type" value="solid"/>
    </properties>
   </object>
-  <object id="23" type="collision" x="96" y="128" width="32" height="32">
+  <object id="23" type="collision" x="96" y="160" width="32" height="32">
    <properties>
     <property name="collision_type" value="solid"/>
    </properties>
   </object>
-  <object id="24" type="collision" x="256" y="128" width="32" height="32">
+  <object id="24" type="collision" x="256" y="160" width="32" height="32">
    <properties>
     <property name="collision_type" value="solid"/>
    </properties>
   </object>
-  <object id="25" type="collision" x="416" y="128" width="32" height="32">
+  <object id="25" type="collision" x="416" y="160" width="32" height="32">
    <properties>
     <property name="collision_type" value="solid"/>
    </properties>
   </object>
-  <object id="26" type="collision" x="576" y="128" width="32" height="32">
+  <object id="26" type="collision" x="576" y="160" width="32" height="32">
    <properties>
     <property name="collision_type" value="solid"/>
    </properties>
   </object>
-  <object id="27" type="collision" x="736" y="128" width="32" height="32">
+  <object id="27" type="collision" x="736" y="160" width="32" height="32">
    <properties>
     <property name="collision_type" value="solid"/>
    </properties>
   </object>
-  <object id="28" type="collision" x="896" y="128" width="32" height="32">
+  <object id="28" type="collision" x="896" y="160" width="32" height="32">
    <properties>
     <property name="collision_type" value="solid"/>
    </properties>

@@ -3,7 +3,6 @@
         "flags": [
             "move_self",
             "rect_hit",
-            "rect_hurt",
             "walls_collide",
             "entities_collide",
             "display_anim",
@@ -17,6 +16,31 @@
                 18,
                 7
             ]
+        }
+    },
+    "boite": {
+        "flags": [
+            "move_him",
+            "rect_hit",
+            "walls_collide",
+            "entities_collide",
+            "display_anim",
+            "savable",
+            "portals_block"
+        ],
+        "fdata": {
+            "hitbox": [
+                -9,
+                3,
+                18,
+                7
+            ],
+            "friction": 0.03,
+            "anim_name": "player",
+            "anim_default": {
+                "action": "idle",
+                "direction": "right"
+            }
         }
     },
     "theodorus v1": {

@@ -95,5 +95,7 @@ class Game:
                 self.group.add(entity)
 
         # Draw the screen
+        #for entity in entity_handler.get_entities():
+            #print(entity.general_data["name"]+" : "+str(entity.rect))
         self.group.draw(self.screen)
         pygame.display.flip()
