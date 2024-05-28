@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="8">
- <tileset firstgid="1" source="../../../Chalchimisterie-main/Chalchimisterie-main/assets/scenes/tilemapmapmap.tsx"/>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="10">
+ <tileset firstgid="1" source="tilemap.tsx"/>
  <layer id="1" name="Calque de Tuiles 1" width="30" height="20">
   <data encoding="csv">
 26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,
@@ -103,6 +103,16 @@
    <properties>
     <property name="collision_type" value="colid"/>
    </properties>
+  </object>
+  <object id="8" name="forest_k" type="portal" x="960" y="128" height="384">
+   <properties>
+    <property name="targeted_exit_name" value="forest_k"/>
+    <property name="targeted_map_name" value="map7"/>
+    <property name="targeted_scene_name" value="scene1"/>
+   </properties>
+  </object>
+  <object id="9" name="forest_l" type="portal_exit" x="904" y="410.667">
+   <point/>
   </object>
  </objectgroup>
 </map>

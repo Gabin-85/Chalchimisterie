@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="14">
- <tileset firstgid="1" source="../../../Chalchimisterie-main/Chalchimisterie-main/assets/scenes/tilemapmapmap.tsx"/>
+ <tileset firstgid="1" source="tilemap.tsx"/>
  <layer id="1" name="Calque de Tuiles 1" width="30" height="20">
   <data encoding="csv">
 26,26,26,26,26,26,26,26,26,26,1,1,1,1,2,1,1,1,1,1,26,26,26,26,26,26,26,26,26,26,

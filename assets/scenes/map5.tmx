@@ -4,7 +4,7 @@
   <image source="tilemap.png" width="512" height="512"/>
  </tileset>
  <tileset firstgid="257" source="bushes.tsx"/>
- <tileset firstgid="457" source="../../../Chalchimisterie-main/Chalchimisterie-main/assets/scenes/tilemapmapmap.tsx"/>
+ <tileset firstgid="457" source="tilemap.tsx"/>
  <layer id="1" name="Calque de Tuiles 1" width="30" height="20">
   <data encoding="csv">
 26,26,26,26,26,26,26,26,26,26,1,1,1,1,458,1,1,1,1,1,26,26,26,26,26,26,26,26,26,26,
