@@ -97,7 +97,6 @@
     <property name="collision_type" value="solid"/>
    </properties>
   </object>
-  <object id="13" x="301.333" y="698.667"/>
   <object id="20" type="collision" x="256" y="128" width="32" height="32">
    <properties>
     <property name="collision_type" value="solid"/>
@@ -123,14 +122,11 @@
     <property name="collision_type" value="solid"/>
    </properties>
   </object>
-  <object id="28" x="1076" y="226.667"/>
-  <object id="30" x="578.667" y="698.667"/>
   <object id="34" type="collision" x="288" y="320" width="32" height="32">
    <properties>
     <property name="collision_type" value="solid"/>
    </properties>
   </object>
-  <object id="35" x="493.333" y="674.667"/>
   <object id="37" type="collision" x="736" y="480" width="32" height="32">
    <properties>
     <property name="collision_type" value="solid"/>
@@ -141,13 +137,11 @@
     <property name="collision_type" value="solid"/>
    </properties>
   </object>
-  <object id="39" x="177.333" y="688"/>
   <object id="40" type="collision" x="0" y="128" height="448">
    <properties>
     <property name="collision_type" value="solid"/>
    </properties>
   </object>
-  <object id="41" x="326.667" y="736"/>
   <object id="42" name="player" type="entity" x="271.333" y="428.667">
    <properties>
     <property name="pattern" value="player"/>

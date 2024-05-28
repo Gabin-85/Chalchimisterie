@@ -78,7 +78,7 @@
  </layer>
  <objectgroup id="5" name="objects">
   <properties>
-   <property name="zoom" type="float" value="8"/>
+   <property name="zoom" type="float" value="3"/>
   </properties>
   <object id="1" type="collision" x="0" y="0" width="320" height="128">
    <properties>
