@@ -18,7 +18,7 @@ class Game:
         pygame.display.set_caption(self.window_name)
 
         # Load the correct map
-        self.selected_scene, self.selected_map = "scene1", "testa"
+        self.selected_scene, self.selected_map = "scene1", "map1"
         for entity in save.get("entities"):
             if entity["general_data"]["name"] == "player":
                 self.selected_scene = entity["general_data"]["scene_name"]

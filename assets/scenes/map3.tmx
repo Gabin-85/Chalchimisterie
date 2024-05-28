@@ -73,7 +73,10 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="5" name="Calque d'Objets 1">
+ <objectgroup id="5" name="objects">
+  <properties>
+   <property name="zoom" type="float" value="8"/>
+  </properties>
   <object id="1" type="collision" x="320" y="0">
    <properties>
     <property name="collision_type" value="solid"/>
