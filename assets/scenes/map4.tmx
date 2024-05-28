@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="14">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="16">
  <properties>
   <property name="zoom" type="float" value="8"/>
  </properties>
@@ -128,6 +128,16 @@
    </properties>
   </object>
   <object id="12" name="forest_j" type="portal_exit" x="910.255" y="299.512">
+   <point/>
+  </object>
+  <object id="14" name="forest_m" type="portal" x="320" y="0" width="320">
+   <properties>
+    <property name="targeted_exit_name" value="forest_m"/>
+    <property name="targeted_map_name" value="map8"/>
+    <property name="targeted_scene_name" value="scene1"/>
+   </properties>
+  </object>
+  <object id="15" name="forest_n" type="portal_exit" x="466.196" y="66.4135">
    <point/>
   </object>
  </objectgroup>

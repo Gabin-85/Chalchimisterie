@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="10">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="11">
  <tileset firstgid="1" source="tilemap.tsx"/>
  <layer id="1" name="Calque de Tuiles 1" width="30" height="20">
   <data encoding="csv">
@@ -115,6 +115,9 @@
    </properties>
   </object>
   <object id="9" name="forest_l" type="portal_exit" x="904" y="410.667">
+   <point/>
+  </object>
+  <object id="10" x="568" y="798.667">
    <point/>
   </object>
  </objectgroup>

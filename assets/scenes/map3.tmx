@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="4">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="15">
  <tileset firstgid="1" source="tilemap.tsx"/>
  <layer id="1" name="Calque de Tuiles 1" width="30" height="20">
   <data encoding="csv">
@@ -77,12 +77,6 @@
   <properties>
    <property name="zoom" type="float" value="3"/>
   </properties>
-  <object id="1" type="collision" x="320" y="0">
-   <properties>
-    <property name="collision_type" value="solid"/>
-   </properties>
-   <polygon points="0,0 0,96 -64,96 -64,128 -96,128 -96,96 -192,96 -192,544 512,544 512,96 416,96 416,128 384,128 384,96 320,96 320,0 640,0 640,640 -320,640 -320,0"/>
-  </object>
   <object id="2" name="forest_d" type="portal" x="320" y="0" width="320">
    <properties>
     <property name="targeted_exit_name" value="forest_d"/>
@@ -92,6 +86,41 @@
   </object>
   <object id="3" name="forest_c" type="portal_exit" x="496.148" y="46.8801">
    <point/>
+  </object>
+  <object id="6" type="collision" x="0" y="0" width="320" height="96">
+   <properties>
+    <property name="collision_type" value="solid"/>
+   </properties>
+  </object>
+  <object id="7" type="collision" x="640" y="0" width="320" height="96">
+   <properties>
+    <property name="collision_type" value="solid"/>
+   </properties>
+  </object>
+  <object id="8" type="collision" x="0" y="96" width="123.711" height="526.463">
+   <properties>
+    <property name="collision_type" value="solid"/>
+   </properties>
+  </object>
+  <object id="9" type="collision" x="832" y="96" width="128" height="544">
+   <properties>
+    <property name="collision_type" value="solid"/>
+   </properties>
+  </object>
+  <object id="11" type="collision" x="128" y="544" width="704" height="96">
+   <properties>
+    <property name="collision_type" value="solid"/>
+   </properties>
+  </object>
+  <object id="13" type="collision" x="224" y="96" width="32" height="32">
+   <properties>
+    <property name="collision_type" value="solid"/>
+   </properties>
+  </object>
+  <object id="14" type="collision" x="704" y="96" width="32" height="32">
+   <properties>
+    <property name="collision_type" value="solid"/>
+   </properties>
   </object>
  </objectgroup>
 </map>

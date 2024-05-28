@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="8">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="18">
  <tileset firstgid="1" name="tilemap" tilewidth="32" tileheight="32" tilecount="256" columns="16">
   <image source="tilemap.png" width="512" height="512"/>
  </tileset>
@@ -23,7 +23,7 @@
 4,4,4,26,1,1,1,1,1,1,1,1,1,1,458,458,1,1,1,1,482,482,482,1,1,1,4,26,4,4,
 5,4,5,26,1,1,1,1,1,1,1,1,1,1,458,458,1,1,482,482,482,482,1,1,1,1,5,4,5,4,
 4,5,4,26,1,1,1,1,1,1,1,1,1,1,458,458,1,1,1,1,481,1,1,1,1,1,4,4,4,5,
-4,5,4,4,1,1,1,1,1,1,1,1,1,1,458,458,1,1,1,1,481,1,1,1,1,4,4,5,4,4,
+4,5,4,4,1,1,1,1,1,1,1,1,1,1,458,458,1,1,1,1,481,1,1,1,1,457,4,5,4,4,
 4,5,4,5,4,4,1,1,1,1,1,1,1,1,458,458,1,1,1,1,1,1,1,4,4,5,4,5,4,5,
 5,5,4,4,5,5,5,5,5,5,1,1,1,460,458,458,460,1,1,1,5,5,5,5,5,5,4,4,4,4,
 4,4,5,4,4,5,4,5,4,4,1,1,1,460,458,458,460,1,1,1,4,4,5,4,4,4,5,4,5,4
@@ -91,18 +91,6 @@
   <object id="2" name="forest_g" type="portal_exit" x="467.499" y="50.7868">
    <point/>
   </object>
-  <object id="3" type="collision" x="320" y="0">
-   <properties>
-    <property name="collision_type" value="solid"/>
-   </properties>
-   <polygon points="0,0 0,96 -192,96 -192,544 -128,544 -128,576 128,576 128,640 -320,640 -320,0 0,0 -40.0217,26.0445"/>
-  </object>
-  <object id="4" type="collision" x="640" y="0">
-   <properties>
-    <property name="collision_type" value="colid"/>
-   </properties>
-   <polygon points="0,0 0,96 192,96 192,512 160,512 160,544 96,544 96,576 -128,576 -128,640 320,640 320,0"/>
-  </object>
   <object id="5" type="collision" x="320" y="384" width="32" height="32">
    <properties>
     <property name="collision_type" value="colid"/>
@@ -116,6 +104,51 @@
   <object id="7" type="collision" x="640" y="512" width="32" height="32">
    <properties>
     <property name="collision_type" value="colid"/>
+   </properties>
+  </object>
+  <object id="8" type="collision" x="0" y="0" width="320" height="96">
+   <properties>
+    <property name="collision_type" value="solid"/>
+   </properties>
+  </object>
+  <object id="9" type="collision" x="640" y="0" width="320" height="96">
+   <properties>
+    <property name="collision_type" value="solid"/>
+   </properties>
+  </object>
+  <object id="10" type="collision" x="0" y="96" width="128" height="544">
+   <properties>
+    <property name="collision_type" value="solid"/>
+   </properties>
+  </object>
+  <object id="11" type="collision" x="832" y="96" width="128" height="544">
+   <properties>
+    <property name="collision_type" value="solid"/>
+   </properties>
+  </object>
+  <object id="12" type="collision" x="128" y="576" width="320" height="64">
+   <properties>
+    <property name="collision_type" value="solid"/>
+   </properties>
+  </object>
+  <object id="13" type="collision" x="512" y="576" width="320" height="64">
+   <properties>
+    <property name="collision_type" value="solid"/>
+   </properties>
+  </object>
+  <object id="14" type="collision" x="736" y="544" width="96" height="32">
+   <properties>
+    <property name="collision_type" value="solid"/>
+   </properties>
+  </object>
+  <object id="15" type="collision" x="128" y="544" width="64" height="32">
+   <properties>
+    <property name="collision_type" value="solid"/>
+   </properties>
+  </object>
+  <object id="17" type="collision" x="448" y="640" width="64">
+   <properties>
+    <property name="collision_type" value="solid"/>
    </properties>
   </object>
  </objectgroup>
