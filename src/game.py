@@ -90,12 +90,10 @@ class Game:
         if entity_handler.need_update:
             entity_handler.update_shown_entities(load.selected_scene, load.selected_map)
             # TODO: Change entity layer  in function of the map
-            self.group = pyscroll.PyscrollGroup(map_layer=load.get_map_layer(load.selected_map, load.selected_scene), default_layer=4)
+            self.group = pyscroll.PyscrollGroup(map_layer=load.get_map_layer(load.selected_map, load.selected_scene), default_layer=load.get_entity_layer_level())
             for entity in entity_handler.get_entities():
                 self.group.add(entity)
 
         # Draw the screen
-        #for entity in entity_handler.get_entities():
-            #print(entity.general_data["name"]+" : "+str(entity.rect))
         self.group.draw(self.screen)
         pygame.display.flip()

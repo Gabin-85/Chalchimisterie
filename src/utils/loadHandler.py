@@ -87,6 +87,10 @@ class loadHandler:
             else:
                 self.scenes[scene_name][map_name]["map_layer"].zoom = screen_size[0]*self.scenes[scene_name][map_name]["tmx_data"].get_layer_by_name("objects").properties["zoom"]/self.get_tmx_data(map_name, scene_name).width/self.get_tmx_data(map_name, scene_name).tilewidth
 
+            for layer in range(len(self.get_tmx_data(map_name, scene_name).layers)):
+                if self.get_tmx_data(map_name, scene_name).layers[layer].name == "objects":
+                    self.scenes[scene_name][map_name]["entity_layer_level"] = layer-1
+
             # Check the entities in the scenes are in the save
             if scene_name in entity_handler.loaded_scenes:
                 # If yes load all entities
@@ -250,6 +254,17 @@ class loadHandler:
         if map_name is None:
             map_name = self.selected_map
         return self.scenes[scene_name][map_name]["entities_pattern"]
+    
+    def get_entity_layer_level(self, map_name=None, scene_name=None):
+        """Get the entity layer level of the map (int)"""
+        if scene_name is None:
+            scene_name = self.selected_scene
+        if self.has_scene_load(scene_name) == 0:
+            trace("Scene '"+scene_name+"' not loaded.")
+            self.load_scene(scene_name)
+        if map_name is None:
+            map_name = self.selected_map
+        return self.scenes[scene_name][map_name]["entity_layer_level"]
 
 
 # Set the console object

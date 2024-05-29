@@ -251,7 +251,7 @@ class Entity(pygame.sprite.Sprite):
                                 case "solid":
                                     self.obj_data["velocity"].y = 0
                 
-                if "portals_collide" in self.flags:
+                if "portals_block" in self.flags:
                     for portal in load.get_portals():
                         if feetx.collide_rect(load.get_portals()[portal]["rect"]) == True:
                             self.obj_data["velocity"].x = 0
@@ -334,9 +334,7 @@ class Entity(pygame.sprite.Sprite):
                 self.image.set_colorkey((0, 0, 0))
 
                 # Set the rect (DON'T RENAME IT)
-                rect = self.image.get_rect()
-                rect.x, rect.y = self.rect.x, self.rect.y
-                self.rect = rect
+                self.rect = self.image.get_rect()
 
         elif "display_show" in self.flags:
             self.image = pygame.Surface(self.texture.get_size())
