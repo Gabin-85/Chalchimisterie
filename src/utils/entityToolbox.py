@@ -334,13 +334,17 @@ class Entity(pygame.sprite.Sprite):
                 self.image.set_colorkey((0, 0, 0))
 
                 # Set the rect (DON'T RENAME IT)
-                self.rect = self.image.get_rect()
+                rect = self.image.get_rect()
+                rect.x, rect.y = self.rect.x, self.rect.y
+                self.rect = rect
 
         elif "display_show" in self.flags:
             self.image = pygame.Surface(self.texture.get_size())
             self.image.blit(self.texture, (0, 0))
             self.image.set_colorkey((0, 0, 0))
-            self.rect = self.image.get_rect()
+            rect = self.image.get_rect()
+            rect.x, rect.y = self.rect.x, self.rect.y
+            self.rect = rect
 
 
 class saveEntity:

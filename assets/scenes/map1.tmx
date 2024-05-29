@@ -148,11 +148,5 @@
    </properties>
    <point/>
   </object>
-  <object id="45" name="boite" type="entity" x="566" y="430">
-   <properties>
-    <property name="pattern" value="boite"/>
-   </properties>
-   <point/>
-  </object>
  </objectgroup>
 </map>

@@ -74,6 +74,9 @@
 </data>
  </layer>
  <objectgroup id="5" name="objects">
+  <properties>
+   <property name="zoom" type="float" value="3"/>
+  </properties>
   <object id="2" name="forest_x" type="portal" x="320" y="640" width="320">
    <properties>
     <property name="targeted_exit_name" value="forest_x"/>
