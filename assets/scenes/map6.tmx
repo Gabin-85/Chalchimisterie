@@ -79,12 +79,12 @@
   </properties>
   <object id="1" type="collision" x="0" y="0" width="960" height="128">
    <properties>
-    <property name="collision_type" value="colid"/>
+    <property name="collision_type" value="solid"/>
    </properties>
   </object>
   <object id="2" type="collision" x="0" y="512" width="960" height="128">
    <properties>
-    <property name="collision_type" value="colid"/>
+    <property name="collision_type" value="solid"/>
    </properties>
   </object>
   <object id="4" name="forest_j" type="portal" x="0" y="128" height="384">
@@ -99,12 +99,12 @@
   </object>
   <object id="6" type="collision" x="256" y="448" width="32" height="32">
    <properties>
-    <property name="collision_type" value="colid"/>
+    <property name="collision_type" value="solid"/>
    </properties>
   </object>
   <object id="7" type="collision" x="736" y="288" width="32" height="32">
    <properties>
-    <property name="collision_type" value="colid"/>
+    <property name="collision_type" value="solid"/>
    </properties>
   </object>
   <object id="8" name="forest_k" type="portal" x="960" y="128" height="384">
