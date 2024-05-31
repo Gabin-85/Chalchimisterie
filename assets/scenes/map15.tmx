@@ -75,6 +75,9 @@
 </data>
  </layer>
  <objectgroup id="4" name="objects">
+  <properties>
+   <property name="zoom" type="float" value="3"/>
+  </properties>
   <object id="2" type="collision" x="0" y="0" width="960" height="128">
    <properties>
     <property name="collision_type" value="solid"/>
