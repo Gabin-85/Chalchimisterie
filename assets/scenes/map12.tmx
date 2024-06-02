@@ -89,7 +89,7 @@
   </object>
   <object id="4" name="forest_w" type="portal" x="320" y="0" width="320">
    <properties>
-    <property name="targeted_exit_name" value="forest_W"/>
+    <property name="targeted_exit_name" value="forest_w"/>
     <property name="targeted_map_name" value="map13"/>
     <property name="targeted_scene_name" value="scene1"/>
    </properties>
