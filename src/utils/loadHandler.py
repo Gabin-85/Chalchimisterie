@@ -89,8 +89,7 @@ class loadHandler:
 
             for layer in range(len(self.get_tmx_data(map_name, scene_name).layers)):
                 if self.get_tmx_data(map_name, scene_name).layers[layer].name == "objects":
-                    print("Layer "+str(layer-2)+" for map "+map_name)
-                    self.scenes[scene_name][map_name]["entity_layer_level"] =  2 # layer-2
+                    self.scenes[scene_name][map_name]["entity_layer_level"] =  4
 
             # Check the entities in the scenes are in the save
             if scene_name in entity_handler.loaded_scenes:

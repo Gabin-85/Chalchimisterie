@@ -326,7 +326,7 @@ class Entity(pygame.sprite.Sprite):
                     self.data["anim_data"]["frames"][self.data["anim_frame"]+self.data["anim_data"]["anim"][self.data["anim_animation"]["action"]]["from"]]["frame"]["w"],
                     self.data["anim_data"]["frames"][self.data["anim_frame"]+self.data["anim_data"]["anim"][self.data["anim_animation"]["action"]]["from"]]["frame"]["h"]))
                 
-                # Flit it if needed
+                # Flip it if needed
                 if self.data["anim_animation"]["direction"] == "right":
                     self.image = pygame.transform.flip(self.image, True, False)
 
