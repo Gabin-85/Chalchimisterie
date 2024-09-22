@@ -1,2 +1,3 @@
-bin/logs.log
-resources/layer_image/*
+bin/*.log
+resources/layer_image/*.png
+src/__pycache__/
