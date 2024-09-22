@@ -1,0 +1,19 @@
+{
+    "scene1": {
+        "map1": "map1.tmx",
+        "map2": "map2.tmx",
+        "map3": "map3.tmx",
+        "map4": "map4.tmx",
+        "map5": "map5.tmx",
+        "map6": "map6.tmx",
+        "map7": "map7.tmx",
+        "map8": "map8.tmx",
+        "map9": "map9.tmx",
+        "map10": "map10.tmx",
+        "map11": "map11.tmx",
+        "map12": "map12.tmx",
+        "map13": "map13.tmx",
+        "map14": "map14.tmx",
+        "map15": "map15.tmx"
+    }
+}

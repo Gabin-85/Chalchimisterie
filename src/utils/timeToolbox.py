@@ -35,6 +35,9 @@ class Date:
         """
         self.update()
         return self.updated_date.strftime("%H:%M:%S:%f")
+    
+    def __type__(self):
+        return "Date"
 
 class Clock:
 
@@ -78,6 +81,9 @@ class Clock:
         """
         self.update()
         return int(self.updated_date.timestamp() * 1000000 - self.start_time)
+    
+    def __type__(self):
+        return "Clock"
 
 # Creating the date and clock objects
 date = Date()
@@ -176,6 +182,9 @@ class Chrono:
         else:
             del self.snapshot[index]
 
+    def __type__(self):
+        return "Chrono"
+
 class Timer:
 
     def __init__(self, time:int, unit:str = "ms"):
@@ -257,6 +266,9 @@ class Timer:
         Check if the timer is running.
         """
         return self.running
+    
+    def __type__(self):
+        return "Timer"
     
 def delay(time:int, unit:str = "ms"):
     """

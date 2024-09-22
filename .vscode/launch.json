@@ -20,5 +20,15 @@
                 "console": "integratedTerminal",
             }
         },
+        {
+            "name": "Filter Animation",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/filter_animation.py",
+            "windows": {
+                "program": "${workspaceFolder}/src/filter_animation.py",
+                "console": "integratedTerminal",
+            }
+        },
     ]
 }
