@@ -1,34 +1,21 @@
 {
+    "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch Game",
+            "name": "Debug Main",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
-            "windows": {
-                "program": "${workspaceFolder}/src/main.py",
-                "console": "integratedTerminal",
-            }
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/src"
         },
         {
-            "name": "Launch Testbed",
+            "name": "Debug Tesbed",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/testbed.py",
-            "windows": {
-                "program": "${workspaceFolder}/src/testbed.py",
-                "console": "integratedTerminal",
-            }
-        },
-        {
-            "name": "Filter Animation",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "${workspaceFolder}/src/filter_animation.py",
-            "windows": {
-                "program": "${workspaceFolder}/src/filter_animation.py",
-                "console": "integratedTerminal",
-            }
-        },
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/src"
+        }
     ]
 }

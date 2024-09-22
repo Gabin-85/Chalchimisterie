@@ -1,4 +1,1 @@
-pygame
-colorama
-pytmx
-pyscroll
+pyglet

@@ -1,3 +1,2 @@
-__pycache__/
-.venv/
-logs.log
+bin/logs.log
+resources/layer_image/*

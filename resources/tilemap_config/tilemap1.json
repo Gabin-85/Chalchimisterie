@@ -1,0 +1,9 @@
+{
+    "name":"tilemap1",
+    "tilesize":32,
+    "tiles": {
+        "grass":[0, 0],
+        "dirt":[1, 0],
+        "unknown":[2, 0]
+    }
+}
