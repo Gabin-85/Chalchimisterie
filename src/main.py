@@ -1,17 +1,24 @@
 from utils.console import console, logger
 import pyglet, level
+from pyglet.gl import *
 
 logger.select("logs")
 
 console.info(f"Creating the window")
 window = pyglet.window.Window()
 
-level = level.get_level("level1")
+images, level = level.get_level("level1")
 
-@window.event
-def on_draw():
+def render():
     window.clear()
-    for image in level:
-        image.blit(0, 0, 0, 960, 640)
+    level.draw()
+    window.flip()
+
+while True:
+    render()
+    window.dispatch_events()
+
+    if window.has_exit or window.on_key_press(pyglet.window.key.ESCAPE, 1):
+        break
 
 pyglet.app.run()

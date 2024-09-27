@@ -2,9 +2,8 @@
     "name":"level1",
     "tilesize":32,
     "level_size":[30, 20],
-    "agglutinated_layer":{
-        "bottom":[
-            ["layer28", 0, 0]
-        ]
-    }
+    "layer":[
+        ["layer28", 0, 0],
+        ["layer27", 0, 0]
+    ]
 }

@@ -33,7 +33,7 @@ class logger():
         """
         if not logger.filepath:
             return False
-        open(logger.filepath, "a").write(f"({date.get_time()}) {msg}\n")
+        open(logger.filepath, "a").write(f"({"{}:{}:{}:{}".format(*date.get_time())}) {msg}\n")
         return True
 
 class console():

@@ -2,8 +2,17 @@
     "name":"tilemap1",
     "tilesize":32,
     "tiles": {
+        "air":[15, 0],
         "grass":[0, 0],
         "dirt":[1, 0],
-        "unknown":[2, 0]
+        "unknown":[2, 0],
+        "plant1":[0, 1],
+        "plant2":[1, 1],
+        "plant3":[2, 1],
+        "plant4":[3, 1],
+        "plant5":[0, 2],
+        "plant6":[1, 2],
+        "plant7":[2, 2],
+        "plant8":[3, 2]
     }
 }
