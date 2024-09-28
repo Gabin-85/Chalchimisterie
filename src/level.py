@@ -1,7 +1,7 @@
 from utils.console import console
 from args import pathLocation, fileExtension
-from file import file
-import pyglet, cProfile
+from utils.file import file
+import pyglet
 
 def get_tileset(tilemaps_index:list[str]) -> list:
     """
@@ -18,8 +18,8 @@ def get_tileset(tilemaps_index:list[str]) -> list:
     for tilemap in tilemaps_index:
 
         console.trace(f"Loading tilemap '{tilemap}'")
-        tilemap_config:dict = file.open(pathLocation.tilemap_config, tilemap, fileExtension.data)
-        tilemap_image:pyglet.image.ImageData = file.open(pathLocation.tilemap_image, tilemap, fileExtension.image)
+        tilemap_config:dict = file.open(pathLocation.tilemap, tilemap, fileExtension.data)
+        tilemap_image:pyglet.image.ImageData = file.open(pathLocation.tilemap, tilemap, fileExtension.image)
 
         if tilemap_config is None or tilemap_image is None:
             console.warn(f"tilemap_config or tilemap_image of {tilemap} not found")
@@ -31,58 +31,45 @@ def get_tileset(tilemaps_index:list[str]) -> list:
 
     return tileset
 
-def get_layer(layer_name:str) -> list[pyglet.image.Texture]:
+def get_level(level_name:str, batch:pyglet.graphics.Batch) -> list[pyglet.sprite.Sprite]:
     """
-    Give a layer from the layer name
-
-    Args:
-        layer_name (str): The name of the layer
-
-    Returns:
-        list: The layer image
-    """
-
-    if file.find(pathLocation.layer_image, layer_name, fileExtension.image):
-        console.trace(f"Loading layer image '{layer_name}'")
-        return file.open(pathLocation.layer_image, layer_name, fileExtension.image).get_texture()
-
-    console.trace(f"Creating layer image '{layer_name}'")
-    layer_config = file.open(pathLocation.layer_config, layer_name, fileExtension.data)
-
-    tileset = get_tileset(layer_config["tilemap_index"])
-    if tileset is None:
-        return
-
-    layer_arguments = []
-    for y in range(len(layer_config["layermap"])):
-        for x in range(len(layer_config["layermap"][y])):
-            layer_arguments.append([layer_config["layermap"][y][x], x*layer_config["tilesize"], (len(layer_config["layermap"])-y-1)*layer_config["tilesize"]])
-
-    layer_image:pyglet.image.Texture = file.add(pathLocation.layer_image, layer_config["name"], fileExtension.image, pyglet.image.Texture.create(len(layer_config["layermap"][0])*layer_config["tilesize"], len(layer_config["layermap"])*layer_config["tilesize"]))
-    for tile in range(len(layer_arguments)):
-        layer_image.blit_into(tileset[layer_arguments[tile][0]], layer_arguments[tile][1], layer_arguments[tile][2], 0)
-
-    file.add(pathLocation.layer_config, layer_config["name"], fileExtension.data, layer_config)
-    return file.write(pathLocation.layer_image, layer_config["name"], fileExtension.image)
-
-def get_level(level_name:str) -> list[list[pyglet.sprite.Sprite], pyglet.graphics.Batch]:
-    """
-    Generates a batch and a list of images for a level
+    Generates a list of images for a level
 
     Args:
         level_name (str): The name of the level
 
     Returns:
         images (list[pyglet.sprite.Sprite]): The list of images of the level
-        batch (pyglet.sprite.Batch): The batch of the level
     """
     console.trace(f"Creating level '{level_name}'")
-    level_config = file.open(pathLocation.level_config, level_name, fileExtension.data)
-    images:list[pyglet.sprite.Sprite] = []
-    batch = pyglet.graphics.Batch()
+    level_config = file.open(pathLocation.level, level_name, fileExtension.data)
+    level_sprites:list[pyglet.sprite.Sprite] = []
+    tileset:list = None
 
-    for layer in level_config["layer"]:
-        layer_image:pyglet.image.ImageData = get_layer(layer[0]).get_image_data()
-        images.append(pyglet.sprite.Sprite(layer_image, x=layer[1], y=layer[2], batch=batch))
+    file.mkdir(pathLocation.layer, level_name)
 
-    return images, batch
+    for layer_config in level_config["layers"]:
+
+        if file.find(f"{pathLocation.layer}{level_name}/", layer_config["name"], fileExtension.image):
+            console.trace(f"Loading layer '{layer_config["name"]}'")
+            layer_image:pyglet.image.ImageData = file.open(f"{pathLocation.layer}{level_name}/", layer_config["name"], fileExtension.image)
+            
+        else:
+            console.trace(f"Creating layer '{layer_config["name"]}'")
+            if tileset is None:
+                tileset = get_tileset(level_config["tilemap_index"])
+
+            layer_args:list = []
+            for y in range(len(layer_config["layermap"])):
+                for x in range(len(layer_config["layermap"][y])):
+                    layer_args.append([layer_config["layermap"][y][x], x*level_config["tilesize"], (len(layer_config["layermap"])-y-1)*level_config["tilesize"]])
+
+            layer_image:pyglet.image.Texture = file.add(f"{pathLocation.layer}{level_name}/", layer_config["name"], fileExtension.image, pyglet.image.Texture.create(len(layer_config["layermap"][0])*level_config["tilesize"], len(layer_config["layermap"])*level_config["tilesize"]))
+            for tile in range(len(layer_args)):
+                layer_image.blit_into(tileset[layer_args[tile][0]], layer_args[tile][1], layer_args[tile][2], 0)
+
+            file.write(f"{pathLocation.layer}{level_name}/", layer_config["name"], fileExtension.image)
+
+        level_sprites.append(pyglet.sprite.Sprite(layer_image, x=layer_config["coord"][0]*level_config["tilesize"], y=-layer_config["coord"][1]*level_config["tilesize"], batch=batch))
+
+    return level_sprites, batch

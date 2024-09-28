@@ -164,6 +164,26 @@ class file:
             return False
         
     @staticmethod
+    def mkdir(folderpath:pathLocation|str, foldername:str) -> bool:
+        """
+        Create a directory in the disc
+
+        Args:
+            folderpath (str): The directory of the folder
+            foldername (str): The name of the folder
+
+        Returns:
+            bool: True if the directory was created, False otherwise
+        """
+        try:
+            if os.path.exists(f"{folderpath}") == False or os.path.exists(f"{folderpath}{foldername}") == True:
+                return False
+            os.mkdir(f"{folderpath}{foldername}")
+            return True
+        except FileExistsError:
+            return False
+        
+    @staticmethod
     def find(directory:pathLocation|str, filename:str, extension:fileExtension) -> bool:
         """
         Check if a file exists in the cache

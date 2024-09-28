@@ -1,24 +1,30 @@
 from utils.console import console, logger
-import pyglet, level
-from pyglet.gl import *
+import level, pyglet
 
+# Init the logging
 logger.select("logs")
 
+# Creating the window
 console.info(f"Creating the window")
-window = pyglet.window.Window()
+window = pyglet.window.Window(800, 600)
 
-images, level = level.get_level("level1")
+# Loading the level to be displayed
+batch = pyglet.graphics.Batch()
+sprites = (level.get_level("level1", batch))
 
-def render():
+# Main loop
+running = True
+while running:
+    # Drawing sequence
     window.clear()
-    level.draw()
+    batch.draw()
     window.flip()
 
-while True:
-    render()
+    # Handling events (very important)
     window.dispatch_events()
-
+    # On closing of the window
     if window.has_exit or window.on_key_press(pyglet.window.key.ESCAPE, 1):
-        break
+        console.info(f"Closing the window")
+        running = False
 
-pyglet.app.run()
+window.close()

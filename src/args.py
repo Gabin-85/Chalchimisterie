@@ -1,10 +1,8 @@
 class pathLocation:
     bin:str = "../bin/"
-    tilemap_image:str = "../resources/tilemap_image/"
-    tilemap_config:str = "../resources/tilemap_config/"
-    layer_image:str = "../resources/layer_image/"
-    layer_config:str = "../resources/layer_config/"
-    level_config:str = "../resources/level_config/"
+    tilemap:str = "../resources/tilemap/"
+    layer:str = "../resources/layer/"
+    level:str = "../resources/level/"
 
 class fileExtension:
     data:str = ".json"
