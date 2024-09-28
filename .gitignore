@@ -1,3 +1,4 @@
 bin/*.log
 resources/layer/*
+!resources/layer/.gitkeep
 __pycache__/
