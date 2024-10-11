@@ -31,7 +31,7 @@ def get_tileset(tilemaps_index:list[str]) -> list:
 
     return tileset
 
-def get_level(level_name:str, batch:pyglet.graphics.Batch) -> list[pyglet.sprite.Sprite]:
+def get_level(level_name:str) -> list[pyglet.sprite.Sprite]:
     """
     Generates a list of images for a level
 
@@ -70,6 +70,6 @@ def get_level(level_name:str, batch:pyglet.graphics.Batch) -> list[pyglet.sprite
 
             file.write(f"{pathLocation.layer}{level_name}/", layer_config["name"], fileExtension.image)
 
-        level_sprites.append(pyglet.sprite.Sprite(layer_image, x=layer_config["coord"][0]*level_config["tilesize"], y=-layer_config["coord"][1]*level_config["tilesize"], batch=batch))
+        level_sprites.append(pyglet.sprite.Sprite(layer_image, x=-(len(layer_config["layermap"][0])-layer_config["coord"][0])*level_config["tilesize"], y=-(len(layer_config["layermap"])-layer_config["coord"][1])*level_config["tilesize"]))
 
-    return level_sprites, batch
+    return level_sprites

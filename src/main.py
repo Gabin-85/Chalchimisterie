@@ -1,30 +1,28 @@
-from utils.console import console, logger
-import level, pyglet
+from utils.console import logger
+from ui import SpriteRect
+import pyglet, level, cProfile
 
 # Init the logging
 logger.select("logs")
 
 # Creating the window
-console.info(f"Creating the window")
-window = pyglet.window.Window(800, 600)
+window = pyglet.window.Window(800, 600, "Chalchimisterie", True)
 
-# Loading the level to be displayed
-batch = pyglet.graphics.Batch()
-sprites = (level.get_level("level1", batch))
+level1 = SpriteRect()
+level1.add_sprite(level.get_level("level1"))
 
-# Main loop
-running = True
-while running:
-    # Drawing sequence
+@window.event
+def on_draw():
+
+    level1.set_size(window.width, window.height)
+
     window.clear()
-    batch.draw()
-    window.flip()
+    level1.draw()
 
-    # Handling events (very important)
-    window.dispatch_events()
-    # On closing of the window
-    if window.has_exit or window.on_key_press(pyglet.window.key.ESCAPE, 1):
-        console.info(f"Closing the window")
-        running = False
+@window.event
+def on_key_press(symbol, modifiers):
 
-window.close()
+    if symbol == pyglet.window.key.ESCAPE:
+        window.close()
+
+pyglet.app.run()
