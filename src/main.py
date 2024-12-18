@@ -1,28 +1,28 @@
 from utils.console import logger
-from ui import SpriteRect
-import pyglet, level, cProfile
+import pygame
+from map import background
 
 # Init the logging
 logger.select("logs")
 
-# Creating the window
-window = pyglet.window.Window(800, 600, "Chalchimisterie", True)
+#Creating the window
+screen = pygame.display.set_mode([720, 480])
+pygame.display.set_caption("Chalchimisterie")
+pygame_clock = pygame.time.Clock()
 
-level1 = SpriteRect()
-level1.add_sprite(level.get_level("level1"))
+background.create("background1")
+main_background:pygame.surface.Surface = background.backgrounds["background1"]
 
-@window.event
-def on_draw():
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
 
-    level1.set_size(window.width, window.height)
+    screen.blit(main_background, [0, 0])
 
-    window.clear()
-    level1.draw()
+    pygame.display.flip()
 
-@window.event
-def on_key_press(symbol, modifiers):
+    pygame_clock.tick(60)
 
-    if symbol == pyglet.window.key.ESCAPE:
-        window.close()
-
-pyglet.app.run()
+pygame.quit()

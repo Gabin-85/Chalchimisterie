@@ -1,199 +1,181 @@
-from args import pathLocation, fileExtension
+from args import ext
 from utils.console import console
-import json, pyglet, os, copy
+import json, pygame, os, copy
 
 class file:
 
     files = {}
-
-    @staticmethod
-    def open(directory:pathLocation|str, filename:str, extension:fileExtension) -> object|None:
-        """
-        Open a file from disc to the cache
-
-        Args:
-            directory (str): The directory of the file
-            filename (str): The name of the file
-            extension (str): The extension of the file
-
-        Returns:
-            An address of the cached file
-
-        Raises:
-            FileNotFoundError: If the file doesn't exist
-            KeyError: If the file extension is invalid
-        """
-        if f"{directory}{filename}{extension}" in file.files:
-            return file.files[f"{directory}{filename}{extension}"]
-        
-        try:
-            match extension:
-                case fileExtension.data:
-                    file.files[f"{directory}{filename}{extension}"] = json.load(open(f"{directory}{filename}{extension}", "r"))
-                case fileExtension.image:
-                    file.files[f"{directory}{filename}{extension}"] = pyglet.image.load(f"{directory}{filename}{extension}")
-                case fileExtension.text:
-                    file.files[f"{directory}{filename}{extension}"] = open(f"{directory}{filename}{extension}", "r").read()
-            return file.files[f"{directory}{filename}{extension}"]
-        except FileNotFoundError:
-            console.warn(f"File {directory}{filename}{extension} not found")
-        except KeyError:
-            console.warn(f"Can't load {directory}{filename}{extension}. Invalid extension")
-
-    @staticmethod
-    def add(directory:pathLocation|str, filename:str, extension:fileExtension, data = None) -> object:
-        """
-        Create a file from a variable to the cache
-
-        Args:
-            directory (str): The directory of the file
-            filename (str): The name of the file
-            extension (str): The extension of the file
-            data (any): The data to save
-
-        Returns:
-            An address of the cached file
-        """
-        file.files[f"{directory}{filename}{extension}"] = data
-        return file.files[f"{directory}{filename}{extension}"]
-    
-    @staticmethod
-    def write(directory:pathLocation|str, filename:str, extension:fileExtension) -> object|None:
-        """
-        Write a file from the cache to the disc
-
-        Args:
-            directory (str): The directory of the file
-            filename (str): The name of the file
-            extension (str): The extension of the file
-
-        Returns:
-            An address of the cached file
-            
-        Raises:
-            KeyError: If the file isn't in the cache
-        """
-        try:
-            match extension:
-                case fileExtension.data:
-                    json.dump(file.files[f"{directory}{filename}{extension}"], open(f"{directory}{filename}{extension}", "w"), indent=4)
-                case fileExtension.image:
-                    file.files[f"{directory}{filename}{extension}"].save(f"{directory}{filename}{extension}")
-                case fileExtension.text:
-                    open(f"{directory}{filename}{extension}", "w").write(file.files[f"{directory}{filename}{extension}"])
-            return file.files[f"{directory}{filename}{extension}"]
-        except KeyError:
-            console.warn(f"Can't write {directory}{filename}{extension}. It's not in the cache")
         
     @staticmethod
-    def copy(original_directory:pathLocation|str, original_filename:str, copied_directory:pathLocation|str, copied_filename:str, extension:fileExtension) -> object|None:
+    def create(path:str, **kwargs) -> None|object:
         """
-        Copy a file from the disc or the cache to the cache
+        Create a file
 
         Args:
-            original_directory (str): The directory of the original file
-            original_filename (str): The name of the original file
-            copied_directory (str): The directory of the copied file
-            copied_filename (str): The name of the new copied file
-            extension (str): The extension of the file
+            path (str): The path
+            rebound (bool): The return option
 
         Returns:
-            An address of the cached file
-            
-        Raises:
-            KeyError: If the file isn't in the cache
+            object (if rebound=True): The file
         """
-        if original_filename == copied_filename and original_directory == copied_directory:
-            console.warn(f"Can't copy {original_filename} to itself")
+        file.files[f"{path}"] = kwargs.get("data")
+        if kwargs.get("rebound", False):
+            return file.files[f"{path}"]
+
+    @staticmethod
+    def close(path:str) -> None:
+        """
+        Close a file
+
+        Args:
+            path (str): The path
+            ext (str): The extension
+        """
+        try:
+            del(file.files[f"{path}"])
+        except KeyError:
+            pass
+        
+    @staticmethod
+    def copy(old_path:str, new_path:str, **kwargs) -> None|object:
+        """
+        Copy a file
+
+        Args:
+            old_path (str): The old path
+            new_path (str): The new path
+            rebound (bool): The return option
+
+        Returns:
+            object (if rebound=True): The file
+        """
+        if f"{old_path}" not in file.files:
+            console.warn(f"Can't find the file '{old_path}' in memory.")
             return
 
-        if f"{original_directory}{original_filename}{extension}" in file.files:
-            file.files[f"{copied_directory}{copied_filename}{extension}"] = copy.deepcopy(file.files[f"{original_directory}{original_filename}{extension}"])
-            return file.files[f"{copied_directory}{copied_filename}{extension}"]
-        
+        file.files[f"{new_path}"] = copy.deepcopy(file.files[f"{old_path}"])
+        if kwargs.get("rebound", False):
+            return file.files[f"{old_path}"]
+    
+
+
+    @staticmethod
+    def open(path:str, **kwargs) -> None|object:
+        """
+        Open a file
+
+        Args:
+            path (str): The path
+            rebound (bool): The return option
+
+        Returns:
+            object (if rebound=True): The file
+        """
         try:
-            match extension:
-                case fileExtension.data:
-                    file.files[f"{copied_directory}{copied_filename}{extension}"] = json.load(open(f"{original_directory}{original_filename}{extension}", "r"))
-                case fileExtension.image:
-                    file.files[f"{copied_directory}{copied_filename}{extension}"] = pyglet.image.load(f"{original_directory}{original_filename}{extension}")
-                case fileExtension.text:
-                    file.files[f"{copied_directory}{copied_filename}{extension}"] = open(f"{original_directory}{original_filename}{extension}", "r").read()
-            return file.files[f"{copied_directory}{copied_filename}{extension}"]
+            match "."+path.split(".")[-1]:
+                case ext.data:
+                    file.files[f"{path}"] = json.load(open(f"{path}", "r"))
+                case ext.image:
+                    file.files[f"{path}"] = pygame.image.load(f"{path}")
+                case ext.text:
+                    file.files[f"{path}"] = open(f"{path}", "r").read()
+                case _:
+                    file.files[f"{path}"] = None
+                    console.warn(f"Can't open, unknown extension '{"."+path.split(".")[-1]}'.")
+
+            if kwargs.get("rebound", False):
+                return file.files[f"{path}"]
+            
         except FileNotFoundError:
-            console.warn(f"File {original_directory}{original_filename}{extension} not found")
-        except KeyError:
-            console.warn(f"Can't load {original_directory}{original_filename}{extension}. Invalid extension")
+            console.warn(f"File {path} not found.")
 
     @staticmethod
-    def close(directory:pathLocation|str, filename:str, extension:fileExtension) -> bool:
+    def delete(path:str) -> None:
         """
-        Delete a file in the cache
+        Delete a file
 
         Args:
-            directory (str): The directory of the file
-            filename (str): The name of the file
-            extension (str): The extension of the file
-
-        Returns:
-            bool: True if the file was deleted, False otherwise
+            path (str): the path
         """
         try:
-            del(file.files[f"{directory}{filename}{extension}"])
-            return True
-        except KeyError:
-            return False
-
-    @staticmethod
-    def sup(directory:pathLocation|str, filename:str, extension:fileExtension) -> bool:
-        """
-        Delete a file in the disc
-
-        Args:
-            directory (str): The directory of the file
-            filename (str): The name of the file
-            extension (str): The extension of the file
-
-        Returns:
-            bool: True if the file was deleted, False otherwise
-        """
-        try:
-            os.remove(f"{directory}{filename}{extension}")
-            return True
+            os.remove(f"{path}")
         except FileNotFoundError:
-            return False
-        
+            pass
+
     @staticmethod
-    def mkdir(folderpath:pathLocation|str, foldername:str) -> bool:
+    def write(path:str, **kwargs) -> None|object:
         """
-        Create a directory in the disc
+        Write a file
 
         Args:
-            folderpath (str): The directory of the folder
-            foldername (str): The name of the folder
+            path (str): The path
+            rebound (bool): The return option
 
         Returns:
-            bool: True if the directory was created, False otherwise
+            object (if rebound=True): The file
         """
         try:
-            if os.path.exists(f"{folderpath}") == False or os.path.exists(f"{folderpath}{foldername}") == True:
-                return False
-            os.mkdir(f"{folderpath}{foldername}")
-            return True
-        except FileExistsError:
-            return False
-        
+            match "."+path.split(".")[-1]:
+                case ext.data:
+                    json.dump(file.files[f"{path}"], open(f"{path}", "w"), indent=4)
+                case ext.image:
+                    pygame.image.save(file.files[f"{path}"], f"{path}")
+                case ext.text:
+                    open(f"{path}", "w").write(file.files[f"{path}"])
+                case _:
+                    console.warn(f"Can't write, unknown extension '{"."+path.split(".")[-1]}'.")
+
+            if kwargs.get("rebound", False):
+                return file.files[f"{path}"]
+            
+        except KeyError:
+            console.warn(f"Can't write {path}, not in memory.")
+
+
+
     @staticmethod
-    def find(directory:pathLocation|str, filename:str, extension:fileExtension) -> bool:
+    def ask(path:str) -> object:
         """
-        Check if a file exists in the cache
+        Ask a file
 
         Args:
-            directory (str): The directory of the file
-            filename (str): The name of the file
-            extension (str): The extension of the file
+            path (str): The 
+            
+        Return:
+            object: The file
+        """
+        if path in file.files:
+            return file.files[path]
+        
+        file.open(path)
+        if path in file.files:
+            return file.files[path]
+        
+        console.warn(f"File {path} not found.")
+
+
+    @staticmethod
+    def directory(path:str) -> None:
+        """
+        Create a folder
+
+        Args:
+            path (str): The path
+        """
+        try:
+            os.makedirs(f"{path}")
+        except OSError:
+            pass
+        
+    @staticmethod
+    def find(path:str) -> bool:
+        """
+        Check file existance in storage
+
+        Args:
+            path (str): The path
 
         Returns:
             bool: True if the file exists, False otherwise
         """
-        return os.path.exists(f"{directory}{filename}{extension}")
+        return os.path.exists(f"{path}")

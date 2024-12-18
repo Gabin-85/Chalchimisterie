@@ -1,123 +1,113 @@
 from utils.time import date
-from args import pathLocation, fileExtension, asciiColorFormat, consoleLevel
+from args import path, ext, formating, consoleLevel
 
 class logger():
 
     filepath:str = None
     
     @staticmethod
-    def select(filename:str):
+    def select(filename:str) -> None:
         """
         Select the log file and clear it
         
         Args:
-            filename (str): The name of the file
+            filename (str): The name of the log file (in bin/)
         """
         try:
-            open(f"{pathLocation.bin}{filename}{fileExtension.log}", "w").write("")
-            logger.filepath = f"{pathLocation.bin}{filename}{fileExtension.log}"
-            console.info(f"Log file '{filename}{fileExtension.log}' selected")
+            open(f"{path.bin}{filename}{ext.log}", "w").write("")
+            logger.filepath = f"{path.bin}{filename}{ext.log}"
+            console.info(f"Log file '{filename}{ext.log}' selected")
         except FileNotFoundError:
             console.error(f"The logging directory is invalid. Logger is disabled.")
 
     @staticmethod
-    def add(msg:str) -> bool:
+    def add(msg) -> None:
         """
-        Add a line to the logs
+        Add a line to the log file
 
         Args:
-            msg (str): The message to add
-
-        Return:
-            bool : True if the log was added, False otherwise
+            msg (any): The message
         """
         if not logger.filepath:
-            return False
+            return
         open(logger.filepath, "a").write(f"({"{}:{}:{}:{}".format(*date.get_time())}) {msg}\n")
-        return True
 
 class console():
 
     @staticmethod
-    def exception(msg):
-        """
-        Print an EXCEPTION message.
-
-        Args:
-            msg (str): The message to print
-        """
-        if consoleLevel.exception == False: return
-        print(f"{asciiColorFormat.purple}{asciiColorFormat.bold}[EXCEPT]: {asciiColorFormat.italic}{msg}{asciiColorFormat.clear}")
-        logger.add(f"[EXCEPT]: {msg}")
-
-    @staticmethod
-    def fatal(msg):
+    def fatal(msg) -> None:
         """
         Print a FATAL message.
 
         Args:
-            msg (str): The message to print
+            msg (any): The message
         """
-        if consoleLevel.fatal == False: return
-        print(f"{asciiColorFormat.red}{asciiColorFormat.inverted}{asciiColorFormat.bold}[FATAL]: {msg}{asciiColorFormat.clear}")
+        if consoleLevel.fatal == False:
+            return
+        print(f"{formating.red}{formating.inverted}{formating.bold}[FATAL]: {msg}{formating.clear}")
         logger.add(f"[FATAL]: {msg}")
 
     @staticmethod
-    def error(msg):
+    def error(msg) -> None:
         """
         Print an ERROR message.
 
         Args:
-            msg (str): The message to print
+            msg (any): The message
         """
-        if consoleLevel.error == False: return
-        print(f"{asciiColorFormat.red}{asciiColorFormat.bold}[ERROR]: {msg}{asciiColorFormat.clear}")
+        if consoleLevel.error == False:
+            return
+        print(f"{formating.red}{formating.bold}[ERROR]: {msg}{formating.clear}")
         logger.add(f"[ERROR]: {msg}")
 
     @staticmethod
-    def warn(msg):
+    def warn(msg) -> None:
         """
         Print a WARN message.
 
         Args:
-            msg (str): The message to print
+            msg (any): The message
         """
-        if consoleLevel.warn == False: return
-        print(f"{asciiColorFormat.yellow}[WARN] : {msg}{asciiColorFormat.clear}")
+        if consoleLevel.warn == False:
+            return
+        print(f"{formating.yellow}[WARN] : {msg}{formating.clear}")
         logger.add(f"[WARN] : {msg}")
 
     @staticmethod
-    def info(msg):
+    def info(msg) -> None:
         """
         Print an INFO message.
 
         Args:
-            msg (str): The message to print
+            msg (any): The message
         """
-        if consoleLevel.info == False: return
-        print(f"{asciiColorFormat.green}[INFO] : {msg}{asciiColorFormat.clear}")
+        if consoleLevel.info == False:
+            return
+        print(f"{formating.green}[INFO] : {msg}{formating.clear}")
         logger.add(f"[INFO] : {msg}")
     
     @staticmethod
-    def debug(msg):
+    def debug(msg) -> None:
         """
         Print a DEBUG message.
 
         Args:
-            msg (str): The message to print
+            msg (any): The message
         """
-        if consoleLevel.debug == False: return
-        print(f"{asciiColorFormat.blue}[DEBUG]: {msg}{asciiColorFormat.clear}")
+        if consoleLevel.debug == False:
+            return
+        print(f"{formating.blue}[DEBUG]: {msg}{formating.clear}")
         logger.add(f"[DEBUG]: {msg}")
 
     @staticmethod
-    def trace(msg):
+    def trace(msg) -> None:
         """
         Print a TRACE message.
 
         Args:
-            msg (str): The message to print
+            msg (any): The message
         """
-        if consoleLevel.trace == False: return
-        print(f"{asciiColorFormat.white}[TRACE]: {asciiColorFormat.italic}{msg}{asciiColorFormat.clear}")
+        if consoleLevel.trace == False:
+            return
+        print(f"{formating.white}[TRACE]: {formating.italic}{msg}{formating.clear}")
         logger.add(f"[TRACE]: {msg}")

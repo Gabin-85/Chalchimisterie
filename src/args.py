@@ -1,16 +1,15 @@
-class pathLocation:
+class path:
     bin:str = "../bin/"
-    tilemap:str = "../resources/tilemap/"
-    layer:str = "../resources/layer/"
-    level:str = "../resources/level/"
+    tilemap:str = "../resources/tilemaps/"
+    background:str = "../resources/backgrounds/"
 
-class fileExtension:
+class ext:
     data:str = ".json"
     text:str = ".txt"
     image:str = ".png"
     log:str = ".log"
 
-class asciiColorFormat:
+class formating:
     purple = "\u001b[35m"
     red = "\u001b[31m"
     yellow = "\u001b[33m"
@@ -23,7 +22,6 @@ class asciiColorFormat:
     clear = "\u001b[0m"
 
 class consoleLevel:
-    exception:bool = True
     fatal:bool     = True
     error:bool     = True
     warn:bool      = True
