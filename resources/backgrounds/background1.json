@@ -1,7 +1,7 @@
 {
-    "tilesize": 32,
-    "size": [5, 5],
-    "needed_tilemaps": [
+    "tile_size": 32,
+    "grid_size": [5, 5],
+    "tilemaps": [
         "tilemap1"
     ],
     "tiles": [
