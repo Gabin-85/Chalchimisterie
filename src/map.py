@@ -62,21 +62,6 @@ class background():
     loaded_background:list = []
 
     @staticmethod
-    def load(*background_names:str) -> None:
-        """
-        Load backgrounds
-
-        Args:
-            background_names: The backgrounds names
-        """
-        for background_name in background_names:
-            background.backgrounds[background_name], = file.ask(path.background+background_name+ext.image)
-            if background.backgrounds[background_name] == None:
-                background.create(background_name)
-            else:
-                background.loaded_background.append(background_name)
-
-    @staticmethod
     def create(*background_names:str) -> None:
         """
         Create backgrounds
@@ -95,25 +80,38 @@ class background():
                 if background_tilemap not in tilemap.loaded_tilemaps:
                     tilemap.load(background_tilemap)
 
-            background_image = pygame.surface.Surface([background_data["tile_size"]*background_data["grid_size"][0], background_data["tile_size"]*background_data["grid_size"][1]])
+            background_tilesize = background_data["tile_size"]
+            background_gridsizex, background_gridsizey = background_data["grid_size"]
+            background_image = pygame.surface.Surface([background_tilesize*background_gridsizex, background_tilesize*background_gridsizey])
    
             background_tilset = []
             for tile in background_data["tiles"]:
                 background_tilset.append(tilemap.tiles[tile])
 
-            for grid in background_data["grids"]:
-                try:
-                    for y in range(background_data["grid_size"][1]):
-                        for x in range(background_data["grid_size"][0]):
-                            background_image.blit(background_tilset[grid[y][x]], [x*background_data["tile_size"], y*background_data["tile_size"]])
-                except IndexError:
-                    console.warn(f"Incompactible grid sizes in background '{background_name}'.")
+            sequence = [
+                (background_tilset[tile], [x * background_tilesize, y * background_tilesize])
+                for grid in background_data["grids"]
+                for y, row in enumerate(grid)
+                for x, tile in enumerate(row)
+            ]
 
-            file.create(path.background+background_name+ext.image)
-            file.files[path.background+background_name+ext.image] = background_image
+            background_image.blits(sequence)
 
-            background.backgrounds[background_name] = background_image
-            background.loaded_background.append(background_name)
+            file.create(path.background+background_name+ext.image, data=background_image)
+            file.write(path.background+background_name+ext.image)
+
+    @staticmethod
+    def load(*background_names:str) -> None:
+        """
+        Load backgrounds
+
+        Args:
+            background_names: The backgrounds names
+        """
+        for background_name in background_names:
+            background.backgrounds[background_name], = file.ask(path.background+background_name+ext.image)
+            if background_name not in background.loaded_background and background.backgrounds[background_name] != None:
+                background.loaded_background.append(background_name)
 
     @staticmethod
     def unload(*background_names:str) -> None:
@@ -125,8 +123,7 @@ class background():
         """
         for background_name in background_names:          
             del background.backgrounds[background_name]
-            del background.loaded_background[background.loaded_background.index(background_name)]
+            background.loaded_background.remove(background_name)
             
-            file.write(path.background+background_name+ext.image)
-            file.close(path.background+background_name+ext.data)
+            file.close(path.background+background_name+ext.data, path.background+background_name+ext.image)
                 

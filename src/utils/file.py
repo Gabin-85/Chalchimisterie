@@ -63,7 +63,7 @@ class file:
                     case ext.data:
                         file.files[f"{path}"] = json.load(open(f"{path}", "r"))
                     case ext.image:
-                        file.files[f"{path}"] = pygame.image.load(f"{path}")
+                        file.files[f"{path}"] = pygame.image.load(f"{path}").convert_alpha()
                     case ext.text:
                         file.files[f"{path}"] = open(f"{path}", "r").read()
                     case _:
@@ -129,7 +129,6 @@ class file:
             try:
                 result.append(file.files[path])
             except KeyError:
-                console.warn(f"File {path} not found.")
                 result.append(None)
 
         return result

@@ -1,10 +1,10 @@
 from utils.console import logger
 from utils.file import file
-import pygame
 from map import background, tilemap
+import pygame
 
 # Init the logging
-logger.select("logs")
+logger.init("logs")
 
 #Creating the window
 screen = pygame.display.set_mode([720, 480])
@@ -12,6 +12,7 @@ pygame.display.set_caption("Chalchimisterie")
 pygame_clock = pygame.time.Clock()
 
 background.create("background1")
+background.load("background1")
 main_background = background.backgrounds["background1"]
 
 running = True
