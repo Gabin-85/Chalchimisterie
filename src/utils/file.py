@@ -29,7 +29,7 @@ class file:
         """
         for path in paths:
             try:
-                file.files[f"{path}"]
+                del file.files[f"{path}"]
             except KeyError:
                 pass
         
