@@ -6,7 +6,7 @@ import pygame
 class tilemap():
 
     tiles = {}
-    loaded_tilemaps = []
+    loaded_tilemaps = set()
 
     @staticmethod
     def load(*tilemap_names:str) -> None:
@@ -29,7 +29,8 @@ class tilemap():
                 
                 tilemap.tiles[tile] = tilemap_image.subsurface(tilemap_data["tiles"][tile][0]*tilemap_data["tile_size"], tilemap_data["tiles"][tile][1]*tilemap_data["tile_size"], tilemap_data["tile_size"], tilemap_data["tile_size"])
 
-            tilemap.loaded_tilemaps.append(tilemap_name)
+            tilemap.loaded_tilemaps.add(tilemap_name)
+            file.close(path.tilemap+tilemap_name+ext.image)
         
     @staticmethod
     def unload(*tilemap_names:str) -> None:
@@ -54,12 +55,11 @@ class tilemap():
 
             tilemap.loaded_tilemaps.remove(tilemap_name)
             file.close(path.tilemap+tilemap_name+ext.data)
-            file.close(path.tilemap+tilemap_name+ext.image)
 
 class background():
 
     backgrounds:dict[pygame.surface.Surface] = {}
-    loaded_background:list = []
+    loaded_background = set()
 
     @staticmethod
     def create(*background_names:str) -> None:
@@ -89,16 +89,18 @@ class background():
                 background_tilset.append(tilemap.tiles[tile])
 
             sequence = [
-                (background_tilset[tile], [x * background_tilesize, y * background_tilesize])
+                (background_tilset[tile-1], [x * background_tilesize, y * background_tilesize])
                 for grid in background_data["grids"]
                 for y, row in enumerate(grid)
                 for x, tile in enumerate(row)
+                if tile != 0 # skip if tile is empty
             ]
 
             background_image.blits(sequence)
 
             file.create(path.background+background_name+ext.image, data=background_image)
             file.write(path.background+background_name+ext.image)
+            file.close(path.background+background_name+ext.data, path.background+background_name+ext.image)
 
     @staticmethod
     def load(*background_names:str) -> None:
@@ -111,7 +113,8 @@ class background():
         for background_name in background_names:
             background.backgrounds[background_name], = file.ask(path.background+background_name+ext.image)
             if background_name not in background.loaded_background and background.backgrounds[background_name] != None:
-                background.loaded_background.append(background_name)
+                background.loaded_background.add(background_name)
+            file.close(path.background+background_name+ext.image)
 
     @staticmethod
     def unload(*background_names:str) -> None:
@@ -124,6 +127,3 @@ class background():
         for background_name in background_names:          
             del background.backgrounds[background_name]
             background.loaded_background.remove(background_name)
-            
-            file.close(path.background+background_name+ext.data, path.background+background_name+ext.image)
-                

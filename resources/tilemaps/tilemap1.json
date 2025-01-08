@@ -1,7 +1,6 @@
 {
     "tile_size":32,
     "tiles": {
-        "empty": [0,10],
         "plante":[0,0],
         "herbe":[1,0]
     }

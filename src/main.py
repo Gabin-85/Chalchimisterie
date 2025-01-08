@@ -6,7 +6,7 @@ import pygame
 # Init the logging
 logger.init("logs")
 
-#Creating the window
+# Creating the window
 screen = pygame.display.set_mode([720, 480])
 pygame.display.set_caption("Chalchimisterie")
 pygame_clock = pygame.time.Clock()

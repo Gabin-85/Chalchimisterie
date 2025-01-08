@@ -5,7 +5,6 @@
         "tilemap1"
     ],
     "tiles": [
-        "empty",
         "herbe",
         "plante"
     ],
