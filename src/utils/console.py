@@ -1,24 +1,25 @@
-from utils.time import date
 from args import path, ext, formating, consoleLevel
+from datetime import datetime
 
 class logger():
 
-    filepath:str = None
+    file = None
     
     @staticmethod
-    def select(filename:str) -> None:
+    def init(filename:str) -> None:
         """
-        Select the log file and clear it
+        Init logger, select the log file and clear it
         
         Args:
             filename (str): The name of the log file (in bin/)
         """
         try:
-            open(f"{path.bin}{filename}{ext.log}", "w").write("")
-            logger.filepath = f"{path.bin}{filename}{ext.log}"
-            console.info(f"Log file '{filename}{ext.log}' selected")
+            with open(f"{path.bin}{filename}{ext.log}", "w") as file:
+                file.write("")
+            logger.file = open(f"{path.bin}{filename}{ext.log}", "a")
+            console.info(f"Log file '{path.bin}{filename}{ext.log}' selected.")
         except FileNotFoundError:
-            console.error(f"The logging directory is invalid. Logger is disabled.")
+            console.error(f"Directory doesn't exist. Logger is disabled.")
 
     @staticmethod
     def add(msg) -> None:
@@ -28,9 +29,9 @@ class logger():
         Args:
             msg (any): The message
         """
-        if not logger.filepath:
+        if logger.file == None:
             return
-        open(logger.filepath, "a").write(f"({"{}:{}:{}:{}".format(*date.get_time())}) {msg}\n")
+        logger.file.write(f"({datetime.now().strftime('%H:%M:%S.%f')[:-3]}) {msg}\n")
 
 class console():
 
