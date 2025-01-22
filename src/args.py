@@ -21,10 +21,11 @@ class formating:
     bold = "\033[1m"
     clear = "\u001b[0m"
 
-class consoleLevel:
-    fatal:bool     = True
-    error:bool     = True
-    warn:bool      = True
-    info:bool      = True
-    debug:bool     = True
-    trace:bool     = True
+consoleLevel:set = {
+    "fatal",
+    "error",
+    "warn",
+    "info",
+    "debug",
+    "trace",
+}
