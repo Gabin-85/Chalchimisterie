@@ -1,4 +1,5 @@
 resources/layer/*
 !resources/layer/.gitkeep
+__pycache__/
 *.pyc
 *.log

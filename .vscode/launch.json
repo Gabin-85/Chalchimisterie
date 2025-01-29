@@ -16,6 +16,14 @@
             "program": "${workspaceFolder}/src/testbed.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/src"
+        },
+        {
+            "name": "Debug Test",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/test/_test_main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/src"
         }
     ]
 }

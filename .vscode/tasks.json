@@ -11,6 +11,28 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "label": "Run Testbed",
+            "type": "shell",
+            "windows": {"command": "cd src ; python testbed.py"},
+            "linux": {"command": "cd src && python testbed.py"},
+            "osx": {"command": "cd src && python testbed.py"},
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "Run Test",
+            "type": "shell",
+            "windows": {"command": "cd src ; python ../test/_test_main.py"},
+            "linux": {"command": "cd src && python ../test/_test_main.py"},
+            "osx": {"command": "cd src && python ../test/_test_main.py"},
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            }
         }
     ]
 }

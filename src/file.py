@@ -33,12 +33,16 @@ def read(paths:list[str]) -> None:
                 case ext.text:
                     files[f"{path}"] = open(f"{path}", "r").read()
                 case _:
-                    files[f"{path}"] = None
                     console.warn(f"Can't open, unknown extension '{"."+path.split(".")[-1]}'.")
             
         except FileNotFoundError:
             console.warn(f"File {path} not found.")
 
+        except pygame.error as err:
+            if err.args[0] != "cannot convert without pygame.display initialized":
+                raise(err)
+            console.error(f"Can't open image '{path}' without initializing pygame")
+            
 
 def delete(paths:list[str]) -> None:
     for path in paths:
