@@ -24,11 +24,11 @@
             }
         },
         {
-            "label": "Run Test",
+            "label": "Run Tests",
             "type": "shell",
-            "windows": {"command": "cd src ; python ../test/_test_main.py"},
-            "linux": {"command": "cd src && python ../test/_test_main.py"},
-            "osx": {"command": "cd src && python ../test/_test_main.py"},
+            "windows": {"command": "cd src ; python ../test/_main.py"},
+            "linux": {"command": "cd src && python ../test/_main.py"},
+            "osx": {"command": "cd src && python ../test/_main.py"},
             "group": {
                 "kind": "test",
                 "isDefault": false

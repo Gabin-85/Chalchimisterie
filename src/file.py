@@ -20,7 +20,10 @@ def duplicate(old_path:str, new_paths:list[str]) -> None:
         return
     
     for new_path in new_paths:
-        files[f"{new_path}"] = copy.deepcopy(files[f"{old_path}"])
+        if old_path.endswith(ext.image) == True:
+            files[f"{new_path}"] = files[f"{old_path}"].copy()
+        else:
+            files[f"{new_path}"] = copy.deepcopy(files[f"{old_path}"])
 
 def read(paths:list[str]) -> None:
     for path in paths:
@@ -30,7 +33,7 @@ def read(paths:list[str]) -> None:
                     files[f"{path}"] = json.load(open(f"{path}", "r"))
                 case ext.image:
                     files[f"{path}"] = pygame.image.load(f"{path}").convert_alpha()
-                case ext.text:
+                case ext.text|ext.log:
                     files[f"{path}"] = open(f"{path}", "r").read()
                 case _:
                     console.warn(f"Can't open, unknown extension '{"."+path.split(".")[-1]}'.")
@@ -60,8 +63,8 @@ def write(paths:list[str]) -> None:
                     json.dump(files[f"{path}"], read(f"{path}", "w"), indent=4)
                 case ext.image:
                     pygame.image.save(files[f"{path}"], f"{path}")
-                case ext.text:
-                    read(f"{path}", "w").write(files[f"{path}"])
+                case ext.text|ext.log:
+                    open(f"{path}", "w").write(files[f"{path}"])
                 case _:
                     console.warn(f"Can't write, unknown extension '{"."+path.split(".")[-1]}'.")
             

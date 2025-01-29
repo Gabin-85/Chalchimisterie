@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug Main",
+            "name": "Main",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
@@ -10,7 +10,7 @@
             "cwd": "${workspaceFolder}/src"
         },
         {
-            "name": "Debug Tesbed",
+            "name": "Tesbed",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/testbed.py",
@@ -18,10 +18,10 @@
             "cwd": "${workspaceFolder}/src"
         },
         {
-            "name": "Debug Test",
+            "name": "Tests",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/test/_test_main.py",
+            "program": "${workspaceFolder}/test/_main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/src"
         }
