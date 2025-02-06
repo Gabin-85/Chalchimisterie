@@ -1,5 +1,3 @@
-resources/layer/*
-!resources/layer/.gitkeep
-__pycache__/
+test/playground/*
 *.pyc
 *.log

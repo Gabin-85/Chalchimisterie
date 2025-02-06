@@ -1,6 +1,6 @@
 class path:
     bin:str = "../bin/"
-    test:str = "../test/"
+    playground:str = "../test/playground/"
     tilemap:str = "../resources/tilemaps/"
     background:str = "../resources/backgrounds/"
 

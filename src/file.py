@@ -45,7 +45,6 @@ def read(paths:list[str]) -> None:
             if err.args[0] != "cannot convert without pygame.display initialized":
                 raise(err)
             console.error(f"Can't open image '{path}' without initializing pygame")
-            
 
 def delete(paths:list[str]) -> None:
     for path in paths:
@@ -54,13 +53,14 @@ def delete(paths:list[str]) -> None:
         except FileNotFoundError:
             pass
 
-
 def write(paths:list[str]) -> None:
     for path in paths:
         try:
+            if path not in files:
+                raise KeyError
             match "."+path.split(".")[-1]:
                 case ext.data:
-                    json.dump(files[f"{path}"], read(f"{path}", "w"), indent=4)
+                    json.dump(files[f"{path}"], open(f"{path}", "w"), indent=4)
                 case ext.image:
                     pygame.image.save(files[f"{path}"], f"{path}")
                 case ext.text|ext.log:
@@ -71,11 +71,9 @@ def write(paths:list[str]) -> None:
         except KeyError:
             console.warn(f"Can't write {path}, not in memory.")
 
-
 def ask(paths:list[str]) -> list[object]:
     read([path for path in paths if path not in files])
     return [files.get(path, None) for path in paths]
-
 
 def directory(paths:list[str]) -> None:
     for path in paths:
