@@ -1,8 +1,7 @@
 import pygame, console, file, entity, map
-from args import path
 
 # Init the logging
-console.add_logfile(path.bin+"logs", True)
+console.add_logfile(file.path.bin+"logs", True)
 
 # Creating the window
 screen = pygame.display.set_mode([720, 480])

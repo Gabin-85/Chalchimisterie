@@ -1,17 +1,15 @@
 import sys, pygame
 sys.path.append("../src/")
 pygame.display.set_mode([50, 50])
-import args
-args.consoleLevel = set()
 
 import _file
 
-class color:
-    red = "\u001b[31m"
-    green = "\u001b[32m"
-    blue = "\u001b[34m"
-    yellow = "\u001b[33m"
-    clear = "\u001b[0m"
+class formating:
+    red:str = "\u001b[31m"
+    green:str = "\u001b[32m"
+    blue:str = "\u001b[34m"
+    yellow:str = "\u001b[33m"
+    clear:str = "\u001b[0m"
 
 def check_function(func) -> dict:
     checklist:dict = {"function_name":str(func.__name__)} 
@@ -63,7 +61,7 @@ def test_unit(files:list) -> dict[int]:
             score["function"] += 1
 
             if function["setup"] == False:
-                print(f"{color.blue}[-] {function["function_name"]}(){color.clear}")
+                print(f"{formating.blue}[-] {function["function_name"]}(){formating.clear}")
                 score["skip"] += 1
                 continue
 
@@ -83,11 +81,11 @@ def test_unit(files:list) -> dict[int]:
                         status = False
 
             if status == True:         
-                print(f"{color.green}[✓] {function["function_name"]}(){color.clear}")
+                print(f"{formating.green}[✓] {function["function_name"]}(){formating.clear}")
                 score["pass"] += 1
                 continue
             else:
-                print(f"{color.red}[X] {function["function_name"]}(){color.clear}")
+                print(f"{formating.red}[X] {function["function_name"]}(){formating.clear}")
                 score["fail"] += 1
             del status
 
@@ -104,24 +102,24 @@ def test_unit(files:list) -> dict[int]:
                             break
 
                 if status == True:         
-                    print(f"   |{color.green}{test}{color.clear}")
+                    print(f"   |{formating.green}{test}{formating.clear}")
                     continue
                 else:
-                    print(f"   |{color.red}{test}{color.clear}")
+                    print(f"   |{formating.red}{test}{formating.clear}")
                 del status
 
                 if type(function["tests"][test]) == bool:
                     continue
                 for case in function["tests"][test]:
                     if function["tests"][test][case] == True:
-                        print(f"     |{color.green}{case}{color.clear}")
+                        print(f"     |{formating.green}{case}{formating.clear}")
                     else:
-                        print(f"     |{color.red}{case} <--{color.clear}")
+                        print(f"     |{formating.red}{case} <--{formating.clear}")
     
     print(f"\nFiles: {score["file"]}")
     print(f"Functions: {score["function"]}")
     print(f"Tests: {score["test"]}")
     print(f"Cases: {score["case"]}")
-    print(f"\n{color.green}Pass: {score["pass"]}{color.clear} | {color.blue}Skip: {score["skip"]}{color.clear} | {color.red}Fail: {score["fail"]}{color.clear}")
+    print(f"\n{formating.green}Pass: {score["pass"]}{formating.clear} | {formating.blue}Skip: {score["skip"]}{formating.clear} | {formating.red}Fail: {score["fail"]}{formating.clear}")
 
 test_unit([_file])

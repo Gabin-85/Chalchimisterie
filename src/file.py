@@ -1,5 +1,14 @@
-import json, pygame, os, copy, console
-from args import ext
+class path:
+    bin:str = "../bin/"
+    playground:str = "../test/playground/"
+    tilemap:str = "../resources/tilemaps/"
+    background:str = "../resources/backgrounds/"
+
+class ext:
+    data:str = ".json"
+    text:str = ".txt"
+    image:str = ".png"
+    log:str = ".log"
 
 files = {}
     

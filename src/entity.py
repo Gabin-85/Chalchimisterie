@@ -1,5 +1,4 @@
-import pygame, console, file
-from args import ext, path
+import pygame, file
 
 group:pygame.sprite.Group = pygame.sprite.Group()
 sprites:list[pygame.sprite.Sprite] = []
@@ -19,7 +18,7 @@ def set_flag(id, flag) -> None:
         case "draw":
             entities[id]["sprites"] = [len(sprites)]
             sprite = pygame.sprite.Sprite()
-            sprite.image, = file.ask([path.bin+"empty"+ext.image])
+            sprite.image, = file.ask([file.path.bin+"empty"+file.ext.image])
             sprite.rect = sprite.image.get_rect()
             sprite.add(group)
             sprites.append(sprite)
