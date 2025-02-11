@@ -10,14 +10,6 @@
             "cwd": "${workspaceFolder}/src"
         },
         {
-            "name": "Tesbed",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "${workspaceFolder}/src/testbed.py",
-            "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}/src"
-        },
-        {
             "name": "Tests",
             "type": "debugpy",
             "request": "launch",

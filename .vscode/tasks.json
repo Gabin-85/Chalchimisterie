@@ -13,17 +13,6 @@
             }
         },
         {
-            "label": "Run Testbed",
-            "type": "shell",
-            "windows": {"command": "cd src ; python testbed.py"},
-            "linux": {"command": "cd src && python testbed.py"},
-            "osx": {"command": "cd src && python testbed.py"},
-            "group": {
-                "kind": "test",
-                "isDefault": false
-            }
-        },
-        {
             "label": "Run Tests",
             "type": "shell",
             "windows": {"command": "cd src ; python ../test/_main.py"},
