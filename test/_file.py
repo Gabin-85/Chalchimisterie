@@ -1,19 +1,17 @@
-import file, pygame, os
-from error import category
-
+import file, pygame, os, error
 class create:
 
     def setup() -> None:
         pass
 
     def call_text() -> None:
-        file.create([file.path.playground+"test_text"+file.ext.text], "Hello, world!")
+        file.create(file.path.playground+"test_text"+file.ext.text, "Hello, world!")
     def call_data() -> None:
-        file.create([file.path.playground+"test_data"+file.ext.data], {"Hello":"world!"})
+        file.create(file.path.playground+"test_data"+file.ext.data, {"Hello":"world!"})
     def call_log() -> None:
-        file.create([file.path.playground+"test_log"+file.ext.log], "[DEBUG]: Hello, world!")
+        file.create(file.path.playground+"test_log"+file.ext.log, "[DEBUG]: Hello, world!")
     def call_image() -> None:
-        file.create([file.path.playground+"test_image"+file.ext.image], pygame.surface.Surface((20,20)))
+        file.create(file.path.playground+"test_image"+file.ext.image, pygame.surface.Surface((20,20)))
     
     def access_text() -> None:
         assert file.files[file.path.playground+"test_text"+file.ext.text] == "Hello, world!"
@@ -60,13 +58,13 @@ class duplicate:
         create.call_image()
         
     def call_text() -> None:
-        file.duplicate(file.path.playground+"test_text"+file.ext.text, [file.path.playground+"test_text2"+file.ext.text])
+        file.duplicate(file.path.playground+"test_text"+file.ext.text, file.path.playground+"test_text2"+file.ext.text)
     def call_data() -> None:
-        file.duplicate(file.path.playground+"test_data"+file.ext.data, [file.path.playground+"test_data2"+file.ext.data])
+        file.duplicate(file.path.playground+"test_data"+file.ext.data, file.path.playground+"test_data2"+file.ext.data)
     def call_log() -> None:    
-        file.duplicate(file.path.playground+"test_log"+file.ext.log, [file.path.playground+"test_log2"+file.ext.log])
+        file.duplicate(file.path.playground+"test_log"+file.ext.log, file.path.playground+"test_log2"+file.ext.log)
     def call_image() -> None:    
-        file.duplicate(file.path.playground+"test_image"+file.ext.image, [file.path.playground+"test_image2"+file.ext.image])
+        file.duplicate(file.path.playground+"test_image"+file.ext.image, file.path.playground+"test_image2"+file.ext.image)
 
     def access_text() -> None:
         assert file.files[file.path.playground+"test_text"+file.ext.text] == file.files[file.path.playground+"test_text2"+file.ext.text]
@@ -78,7 +76,7 @@ class duplicate:
         assert file.files[file.path.playground+"test_image2"+file.ext.image].get_size() == (20,20)
 
     def nofile() -> None:
-        assert file.duplicate(file.path.playground+"unknown_file"+file.ext.text, [file.path.playground+"other_unknown_file"+file.ext.text]) == category.not_found
+        assert file.duplicate(file.path.playground+"unknown_file"+file.ext.text, file.path.playground+"other_unknown_file"+file.ext.text) == error.group.not_found
         assert file.path.playground+"unknown_file"+file.ext.text not in file.files
         assert file.path.playground+"other_unknown_file"+file.ext.text not in file.files
         
@@ -122,10 +120,10 @@ class close:
         create.call_image()
     
     def call() -> None:
-        file.close([file.path.playground+"test_text"+file.ext.text,
-                    file.path.playground+"test_data"+file.ext.data,
-                    file.path.playground+"test_log"+file.ext.log,
-                    file.path.playground+"test_image"+file.ext.image])
+        file.close(file.path.playground+"test_text"+file.ext.text)
+        file.close(file.path.playground+"test_data"+file.ext.data)
+        file.close(file.path.playground+"test_log"+file.ext.log)
+        file.close(file.path.playground+"test_image"+file.ext.image)
 
     def noaccess_text() -> None:
         assert file.path.playground+"test_text"+file.ext.text not in file.files
@@ -137,7 +135,7 @@ class close:
         assert file.path.playground+"test_image"+file.ext.image not in file.files
 
     def nofile() -> None:
-        assert file.close([file.path.playground+"unknown_file"+file.ext.text]) == [category.already_done]
+        assert file.close(file.path.playground+"unknown_file"+file.ext.text) == error.group.already_done
 
     tests = {
         "Call":call,
@@ -157,16 +155,16 @@ class write:
         create.call_data()
         create.call_log()
         create.call_image()
-        file.create([file.path.playground+"test_text"+".unknown"], "Hello, world!")
+        file.create(file.path.playground+"test_text"+".unknown", "Hello, world!")
 
         for item in os.listdir(file.path.playground):
             os.remove(file.path.playground+item)
 
     def call() -> None:
-        file.write([file.path.playground+"test_text"+file.ext.text,
-                    file.path.playground+"test_data"+file.ext.data,
-                    file.path.playground+"test_log"+file.ext.log,
-                    file.path.playground+"test_image"+file.ext.image])
+        file.write(file.path.playground+"test_text"+file.ext.text)
+        file.write(file.path.playground+"test_data"+file.ext.data)
+        file.write(file.path.playground+"test_log"+file.ext.log)
+        file.write(file.path.playground+"test_image"+file.ext.image)
         
     def access_text() -> None:
         assert os.path.exists(file.path.playground+"test_text"+file.ext.text)
@@ -178,11 +176,11 @@ class write:
         assert os.path.exists(file.path.playground+"test_image"+file.ext.image)
 
     def nofile() -> None:
-        assert file.write([file.path.playground+"unknown_file"+file.ext.text]) == [category.not_found]
+        assert file.write(file.path.playground+"unknown_file"+file.ext.text) == error.group.not_found
         assert os.path.exists(file.path.playground+"unknown_file"+file.ext.text) == False
 
     def noext() -> None:
-        assert file.write([file.path.playground+"test_text"+".unknown"]) == [category.unsupported]
+        assert file.write(file.path.playground+"test_text"+".unknown") == error.group.unsupported
         assert os.path.exists(file.path.playground+"test_text"+".unknown") == False
 
     tests = {
@@ -208,10 +206,10 @@ class read:
         file.files = {}
 
     def call() -> None:
-        file.read([file.path.playground+"test_text"+file.ext.text,
-                    file.path.playground+"test_data"+file.ext.data,
-                    file.path.playground+"test_log"+file.ext.log,
-                    file.path.playground+"test_image"+file.ext.image])
+        file.read(file.path.playground+"test_text"+file.ext.text)
+        file.read(file.path.playground+"test_data"+file.ext.data)
+        file.read(file.path.playground+"test_log"+file.ext.log)
+        file.read(file.path.playground+"test_image"+file.ext.image)
         
     def access_text() -> None:
         assert file.files[file.path.playground+"test_text"+file.ext.text] == "Hello, world!"
@@ -223,11 +221,11 @@ class read:
         assert file.files[file.path.playground+"test_image"+file.ext.image].get_size() == (20,20)
 
     def nofile() -> None:
-        assert file.read([file.path.playground+"unknown_file"+file.ext.text]) == [category.not_found]
+        assert file.read(file.path.playground+"unknown_file"+file.ext.text) == error.group.not_found
         assert file.path.playground+"unknown_file"+file.ext.text not in file.files
 
     def noext() -> None:
-        assert file.read([file.path.playground+"unknown_file"+".unknown"]) == [category.unsupported]
+        assert file.read(file.path.playground+"unknown_file"+".unknown") == error.group.unsupported
         assert file.path.playground+"unknown_file"+file.ext.text not in file.files
 
     tests = {
@@ -251,10 +249,10 @@ class delete:
         write.call()
         
     def call() -> None:
-        file.delete([file.path.playground+"test_text"+file.ext.text,
-                    file.path.playground+"test_data"+file.ext.data,
-                    file.path.playground+"test_log"+file.ext.log,
-                    file.path.playground+"test_image"+file.ext.image])
+        file.delete(file.path.playground+"test_text"+file.ext.text)
+        file.delete(file.path.playground+"test_data"+file.ext.data)
+        file.delete(file.path.playground+"test_log"+file.ext.log)
+        file.delete(file.path.playground+"test_image"+file.ext.image)
         
     def noaccess_text() -> None:
         assert os.path.exists(file.path.playground+"test_text"+file.ext.text) == False
@@ -266,7 +264,7 @@ class delete:
         assert os.path.exists(file.path.playground+"test_image"+file.ext.image) == False
 
     def nofile() -> None:
-        assert file.delete([file.path.playground+"unknown_file"+file.ext.text]) == [category.not_found]
+        assert file.delete(file.path.playground+"unknown_file"+file.ext.text) == error.group.not_found
 
     tests = {
         "Call":call,
@@ -292,10 +290,10 @@ class ask:
         file.files = {}
 
     def call() -> None:
-        ask.filelist = file.ask([file.path.playground+"test_text"+file.ext.text,
-                             file.path.playground+"test_data"+file.ext.data,
-                             file.path.playground+"test_log"+file.ext.log,
-                             file.path.playground+"test_image"+file.ext.image])
+        ask.filelist = [file.ask(file.path.playground+"test_text"+file.ext.text),
+                       file.ask(file.path.playground+"test_data"+file.ext.data),
+                       file.ask(file.path.playground+"test_log"+file.ext.log),
+                       file.ask(file.path.playground+"test_image"+file.ext.image)]
         
     def access_text() -> None:
         assert ask.filelist[0] == "Hello, world!"
@@ -316,7 +314,7 @@ class ask:
         assert file.files[file.path.playground+"test_image"+file.ext.image].get_size() == (20,20)
 
     def nofile() -> None:
-        assert file.ask([file.path.playground+"unknown"+file.ext.text]) == [category.not_found]
+        assert file.ask(file.path.playground+"unknown"+file.ext.text) == error.group.not_found
 
     tests = {
         "Call":call,
@@ -339,10 +337,10 @@ class directory:
         pass
 
     def call() -> None:
-        file.directory([file.path.playground])
+        file.directory(file.path.playground)
 
     def alreadyexist() -> None:
-        assert file.directory([file.path.playground]) == [category.already_done]
+        assert file.directory(file.path.playground) == error.group.already_done
 
     tests = {
         "Call":call,
@@ -355,7 +353,7 @@ class find:
         directory.call()
 
     def call() -> None:
-        file.directory([file.path.playground])
+        file.directory(file.path.playground)
 
     tests = {
         "Call":call
