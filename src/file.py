@@ -1,4 +1,5 @@
-import json, pygame, os, copy, error
+import json, pygame, os, copy
+from error import Err
 
 class path:
     bin:str = "../bin/"
@@ -14,25 +15,25 @@ class ext:
 
 files = {}
     
-def create(path:str, data=None) -> None:
+def create(path:str, data=None) -> None|Err:
     files[f"{path}"] = data
 
-def close(path:str) -> None|error.Error:
+def close(path:str) -> None|Err:
     try:
         del files[f"{path}"]
     except KeyError:
-        return error.Error(error.group.already_done, f"The variable '{path}' is already deleted")
+        Err("notexistant", f"{path!r} already deleted", f"The file {path!r} has been double deleted from cache, find dependencies of it")
                
-def duplicate(old_path:str, new_path:str) -> None|error.Error:
+def duplicate(old_path:str, new_path:str) -> None:
     if f"{old_path}" not in files:
-        return error.Error(error.group.not_found, f"Can't find the file '{old_path}' in memory")
+        print(f"Can't find the file '{old_path}' in memory")
     
     if old_path.endswith(ext.image) == True:
         files[f"{new_path}"] = files[f"{old_path}"].copy()
     else:
         files[f"{new_path}"] = copy.deepcopy(files[f"{old_path}"])
 
-def read(path:str) -> None|error.Error:
+def read(path:str) -> None|Err:
     try:
         match "."+path.split(".")[-1]:
             case ext.data:
@@ -42,23 +43,23 @@ def read(path:str) -> None|error.Error:
             case ext.text|ext.log:
                 files[f"{path}"] = open(f"{path}", "r").read()
             case _:
-                return error.Error(error.group.unsupported,f"Can't open, unknown extension '{"."+path.split(".")[-1]}'")
+                return Err("notexistant", f"Unknown extension {"."+path.split(".")[-1]!r}", "Syntax or not yet implemented, to verify")
             
     except FileNotFoundError:
-        return error.Error(error.group.not_found, f"File {path} not found")
+        print(f"File {path} not found")
 
     except pygame.error:
-        return error.Error(error.group.pygame_uninitialize, f"Can't open image '{path}' without initializing pygame")
+        print(f"Can't open image '{path}' without initializing pygame")
 
-def delete(path:str) -> None|error.Error:
+def delete(path:str) -> None:
     try:
         os.remove(f"{path}")
     except FileNotFoundError:
-        return error.Error(error.group.not_found, f"The file '{path}' is already deleted")
+        print(f"The file '{path}' is already deleted")
         
-def write(path:str) -> None|error.Error:
+def write(path:str) -> None:
     if path not in files:
-        return error.Error(error.group.not_found, f"The file '{path}' is not in memory")
+        print(f"The file '{path}' is not in memory")
     match "."+path.split(".")[-1]:
         case ext.data:
             json.dump(files[f"{path}"], open(f"{path}", "w"), indent=4)
@@ -67,18 +68,19 @@ def write(path:str) -> None|error.Error:
         case ext.text|ext.log:
             open(f"{path}", "w").write(files[f"{path}"])
         case _:
-            return error.Error(error.group.unsupported, f"Can't write, unknown extension '{"."+path.split(".")[-1]}'")
+            print(f"Can't write, unknown extension '{"."+path.split(".")[-1]}'")
         
-def ask(path:str) -> object|error.Error:
+def ask(path:str) -> object|Err:
+    err = None
     if path not in files:
         err = read(path)
     return files.get(path, err)
 
-def directory(path:str) -> None|error.Error:
+def directory(path:str) -> None:
     try:
         os.makedirs(f"{path}")
     except OSError:
-        return error.Error(error.group.already_done, f"The directory '{path}' already exist")
+       print(f"The directory '{path}' already exist")
 
 def find(path:str) -> bool:
     return os.path.exists(f"{path}")

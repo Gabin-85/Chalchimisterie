@@ -1,4 +1,4 @@
-import pygame, error
+import pygame
 
 
 entities:list[dict] = []
@@ -37,9 +37,9 @@ def set_entity_sprite(entity_id:int, sprite_id:int) -> int:
         entities[entity_id]["flags"].add("sprites")
     entities[entity_id]["sprites_id"].append(sprite_id)
 
-def set_sprite_image(sprite_id:int, image:pygame.surface.Surface) -> None|error.Error:
+def set_sprite_image(sprite_id:int, image:pygame.surface.Surface) -> None:
     if "sprites" not in entities[sprite_id]["flags"]:
-        return error.Error(error.group.unespected_state, f"The entity '{sprite_id}' don't have sprites")
+        print(f"The entity '{sprite_id}' don't have sprites")
     sprites[sprite_id].image = image
     sprites[sprite_id].rect = image.get_rect()
 
@@ -47,9 +47,9 @@ def set_sprite_group(sprite_id:int, group_id:int) -> None:
     groups[group_id].add(sprites[sprite_id])
 
 
-def get_entity_sprites(entity_id:int) -> list[int]|error.Error:
+def get_entity_sprites(entity_id:int) -> list[int]:
     if "sprites" not in entities[entity_id]["flags"]:
-        return error.Error(error.group.unespected_state, f"The entity '{entity_id}' don't have sprites")
+        print(f"The entity '{entity_id}' don't have sprites")
     return entities[entity_id]["sprites_id"]
 
 def get_sprite_groups(sprite_id:int) -> list[int]:

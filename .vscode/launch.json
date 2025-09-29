@@ -8,14 +8,6 @@
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/src"
-        },
-        {
-            "name": "Tests",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "${workspaceFolder}/test/_main.py",
-            "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}/src"
         }
     ]
 }

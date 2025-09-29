@@ -1,28 +1,19 @@
-class group:
-    not_found:int = 0
-    already_done:int = 1
-    unsupported:int = 2
-    unespected_state:int = 3
-    pygame_uninitialize:int = 4
-
-class Error:
-
-    def __init__(self, group:group, msg:str=""):
-        self.group:str = group
-        self.msg:str = msg
-
-    def __eq__(self, value):
-        return self.group == value
+class Err:
     
+    def __init__(self, type:str, msg:str, helper:str=None):
+        self.type = type
+        self.msg = msg
+        self.helper = helper
+
+    def __eq__(self, value:str):
+        return self.type == value
+    
+    def __repr__(self):
+        if self.helper:
+            return  f"ErrorType(type={self.type!r}, msg={self.msg!r}, [+HELPER])"
+        return  f"ErrorType(type={self.type!r}, msg={self.msg!r})"
+
     def __str__(self):
-        return self.msg
-    
-def is_error(variable) -> bool:
-    if type(variable) == Error:
-        return True
-    return False
-
-def is_group(variable, group:group) -> bool:
-    if is_error(variable) and variable == group:
-        return True
-    return False
+        if self.helper:
+            return f"Error {self.type} <- {self.msg}\n{self.helper}"
+        return f"Error {self.type} <- {self.msg}"

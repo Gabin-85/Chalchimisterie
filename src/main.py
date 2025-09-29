@@ -1,7 +1,7 @@
-import pygame, console, file, entity, map, event, cProfile
+import pygame, log, file, entity, map, event
 
 # Init the logging
-console.add_logfile(file.path.bin+"logs")
+log.set_file(file.path.bin+"logs"+file.ext.log)
 
 # Creating the window
 screen = pygame.display.set_mode([720, 480])
@@ -10,9 +10,13 @@ pygame.display.set_caption("Chalchimisterie")
 pygame_clock = pygame.time.Clock()
 
 # Create background
-map.create_background("background1")
-map.load_background("background1")
-main_background = map.backgrounds["background1"]
+if map.create_background("background1") in ("notexistant", "notvalue"):
+    log.error("Can't create background")
+if map.load_background("background1") in ("notexistant", "notvalue"):
+    log.error("Can't load background")
+else:
+    main_background = map.backgrounds["background1"]
+map.load_tilemap("tilemap1")
 
 # Create entity
 entity_id = entity.new_entity("entity")
@@ -27,7 +31,7 @@ while event.state.running:
     if 27 in event.state.key:
         event.quit_game()
     if 32 in event.state.key_press:
-        console.info("Jump")
+        log.info("Jump")
 
     screen.blit(main_background, [0, 0])
 
@@ -40,6 +44,6 @@ while event.state.running:
 # Close all ressources
 map.unload_all_backgrounds()
 map.unload_all_tilemaps()
-console.dump_all_logfiles()
+log.flush()
 file.files.clear()
 pygame.quit()
